@@ -5,10 +5,10 @@ import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.entity.Reply;
 import lombok.Getter;
 import lombok.Setter;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @Setter
@@ -34,8 +34,6 @@ public class PostResponseDto {
             ReplyResponseDto ReplyResponseDto = new ReplyResponseDto(reply);
             this.ReplyList.add(ReplyResponseDto);
         }
-        this.createdAt = Post.getCreatedAt();
-        this.modifiedAt = Post.getModifiedAt();
-//        this.likeCounts = Post.getPostLikeList().size();
+        //this.likeCounts = post.getPostLikeList().size();
     }
 }

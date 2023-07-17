@@ -5,8 +5,8 @@ import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.post.dto.PostListResponseDto;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
-import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.service.PostService;
+import com.sparta.dtogram.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -65,12 +65,14 @@ public class PostController {
         }
     }
 
-//    @PostMapping("/Post/like")
+
+//    @PostMapping("/post/like")
 //    public String like(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        return postService.like(id, userDetails.getUser().getId());
 //    }
 //
-//    @GetMapping("/Post/like")
+//    @GetMapping("/post/like")
+
 //    public boolean isLiked(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        return postService.isLiked(id, userDetails.getUser().getId());
 //    }

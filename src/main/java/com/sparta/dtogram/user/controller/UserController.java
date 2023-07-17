@@ -1,5 +1,6 @@
 package com.sparta.dtogram.user.controller;
 
+
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
@@ -25,7 +26,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/user/sign-up")
+    @PostMapping("/user/signup")
     public String signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
