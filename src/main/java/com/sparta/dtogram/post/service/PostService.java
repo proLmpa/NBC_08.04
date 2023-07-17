@@ -1,5 +1,6 @@
 package com.sparta.dtogram.post.service;
 
+import com.sparta.dtogram.post.dto.PostListResponseDto;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
@@ -12,32 +13,47 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
-    private final PostRepository PostRepository;
+    private final PostRepository postRepository;
 //    private final PostLikeRepository PostLikeRepository;
     private final UserRepository userRepository;
 
+    // 게시글 생성
     public PostResponseDto createPost(PostRequestDto requestDto, User user) {
-        Post Post= PostRepository.save(new Post(requestDto, user));
+        Post Post= postRepository.save(new Post(requestDto, user));
 
         return new PostResponseDto(Post);
     }
 
+    // 게시글 단건 조회
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPosts() {
-        return PostRepository.findAllByOrderByModifiedAtDesc().stream().map(PostResponseDto::new).toList();
+    public PostResponseDto getPostById(Long id) {
+        Post post = findPost(id);
+
+        return new PostResponseDto(post);
     }
 
+    // 게시글 다건 조회
     @Transactional(readOnly = true)
-    public List<PostResponseDto> getPostsByKeyword(String keyword) {
-        if (keyword == null) {
-            throw new RuntimeException("키워드를 입력해주세요");
-        }
-        return PostRepository.findAllByContentsContainingOrderByModifiedAtDesc(keyword).stream().map(PostResponseDto::new).toList();
+    public PostListResponseDto getPosts() {
+        List<PostResponseDto> postList = postRepository.findAll().stream()
+                .map(PostResponseDto::new)
+                .collect(Collectors.toList());
+
+        return new PostListResponseDto(postList);
     }
+
+//    @Transactional(readOnly = true)
+//    public List<PostResponseDto> getPostsByKeyword(String keyword) {
+//        if (keyword == null) {
+//            throw new RuntimeException("키워드를 입력해주세요");
+//        }
+//        return PostRepository.findAllByContentsContainingOrderByModifiedAtDesc(keyword).stream().map(PostResponseDto::new).toList();
+//    }
 
     @Transactional
     public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
@@ -54,14 +70,14 @@ public class PostService {
     public void deletePost(Long id, User user) {
         Post Post = findPost(id);
         if (Post.getUsername().equals(user.getUsername())) {
-            PostRepository.delete(Post);
+            postRepository.delete(Post);
         } else {
             throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
         }
     }
 
     private Post findPost(Long id) {
-        return PostRepository.findById(id).orElseThrow(() -> // null 체크
+        return postRepository.findById(id).orElseThrow(() -> // null 체크
                 new IllegalArgumentException("선택한 글는 존재하지 않습니다.")
         );
     }
@@ -71,6 +87,7 @@ public class PostService {
                 new IllegalArgumentException("존재하지 않는 유저입니다.")
         );
     }
+
 
 //    @Transactional
 //    public String like(Long PostId, Long userId) {

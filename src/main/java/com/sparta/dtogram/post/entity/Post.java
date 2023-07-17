@@ -25,33 +25,33 @@ public class Post extends Timestamped {
     @Column(nullable = false)
     private String title;
     @Column(nullable = false, length = 500)
-    private String contents;
+    private String content;
     @Column(nullable = false)
     private String username;
-    @Column
-    private Long likeCount;
+    //@Column
+    //private Long likeCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "Post", cascade = CascadeType.ALL)
-    private List<Reply> Replys = new ArrayList<>();
+    private List<Reply> replyList = new ArrayList<>();
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Post", cascade = CascadeType.REMOVE)
 //    private List<PostLike> PostLikeList = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
-        this.contents = requestDto.getContents();
+        this.content = requestDto.getContent();
         this.username = user.getUsername();
         this.user = user;
-        this.likeCount = 0L;
+        //this.likeCount = 0L;
     }
 
     public void update(UpdatePostRequestDto requestDto) {
         this.title =requestDto.getTitle();
-        this.contents = requestDto.getContents();
+        this.content = requestDto.getContents();
     }
 
 //    public void mappingPostLike(PostLike PostLike) { // 좋아요 수를 세기 위해 추가
