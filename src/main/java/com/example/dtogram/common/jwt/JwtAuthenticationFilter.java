@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.jwt;
+package com.example.dtogram.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.myblogbackend.dto.LoginRequestDto;

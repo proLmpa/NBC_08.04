@@ -1,4 +1,4 @@
-package com.example.dtogram.User.dto;
+package com.example.dtogram.user.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

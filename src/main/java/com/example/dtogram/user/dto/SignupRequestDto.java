@@ -1,4 +1,4 @@
-package com.example.dtogram.User.dto;
+package com.example.dtogram.user.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

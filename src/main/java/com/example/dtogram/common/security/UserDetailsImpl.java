@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.security;
+package com.example.dtogram.common.security;
 
 import com.sparta.myblogbackend.entity.User;
 import com.sparta.myblogbackend.entity.UserRoleEnum;

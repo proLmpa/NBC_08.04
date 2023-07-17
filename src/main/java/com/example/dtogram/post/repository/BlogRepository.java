@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.repository;
+package com.example.dtogram.post.repository;
 
 import com.sparta.myblogbackend.entity.Blog;
 import org.springframework.data.jpa.repository.JpaRepository;

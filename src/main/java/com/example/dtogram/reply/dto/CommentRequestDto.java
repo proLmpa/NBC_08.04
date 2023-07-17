@@ -1,4 +1,4 @@
-package com.example.dtogram.Reply.dto;
+package com.example.dtogram.reply.dto;
 
 import lombok.Getter;
 

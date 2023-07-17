@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.controller;
+package com.example.dtogram.post.controller;
 
 import com.sparta.myblogbackend.dto.BlogRequestDto;
 import com.sparta.myblogbackend.dto.BlogResponseDto;

@@ -1,4 +1,4 @@
-package com.example.dtogram.User.entity;
+package com.example.dtogram.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

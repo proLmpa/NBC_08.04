@@ -1,5 +1,6 @@
-package com.sparta.myblogbackend.dto;
+package com.example.dtogram.post.dto;
 
+import com.example.dtogram.reply.dto.CommentResponseDto;
 import com.sparta.myblogbackend.entity.Blog;
 import com.sparta.myblogbackend.entity.Comment;
 import lombok.Getter;

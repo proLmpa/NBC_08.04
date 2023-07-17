@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.dto;
+package com.example.dtogram.reply.dto;
 
 import com.sparta.myblogbackend.entity.Comment;
 import lombok.Getter;

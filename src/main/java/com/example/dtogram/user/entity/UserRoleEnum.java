@@ -1,4 +1,4 @@
-package com.example.dtogram.User.entity;
+package com.example.dtogram.user.entity;
 
 public enum UserRoleEnum {
     USER(Authority.USER),  // 사용자 권한

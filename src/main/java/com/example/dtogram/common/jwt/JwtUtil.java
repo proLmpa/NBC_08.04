@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.jwt;
+package com.example.dtogram.common.jwt;
 
 import com.sparta.myblogbackend.entity.UserRoleEnum;
 import io.jsonwebtoken.*;

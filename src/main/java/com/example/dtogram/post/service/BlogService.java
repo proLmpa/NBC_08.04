@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.service;
+package com.example.dtogram.post.service;
 
 import com.sparta.myblogbackend.dto.BlogRequestDto;
 import com.sparta.myblogbackend.dto.BlogResponseDto;
@@ -15,7 +15,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 

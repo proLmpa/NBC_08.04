@@ -1,4 +1,4 @@
-package com.example.dtogram.User.repository;
+package com.example.dtogram.user.repository;
 
 import com.sparta.myblogbackend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

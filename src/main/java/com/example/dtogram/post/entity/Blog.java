@@ -1,13 +1,11 @@
-package com.example.dtogram.Post.entity;
+package com.example.dtogram.post.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.sparta.myblogbackend.dto.BlogRequestDto;
 import com.sparta.myblogbackend.dto.UpdateBlogRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.context.annotation.Bean;
 
 import java.util.ArrayList;
 import java.util.List;

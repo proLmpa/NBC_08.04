@@ -1,4 +1,4 @@
-package com.example.dtogram.Reply.controller;
+package com.example.dtogram.reply.controller;
 
 import com.sparta.myblogbackend.dto.CommentRequestDto;
 import com.sparta.myblogbackend.dto.CommentResponseDto;
@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Slf4j
 @RestController

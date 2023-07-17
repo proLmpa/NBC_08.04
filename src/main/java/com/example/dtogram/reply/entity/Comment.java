@@ -1,7 +1,6 @@
-package com.example.dtogram.Reply.entity;
+package com.example.dtogram.reply.entity;
 
-import com.example.dtogram.Post.entity.Blog;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.example.dtogram.post.entity.Blog;
 import com.sparta.myblogbackend.dto.CommentRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;

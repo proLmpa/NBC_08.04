@@ -1,4 +1,4 @@
-package com.sparta.myblogbackend.dto;
+package com.example.dtogram.post.dto;
 
 import lombok.Getter;
 
