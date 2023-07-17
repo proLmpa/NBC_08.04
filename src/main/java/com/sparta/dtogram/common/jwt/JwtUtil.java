@@ -1,6 +1,6 @@
 package com.sparta.dtogram.common.jwt;
 
-import com.sparta.myblogbackend.entity.UserRoleEnum;
+import com.sparta.dtogram.user.entity.UserRoleEnum;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;

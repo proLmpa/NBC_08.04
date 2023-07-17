@@ -1,11 +1,10 @@
 package com.sparta.dtogram.user.service;
 
 import com.sparta.dtogram.common.jwt.JwtUtil;
-import com.sparta.myblogbackend.dto.LoginRequestDto;
-import com.sparta.myblogbackend.dto.SignupRequestDto;
-import com.sparta.myblogbackend.entity.User;
-import com.sparta.myblogbackend.entity.UserRoleEnum;
-import com.sparta.myblogbackend.repository.UserRepository;
+import com.sparta.dtogram.user.dto.SignupRequestDto;
+import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.entity.UserRoleEnum;
+import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

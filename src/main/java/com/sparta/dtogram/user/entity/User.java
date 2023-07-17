@@ -31,11 +31,11 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<BlogLike> blogLikeList = new ArrayList<>();
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<CommentLike> commentLikeList = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<PostLike> PostLikeList = new ArrayList<>();
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;
@@ -44,10 +44,10 @@ public class User {
         this.role = role;
     }
 
-    public void mappingBlogLike(BlogLike blogLike) { // 유저가 해당 좋아요를 눌렀는지 확인
-        this.blogLikeList.add(blogLike);
-    }
-    public void mappingCommentLike(CommentLike commentLike) { // 유저가 해당 좋아요를 눌렀는지 확인
-        this.commentLikeList.add(commentLike);
-    }
+//    public void mappingPostLike(PostLike PostLike) { // 유저가 해당 좋아요를 눌렀는지 확인
+//        this.PostLikeList.add(PostLike);
+//    }
+//    public void mappingReplyLike(ReplyLike ReplyLike) { // 유저가 해당 좋아요를 눌렀는지 확인
+//        this.ReplyLikeList.add(ReplyLike);
+//    }
 }

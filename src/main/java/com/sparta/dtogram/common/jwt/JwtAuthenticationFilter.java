@@ -1,9 +1,9 @@
 package com.sparta.dtogram.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.user.dto.LoginRequestDto;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
-import com.sparta.myblogbackend.security.UserDetailsImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

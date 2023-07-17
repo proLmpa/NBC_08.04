@@ -1,10 +1,10 @@
 package com.sparta.dtogram.user.controller;
 
+import com.sparta.dtogram.common.security.UserDetailsImpl;
+import com.sparta.dtogram.user.dto.SignupRequestDto;
+import com.sparta.dtogram.user.dto.UserInfoDto;
+import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.service.UserService;
-import com.sparta.myblogbackend.dto.SignupRequestDto;
-import com.sparta.myblogbackend.dto.UserInfoDto;
-import com.sparta.myblogbackend.entity.UserRoleEnum;
-import com.sparta.myblogbackend.security.UserDetailsImpl;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

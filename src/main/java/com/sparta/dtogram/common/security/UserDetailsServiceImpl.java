@@ -1,7 +1,7 @@
 package com.sparta.dtogram.common.security;
 
-import com.sparta.myblogbackend.entity.User;
-import com.sparta.myblogbackend.repository.UserRepository;
+import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
