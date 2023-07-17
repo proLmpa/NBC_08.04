@@ -21,7 +21,7 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-    private final ReplyLikeRepository replyLikeRepository;
+//    private final ReplyLikeRepository replyLikeRepository;
 
 
     public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long post_id) {
@@ -65,35 +65,35 @@ public class ReplyService {
                 new IllegalArgumentException("존재하지 않는 유저입니다.")
         );
     }
-
-    public void like(Long replyId, Long userId) {
-        Reply reply = findReply(replyId);
-        User user = findUser(userId);
-        Optional<ReplyLike> isLike = replyLikeRepository.findByUserAndReply(user, reply);
-
-        isLike.ifPresentOrElse(
-                like -> {
-                    replyLikeRepository.delete(like);
-                    reply.subLikeCount(like);
-                    reply.updateLikeCount();
-                },
-                () -> {
-                    ReplyLike replyLike = new ReplyLike(user, reply);
-
-                    replyLike.mappingReply(reply);
-                    replyLike.mappingUser(user);
-                    reply.updateLikeCount();
-
-                    replyLikeRepository.save(replyLike);
-                }
-        );
-    }
-
-    public boolean isLiked(Long replyId, Long userId) {
-        Reply reply = findReply(replyId);
-        User user = userRepository.findById(userId).orElse(new User());
-        Optional<ReplyLike> isLike = replyLikeRepository.findByUserAndReply(user, reply);
-        boolean isLiked = ReplyLike.isLikedReply(isLike);
-        return isLiked;
-    }
+//
+//    public void like(Long replyId, Long userId) {
+//        Reply reply = findReply(replyId);
+//        User user = findUser(userId);
+//        Optional<ReplyLike> isLike = replyLikeRepository.findByUserAndReply(user, reply);
+//
+//        isLike.ifPresentOrElse(
+//                like -> {
+//                    replyLikeRepository.delete(like);
+//                    reply.subLikeCount(like);
+//                    reply.updateLikeCount();
+//                },
+//                () -> {
+//                    ReplyLike replyLike = new ReplyLike(user, reply);
+//
+//                    replyLike.mappingReply(reply);
+//                    replyLike.mappingUser(user);
+//                    reply.updateLikeCount();
+//
+//                    replyLikeRepository.save(replyLike);
+//                }
+//        );
+//    }
+//
+//    public boolean isLiked(Long replyId, Long userId) {
+//        Reply reply = findReply(replyId);
+//        User user = userRepository.findById(userId).orElse(new User());
+//        Optional<ReplyLike> isLike = replyLikeRepository.findByUserAndReply(user, reply);
+//        boolean isLiked = ReplyLike.isLikedReply(isLike);
+//        return isLiked;
+//    }
 }
