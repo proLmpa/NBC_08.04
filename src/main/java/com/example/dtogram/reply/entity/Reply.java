@@ -28,13 +28,12 @@ public class Reply extends Timestamped{
     @Column
     private Long likeCount;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
-    private List<ReplyLike> replyLikeList = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
+//    private List<ReplyLike> replyLikeList = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
@@ -52,15 +51,15 @@ public class Reply extends Timestamped{
         this.content = requestDto.getContent();
     }
 
-    public void mappingReplyLike(ReplyLike replyLike) { // 좋아요 수를 세기 위해 추가
-        this.replyLikeList.add(replyLike);
-    }
+//    public void mappingReplyLike(ReplyLike replyLike) { // 좋아요 수를 세기 위해 추가
+//        this.replyLikeList.add(replyLike);
+//    }
 
-    public void updateLikeCount() { // 피드 내 좋아요 수 확인은 따로 변수를 생성하지 않고 목록의 크기로 확인
-        this.likeCount = (long)this.replyLikeList.size();
-    }
+//    public void updateLikeCount() { // 피드 내 좋아요 수 확인은 따로 변수를 생성하지 않고 목록의 크기로 확인
+//        this.likeCount = (long)this.replyLikeList.size();
+//    }
 
-    public void subLikeCount(ReplyLike replyLike) { // 좋아요 목록에서 삭제
-        this.replyLikeList.remove(replyLike);
-    }
+//    public void subLikeCount(ReplyLike replyLike) { // 좋아요 목록에서 삭제
+//        this.replyLikeList.remove(replyLike);
+//    }
 }
