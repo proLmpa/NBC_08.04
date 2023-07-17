@@ -38,14 +38,14 @@ public class Post extends Timestamped {
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Reply> replies = new ArrayList<>();
+    private List<Reply> replyList = new ArrayList<>();
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "blog", cascade = CascadeType.REMOVE)
 //    private List<PostLike> blogLikeList = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
-        this.content = requestDto.getContents();
+        this.content = requestDto.getContent();
         this.nickname = user.getUsername();
         this.user = user;
         //this.likeCount = 0L;
@@ -53,7 +53,7 @@ public class Post extends Timestamped {
 
     public void update(PostRequestDto requestDto) {
         this.title =requestDto.getTitle();
-        this.content = requestDto.getContents();
+        this.content = requestDto.getContent();
     }
 
 //    public void mappingPostLike(PostLike postLike) { // 좋아요 수를 세기 위해 추가

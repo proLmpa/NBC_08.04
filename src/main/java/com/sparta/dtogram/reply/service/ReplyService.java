@@ -12,20 +12,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 
 @Service
 @RequiredArgsConstructor
 public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
-//    private final ReplyLikeRepository replyLikeRepository;
     private final UserRepository userRepository;
+//    private final ReplyLikeRepository replyLikeRepository;
 
 
-    public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long Post_id) {
-            Post Post = postRepository.findById(Post_id).orElseThrow(() ->
+    public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long postId) {
+            Post Post = postRepository.findById(postId).orElseThrow(() ->
                     new IllegalArgumentException("해당 글을 찾을 수 없습니다.")
             );
             Reply reply = replyRepository.save(new Reply(requestDto, user, Post));
@@ -35,24 +33,25 @@ public class ReplyService {
 
     @Transactional
     public ReplyResponseDto updateReply(Long id, ReplyRequestDto requestDto, User user) {
-        Reply Reply = findReply(id);
-        if (Reply.getUsername().equals(user.getUsername())) {
-            Reply.update(requestDto);
+        Reply reply = findReply(id);
+        if (reply.getUser().getUsername().equals(user.getUsername())) {
+            reply.update(requestDto);
         } else {
             throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
         }
 
-        return new ReplyResponseDto(Reply);
+        return new ReplyResponseDto(reply);
     }
 
     public void deleteReply(Long id, User user) {
         Reply Reply = findReply(id);
-        if (Reply.getUsername().equals(user.getUsername())) {
+        if (Reply.getUser().getUsername().equals(user.getUsername())) {
             replyRepository.delete(Reply);
         } else {
             throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
         }
     }
+
 
     private Reply findReply(Long id) {
         return replyRepository.findById(id).orElseThrow(() -> // null 체크
