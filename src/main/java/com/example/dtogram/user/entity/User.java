@@ -1,4 +1,4 @@
-package com.example.dtogram.User.entity;
+package com.example.dtogram.user.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,7 +29,7 @@ public class User {
 
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
-    private UserRoleEnum role;
+    private com.example.dtogram.User.entity.UserRoleEnum role;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<BlogLike> blogLikeList = new ArrayList<>();
@@ -37,7 +37,7 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<CommentLike> commentLikeList = new ArrayList<>();
 
-    public User(String username, String password, String email, UserRoleEnum role) {
+    public User(String username, String password, String email, com.example.dtogram.User.entity.UserRoleEnum role) {
         this.username = username;
         this.password = password;
         this.email = email;

@@ -1,22 +1,20 @@
-package com.example.dtogram.Reply.entity;
+package com.example.dtogram.reply.entity;
 
-import com.example.dtogram.Post.entity.Blog;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.sparta.myblogbackend.dto.CommentRequestDto;
+
+import com.example.dtogram.post.entity.Timestamped;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "comment")
-public class Comment extends Timestamped{
+@Table(name = "reply")
+public class Reply extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,7 +38,7 @@ public class Comment extends Timestamped{
     @JoinColumn(name = "blog_id", nullable = false)
     private Blog blog;
 
-    public Comment(CommentRequestDto requestDto, User user, Blog blog) {
+    public Reply(com.example.dtogram.Reply.dto.CommentRequestDto requestDto, User user, Blog blog) {
         this.comments = requestDto.getComments();
         this.username = user.getUsername();
         this.user = user;
@@ -48,7 +46,7 @@ public class Comment extends Timestamped{
         this.likeCount = 0L;
     }
 
-    public void update(CommentRequestDto requestDto) {
+    public void update(com.example.dtogram.Reply.dto.CommentRequestDto requestDto) {
         this.comments = requestDto.getComments();
     }
 
