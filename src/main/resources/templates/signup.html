@@ -67,7 +67,7 @@
       data: JSON.stringify({username: username, password: password, email: email }),
     })
         .done(function() {
-            window.location.href = host + '/api/user/login'
+            window.location.href = host + '/api/user/login-page'
         })
         .fail(function() {
             alert('Signup Fail')
