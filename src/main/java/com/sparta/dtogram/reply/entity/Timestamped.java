@@ -1,4 +1,4 @@
-package com.example.dtogram.reply.entity;
+package com.sparta.dtogram.reply.entity;
 
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
