@@ -1,5 +1,6 @@
 package com.sparta.dtogram.user.repository;
 
+
 import com.sparta.dtogram.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

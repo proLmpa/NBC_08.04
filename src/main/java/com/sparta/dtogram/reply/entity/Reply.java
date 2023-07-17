@@ -9,48 +9,44 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "Reply")
+@Table(name = "reply")
 public class Reply extends Timestamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String Replys;
-    @JoinColumn(nullable = false)
-    private String username;
+    private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
     @Column
     private Long likeCount;
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Reply", cascade = CascadeType.REMOVE)
 //    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "Post_id", nullable = false)
-    private com.sparta.dtogram.post.entity.Post Post;
-
-    public Reply(ReplyRequestDto requestDto, User user, Post Post) {
-        this.Replys = requestDto.getReply();
-        this.username = user.getUsername();
+    public Reply(ReplyRequestDto requestDto, User user, Post post) {
+        this.content = requestDto.getContent();
         this.user = user;
-        this.Post = Post;
+        this.post = post;
         this.likeCount = 0L;
     }
 
     public void update(ReplyRequestDto requestDto) {
-        this.Replys = requestDto.getReply();
+        this.content = requestDto.getContent();
     }
 
 //    public void mappingReplyLike(ReplyLike ReplyLike) { // 좋아요 수를 세기 위해 추가
