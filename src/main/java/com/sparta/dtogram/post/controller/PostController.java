@@ -1,5 +1,6 @@
 package com.sparta.dtogram.post.controller;
 
+
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.service.PostService;
@@ -20,31 +21,33 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping("/blog")
+    @PostMapping("/")
+
     public PostResponseDto createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.createPost(requestDto, userDetails.getUser());
     }
 
-    @GetMapping("/blogs")
+    @GetMapping("/")
     public List<PostResponseDto> getBlogs() {
         return postService.getPosts();
     }
 
-    @GetMapping("/posts/find")
-    public List<PostResponseDto> getpostsByKeyword(@RequestParam String keyword) {
-        return postService.getPostsByKeyword(keyword);
-    }
+//     @GetMapping("/posts/find")
+//     public List<PostResponseDto> getpostsByKeyword(@RequestParam String keyword) {
+//         return postService.getPostsByKeyword(keyword);
+//     }
 
-    @PutMapping("/post")
+    @PutMapping("/")
     public PostResponseDto updatepost(@RequestParam Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return postService.updatePost(id, requestDto, userDetails.getUser());
     }
 
-    @DeleteMapping("/post")
+    @DeleteMapping("/")
     public ResponseEntity<String> deletepost(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.deletePost(id, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body("글 삭제 성공");
     }
+
 
 //    @PostMapping("/post/like")
 //    public String like(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -52,6 +55,7 @@ public class PostController {
 //    }
 //
 //    @GetMapping("/post/like")
+
 //    public boolean isLiked(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
 //        return postService.isLiked(id, userDetails.getUser().getId());
 //    }

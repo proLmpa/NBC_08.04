@@ -1,10 +1,12 @@
 package com.sparta.dtogram.common.security;
 
+
+import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.sparta.dtogram.user.entity.User;
+
 import java.util.ArrayList;
 import java.util.Collection;
 

@@ -4,6 +4,7 @@ import com.sparta.dtogram.post.entity.Post;
 import lombok.Getter;
 import java.time.LocalDateTime;
 
+
 @Getter
 public class PostResponseDto {
     private Long id;

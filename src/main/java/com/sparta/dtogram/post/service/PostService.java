@@ -23,6 +23,7 @@ public class PostService {
         Post post= postRepository.save(new Post(requestDto, user));
 
         return new PostResponseDto(post);
+
     }
 
     @Transactional(readOnly = true)
