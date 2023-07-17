@@ -31,11 +31,15 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+
+  
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
 //    private List<PostLike> PostLikeList = new ArrayList<>();
 //
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
 //    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
+
+  
 
     public User(String username, String password, String email, UserRoleEnum role) {
         this.username = username;

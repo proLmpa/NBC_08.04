@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "Reply")
+@Table(name = "reply")
 public class Reply extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,6 +28,7 @@ public class Reply extends Timestamped {
     private String username;
     @Column
     private Long likeCount;
+
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Reply", cascade = CascadeType.REMOVE)
 //    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
