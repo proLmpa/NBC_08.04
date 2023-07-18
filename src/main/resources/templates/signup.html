@@ -23,7 +23,10 @@
     <input type="text" name="username" id="username" placeholder="Username" class="login-input-box">
 
     <div class="login-id-label">Password</div>
-    <input type="password" name="password" id="password" class="login-input-box">
+    <input type="password" name="password" id="password" placeholder="Password" class="login-input-box">
+
+      <div class="login-id-label">Nickname</div>
+      <input type="nickname" name="nickname" id="nickname" placeholder="Nickname" class="login-input-box">
 
     <div class="login-id-label">E-mail</div>
     <input type="text" name="email" id="email" placeholder="E-mail" class="login-input-box">
@@ -57,6 +60,7 @@
   function onSignup() {
     let username = $('#username').val()
     let password = $('#password').val()
+      let nickname = $('#nickname').val()
     let email = $('#email').val()
     let admin = $('#admin-check').is(':checked')
     let adminToken = admin === true ? $('#admin-token').val() : null
@@ -64,7 +68,7 @@
       type: 'POST',
       url: '/api/user/signup',
       contentType: "application/json",
-      data: JSON.stringify({username: username, password: password, email: email }),
+      data: JSON.stringify({username: username, password: password, nickname: nickname, email: email }),
     })
         .done(function() {
             window.location.href = host + '/api/user/login-page'
