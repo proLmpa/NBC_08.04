@@ -62,6 +62,14 @@ public class User {
     }
 
     public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId =kakaoId;
+    }
+
+    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
         this.username = "kakao"+username;
         this.nickname = username;
         this.password = password;
