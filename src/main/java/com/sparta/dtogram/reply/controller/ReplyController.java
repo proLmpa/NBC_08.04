@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.RejectedExecutionException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -22,37 +24,44 @@ public class ReplyController {
 
     private final ReplyService replyService;
 
-    @PostMapping("/reply")
-    public ReplyResponseDto createReply(@RequestParam Long postId, @RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return replyService.createReply(requestDto, userDetails.getUser(), postId);
+    @PostMapping("/reply/{id}")
+    public ReplyResponseDto createReply(@PathVariable Long id, @RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("댓글 달기 시도");
+
+        try {
+            return replyService.createReply(requestDto, userDetails.getUser(), id);
+        } catch (RejectedExecutionException e) {
+            log.error("댓글 달기 실패", e);
+            throw new RuntimeException("댓글 달기 실패", e);
+        }
     }
 
-    @PutMapping("/reply")
+    @PutMapping("/reply/{id}")
     @ResponseBody
-    public ReplyResponseDto updateReply(@RequestParam Long id, @RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ReplyResponseDto updateReply(@PathVariable Long id, @RequestBody ReplyRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return replyService.updateReply(id, requestDto, userDetails.getUser());
     }
 
-    @DeleteMapping("/reply")
-    public ResponseEntity<String> deleteReply(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @DeleteMapping("/reply/{id}")
+    public ResponseEntity<String> deleteReply(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         replyService.deleteReply(id, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제 성공");
     }
 
-    @PostMapping("/reply/like")
-    public ResponseEntity<MsgResponseDto> likeReply(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @PostMapping("/reply/{id}/like")
+    public ResponseEntity<MsgResponseDto> createReplyLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            replyService.likeReply(id, userDetails.getUser());
+            replyService.createReplyLike(id, userDetails.getUser());
         } catch (DuplicateRequestException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("댓글 좋아요 성공", HttpStatus.ACCEPTED.value()));    }
 
-    @GetMapping("/reply/like")
-    public ResponseEntity<MsgResponseDto> dislikeReply(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    @GetMapping("/reply/{id}/like")
+    public ResponseEntity<MsgResponseDto> deleteReplyLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
-            replyService.dislikeReply(id, userDetails.getUser());
+            replyService.deleteReplyLike(id, userDetails.getUser());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }

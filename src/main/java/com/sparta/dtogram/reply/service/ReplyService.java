@@ -1,5 +1,6 @@
 package com.sparta.dtogram.reply.service;
 
+import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
@@ -10,13 +11,16 @@ import com.sparta.dtogram.reply.repository.ReplyLikeRepository;
 import com.sparta.dtogram.reply.repository.ReplyRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReplyService {
@@ -28,7 +32,7 @@ public class ReplyService {
 
     public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long postId) {
             Post Post = postRepository.findById(postId).orElseThrow(() ->
-                    new IllegalArgumentException("해당 글을 찾을 수 없습니다.")
+                    new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 댓글 달기 시도 감지")
             );
             Reply reply = replyRepository.save(new Reply(requestDto, user, Post));
 
@@ -41,7 +45,7 @@ public class ReplyService {
         if (reply.getUser().getUsername().equals(user.getUsername())) {
             reply.update(requestDto);
         } else {
-            throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
+            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
         }
 
         return new ReplyResponseDto(reply);
@@ -52,41 +56,42 @@ public class ReplyService {
         if (Reply.getUser().getUsername().equals(user.getUsername())) {
             replyRepository.delete(Reply);
         } else {
-            throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
+            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");
         }
     }
 
     @Transactional
-    public void likeReply(Long id, User user) {
+    public void createReplyLike(Long id, User user) {
+        log.info("댓글 좋아요 누르기 시도");
         Reply reply = findReply(id);
-        Optional<ReplyLike> replyLike = replyLikeRepository.findByUserAndReply(user, reply);
-        if (replyLike.isPresent()) {
-            replyLikeRepository.delete(replyLike.get());
+
+        if(replyLikeRepository.findByUserAndReply(user, reply).isPresent()) {
+            log.info("댓글 좋아요 누르기 실패");
+            throw new DuplicateRequestException("Exception ! 동일한 사용자의 좋아요 중복선택 시도 감지");
         } else {
-            throw new IllegalArgumentException("댓글 좋아요 중복선택");
+            log.info("댓글 좋아요 누르기 성공");
+            ReplyLike replyLike = new ReplyLike(user, reply);
+            reply.setCountReplyLike(new ReplyResponseDto(reply).getCountReplyLike() + 1);
+            replyLikeRepository.save(replyLike);
         }
     }
 
     @Transactional
-    public void dislikeReply(Long id, User user) {
+    public void deleteReplyLike(Long id, User user) {
         Reply reply = findReply(id);
         Optional<ReplyLike> replyLike = replyLikeRepository.findByUserAndReply(user, reply);
+
         if (replyLike.isPresent()) {
+            reply.setCountReplyLike(new ReplyResponseDto(reply).getCountReplyLike() - 1);
             replyLikeRepository.delete(replyLike.get());
         } else {
-            throw new IllegalArgumentException("존재하지 않는 좋아요");
+            throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
         }
     }
 
     private Reply findReply(Long id) {
         return replyRepository.findById(id).orElseThrow(() -> // null 체크
-                new IllegalArgumentException("존재하지 않는 게시글")
+                new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
         );
     }
-
-//    private User findUser(Long id) {
-//        return userRepository.findById(id).orElseThrow(() ->
-//                new IllegalArgumentException("존재하지 않는 유저")
-//        );
-//    }
 }

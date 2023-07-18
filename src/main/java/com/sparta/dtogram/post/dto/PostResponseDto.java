@@ -19,10 +19,8 @@ public class PostResponseDto {
     private String nickname;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-
-    private List<ReplyResponseDto> ReplyList;
-
-    private int likeCounts;
+    private List<ReplyResponseDto> Replies;
+    private Integer countPostLike;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -31,11 +29,11 @@ public class PostResponseDto {
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
-        this.ReplyList = new ArrayList<>();
-        for (Reply reply : post.getReplyList()) {
+        this.Replies = new ArrayList<>();
+        for (Reply reply : post.getReplies()) {
             ReplyResponseDto replyResponseDto = new ReplyResponseDto(reply);
-            this.ReplyList.add(replyResponseDto);
+            this.Replies.add(replyResponseDto);
         }
-        //this.likeCounts = post.getPostLikeList().size();
+        this.countPostLike = post.getPostLikes().size();
     }
 }

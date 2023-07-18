@@ -31,9 +31,10 @@ public class PostController {
         log.info("게시글 생성 시도");
         try {
             PostResponseDto result = postService.createPost(requestDto, userDetails.getUser());
+            log.info("게시글 생성 성공");
             return ResponseEntity.status(HttpStatus.CREATED).body(result);
         } catch (Exception e) {
-            log.error("게시글 생성에 실패했습니다.", e);
+            log.error("게시글 생성 실패", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -65,30 +66,31 @@ public class PostController {
     // 게시글 삭제
     @DeleteMapping("/post/{id}")
     public ResponseEntity<MsgResponseDto> deletePost(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("게시글 삭제 시도");
         try {
             postService.deletePost(id, userDetails.getUser());
             return ResponseEntity.ok().body(new MsgResponseDto("게시글 삭제 성공", HttpStatus.OK.value()));
         } catch (RejectedExecutionException e) {
-            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 삭제 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 삭제 가능", HttpStatus.BAD_REQUEST.value()));
         }
     }
 
-    // 게시글별 좋아요 누르기 기능
+    // 게시글별 유저별 좋아요 누르기
     @PostMapping("/post/{id}/like")
     public ResponseEntity<MsgResponseDto> createPostLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         try {
-            postService.likePost(id, userDetails.getUser());
+            postService.createPostLike(id, userDetails.getUser());
         } catch(DuplicateRequestException e) {
-            ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("게시글 좋아요 성공", HttpStatus.ACCEPTED.value()));
     }
 
-    // 게시글별 좋아요 취소 기능
+    // 게시글별 유저별 좋아요 취소
     @DeleteMapping("/post/{id}/like")
     public ResponseEntity<MsgResponseDto> deletePostLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         try {
-            postService.dislikePost(id, userDetails.getUser());
+            postService.deletePostLike(id, userDetails.getUser());
         } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
