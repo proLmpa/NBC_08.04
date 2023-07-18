@@ -9,26 +9,35 @@ import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.user.entity.User;
-import com.sparta.dtogram.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
     private final PostLikeRepository postLikeRepository;
-    private final UserRepository userRepository;
 
     // 게시글 생성
     public PostResponseDto createPost(PostRequestDto requestDto, User user) {
-        Post post= postRepository.save(new Post(requestDto, user));
-        return new PostResponseDto(post);
+        log.info("게시글 생성 시도");
+
+        try {
+            log.info("게시글 생성 성공");
+            Post post = postRepository.save(new Post(requestDto, user));
+            return new PostResponseDto(post);
+        } catch (RejectedExecutionException e) {
+            log.error("게시글 생성 실패", e);
+            throw new RuntimeException("Fail ! 게시글 생성 실패", e);
+        }
     }
 
     // 게시글 단건 조회
@@ -62,9 +71,9 @@ public class PostService {
     public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
         Post post = findPost(id);
         if (post.getNickname().equals(user.getNickname())) {
-            post.update(requestDto);
+            post.updatePost(requestDto);
         } else {
-            throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
+            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
         }
         return new PostResponseDto(post);
     }
@@ -75,38 +84,42 @@ public class PostService {
         if (post.getNickname().equals(user.getNickname())) {
             postRepository.delete(post);
         } else {
-            throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
+            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");
         }
     }
 
-    private Post findPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 게시글")
-        );
-    }
-
-
     @Transactional
-    public void likePost(Long id, User user) {
+    public void createPostLike(Long id, User user) {
+        log.info("게시글 좋아요 누르기 시도");
         Post post = findPost(id);
 
-        if(postLikeRepository.existsByUserAndPost(user, post)) {
-            throw new DuplicateRequestException("게시글 좋아요 중복선택");
+        if(postLikeRepository.findByUserAndPost(user, post).isPresent()) {
+            log.info("게시글 좋아요 누르기 실패");
+            throw new DuplicateRequestException("Exception ! 동일한 사용자의 좋아요 중복선택 시도 감지");
         } else {
+            log.info("게시글 좋아요 누르기 성공");
             PostLike postLike = new PostLike(user, post);
+            post.setCountPostLike(new PostResponseDto(post).getCountPostLike() + 1);
             postLikeRepository.save(postLike);
         }
     }
 
     @Transactional
-    public void dislikePost(Long id, User user) {
+    public void deletePostLike(Long id, User user) {
         Post post = findPost(id);
         Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
 
         if(postLike.isPresent()) {
+            post.setCountPostLike(new PostResponseDto(post).getCountPostLike() - 1);
             postLikeRepository.delete(postLike.get());
         } else {
-            throw new IllegalArgumentException("게시글 좋아요 취소 실패 : 취소할 좋아요가 없습니다.");
+            throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
         }
+    }
+
+    private Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
+        );
     }
 }

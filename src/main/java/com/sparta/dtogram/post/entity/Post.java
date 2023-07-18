@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.reply.entity.Reply;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,41 +33,39 @@ public class Post extends Timestamped {
     @Column
     private String nickname;
 
-    //@Column
-    //private Long likeCount;
+    @Column
+    private String username;
+
+    @ColumnDefault("0")
+    @Column(name = "likes")
+    private Integer countPostLike = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Reply> replyList = new ArrayList<>();
+    private List<Reply> replies = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
-    private List<PostLike> postLikeList = new ArrayList<>();
+    private List<PostLike> postLikes = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.nickname = user.getNickname();
+        this.username = user.getUsername();
         this.user = user;
-        //this.likeCount = 0L;
+        this.countPostLike = this.postLikes.size();
     }
 
-    public void update(PostRequestDto requestDto) {
+    public void updatePost(UpdatePostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
 
-//    public void mappingPostLike(PostLike postLike) { // 좋아요 수를 세기 위해 추가
-//        this.blogLikeList.add(postLike);
-//    }
-
-//    public void updateLikeCount() { // 피드 내 좋아요 수 확인은 따로 변수를 생성하지 않고 목록의 크기로 확인
-//        this.likeCount = (long)this.postLikeList.size();
-//    }
-//
-//    public void subLikeCount(PostLike postLike) { // 좋아요 목록에서 삭제
-//        this.postLikeList.remove(postLike);
+//    public void updatePostLike(PostLike postLike) {
+//        this.postLikes.add(postLike);
+//        this.postLikes.remove(postLike);
 //    }
 }

@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 public class ReplyResponseDto {
     private Long id;
     private Long postId;
+    private String nickname;
     private String username;
     private String content;
     private LocalDateTime createdAt;
@@ -17,11 +18,12 @@ public class ReplyResponseDto {
 
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();
-        this.postId = reply.getPost().getId(); //todo 댓글dto에 post_id가 필요한가.
-        this.username = reply.getUser().getUsername(); //todo 이부분 nickname으로 바꿀건지 체크
+        this.postId = reply.getPost().getId();
+        this.nickname = reply.getUser().getNickname();
+        this.username = reply.getUser().getUsername();
         this.content = reply.getContent();
         this.createdAt = reply.getCreatedAt();
         this.modifiedAt = reply.getModifiedAt();
-        this.countReplyLike = reply.getReplyLikeList().size();
+        this.countReplyLike = reply.getReplyLikes().size();
     }
 }
