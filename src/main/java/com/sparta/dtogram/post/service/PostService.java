@@ -4,6 +4,7 @@ import com.sparta.dtogram.post.dto.PostListResponseDto;
 //import com.sparta.dtogram.like.repository.PostLikeRepository;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
+import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.user.entity.User;
@@ -54,7 +55,7 @@ public class PostService {
 //    }
 
     @Transactional
-    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
+    public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
         Post post = findPost(id);
         if (post.getNickname().equals(user.getNickname())) {
             post.update(requestDto);

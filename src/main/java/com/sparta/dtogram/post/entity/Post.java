@@ -2,6 +2,7 @@ package com.sparta.dtogram.post.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
 import com.sparta.dtogram.post.dto.PostRequestDto;
+import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
