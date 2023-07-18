@@ -1,11 +1,12 @@
 package com.sparta.dtogram.post.service;
 
-import com.sparta.dtogram.post.dto.PostListResponseDto;
-//import com.sparta.dtogram.like.repository.PostLikeRepository;
+import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
+import com.sparta.dtogram.post.dto.PostsResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
+import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-//    private final PostLikeRepository postLikeRepository;
+    private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
 
     // 게시글 생성
@@ -38,20 +39,21 @@ public class PostService {
 
     // 게시글 다건 조회
     @Transactional(readOnly = true)
-    public PostListResponseDto getPosts() {
-        List<PostResponseDto> postList = postRepository.findAll().stream()
+    public PostsResponseDto getPosts() {
+        List<PostResponseDto> posts = postRepository.findAllByOrderByModifiedAtDesc().stream()
                 .map(PostResponseDto::new)
                 .collect(Collectors.toList());
 
-        return new PostListResponseDto(postList);
+        return new PostsResponseDto(posts);
     }
 
+    // 게시글 다건 조회 (키워드별)
 //    @Transactional(readOnly = true)
 //    public List<PostResponseDto> getPostsByKeyword(String keyword) {
 //        if (keyword == null) {
 //            throw new RuntimeException("키워드를 입력해주세요");
 //        }
-//        return PostRepository.findAllByContentsContainingOrderByModifiedAtDesc(keyword).stream().map(PostResponseDto::new).toList();
+//        return PostRepository.findAllByContentContainingOrderByModifiedAtDesc(keyword).stream().map(PostResponseDto::new).toList();
 //    }
 
     @Transactional
@@ -65,7 +67,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-
+    @Transactional
     public void deletePost(Long id, User user) {
         Post post = findPost(id);
         if (post.getUsername().equals(user.getUsername())) {
@@ -76,53 +78,33 @@ public class PostService {
     }
 
     private Post findPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() -> // null 체크
-                new IllegalArgumentException("선택한 글는 존재하지 않습니다.")
+        return postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("존재하지 않는 게시글")
         );
     }
 
-//    private User findUser(Long id) {
-//        return userRepository.findById(id).orElseThrow(() ->
-//                new IllegalArgumentException("존재하지 않는 유저입니다.")
-//        );
-//    }
 
+    @Transactional
+    public void likePost(Long id, User user) {
+        Post post = findPost(id);
 
-//    @Transactional
-//    public String like(Long postId, Long userId) {
-//        final String[] msg = {""};
-//
-//        Post post = findPost(postId);
-//        User user = findUser(userId);
-//
-//        Optional<PostLike> isLike = postLikeRepository.findByUserAndPost(user, post);
-//
-//        isLike.ifPresentOrElse(
-//                like -> {
-//                    postLikeRepository.delete(like);
-//                    post.subLikeCount(like);
-//                    post.updateLikeCount();
-//                    msg[0] = "좋아요 취소";
-//                },
-//                () -> {
-//                    PostLike postLike = new PostLike(user, post);
-//
-//                    postLike.mappingPost(post);
-//                    postLike.mappingUser(user);
-//                    post.updateLikeCount();
-//
-//                    postLikeRepository.save(postLike);
-//                    msg[0] = "좋아요";
-//                }
-//        );
-//        return msg[0];
-//    }
-//
-//    public boolean isLiked(Long postId, Long userId) {
-//        Post post = findPost(postId);
-//        User user = userRepository.findById(userId).orElse(new User());
-//        Optional<PostLike> isLike = postLikeRepository.findByUserAndPost(user, post);
-//        boolean isLiked = PostLike.isLikedPost(isLike);
-//        return isLiked;
-//    }
+        if(postLikeRepository.existsByUserAndPost(user, post)) {
+            throw new DuplicateRequestException("게시글 좋아요 중복선택");
+        } else {
+            PostLike postLike = new PostLike(user, post);
+            postLikeRepository.save(postLike);
+        }
+    }
+
+    @Transactional
+    public void disLikePost(Long id, User user) {
+        Post post = findPost(id);
+        Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
+
+        if(postLike.isPresent()) {
+            postLikeRepository.delete(postLike.get());
+        } else {
+            throw new IllegalArgumentException("게시글 좋아요 취소 실패 : 취소할 좋아요가 없습니다.");
+        }
+    }
 }
