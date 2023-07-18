@@ -26,10 +26,12 @@ public class Post extends Timestamped {
 
     @Column(nullable = false, length = 500)
     private String content;
+  
+    @Column(nullable = false)
+    private String username;
 
     @Column(nullable = false)
     private String nickname;
-
     //@Column
     //private Long likeCount;
 
@@ -46,7 +48,7 @@ public class Post extends Timestamped {
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.nickname = user.getUsername();
+        this.username = user.getUsername();
         this.user = user;
         //this.likeCount = 0L;
     }
