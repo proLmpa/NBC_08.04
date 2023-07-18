@@ -5,10 +5,10 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class PostListResponseDto {
+public class PostsResponseDto {
     private List<PostResponseDto> postsList;
 
-    public PostListResponseDto(List<PostResponseDto> postList) {
+    public PostsResponseDto(List<PostResponseDto> postList) {
         this.postsList = postList;
     }
 }

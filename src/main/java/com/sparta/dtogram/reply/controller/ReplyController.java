@@ -1,9 +1,12 @@
 package com.sparta.dtogram.reply.controller;
 
+import com.sparta.dtogram.common.dto.ApiResponseDto;
+import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.service.ReplyService;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -36,13 +39,24 @@ public class ReplyController {
         return ResponseEntity.status(HttpStatus.OK).body("댓글 삭제 성공");
     }
 
-//    @PostMapping("/reply/like")
-//    public void like(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        replyService.like(id, userDetails.getUser().getId());
-//    }
+    @PostMapping("/reply/like")
+    public ResponseEntity<MsgResponseDto> likeReply(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            replyService.likeReply(id, userDetails.getUser());
+        } catch (DuplicateRequestException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
 
-//    @GetMapping("/reply/like")
-//    public boolean isLiked(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        return ReplyService.isLiked(id, userDetails.getUser().getId());
-//    }
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("댓글 좋아요 성공", HttpStatus.ACCEPTED.value()));    }
+
+    @GetMapping("/reply/like")
+    public ResponseEntity<MsgResponseDto> dislikeReply(@RequestParam Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        try {
+            replyService.dislikeReply(id, userDetails.getUser());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("댓글 좋아요 취소 성공", HttpStatus.ACCEPTED.value()));
+    }
 }

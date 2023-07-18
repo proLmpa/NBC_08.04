@@ -9,6 +9,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -34,8 +37,8 @@ public class Reply extends Timestamped {
     @Column
     private Long likeCount;
 
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Reply", cascade = CascadeType.REMOVE)
-//    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Reply", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
 
 
     public Reply(ReplyRequestDto requestDto, User user, Post post) {
