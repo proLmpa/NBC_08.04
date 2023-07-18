@@ -1,5 +1,7 @@
 package com.sparta.dtogram.common.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsServiceImpl;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -30,16 +32,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
-
+        // Header에서 jwt 토큰 받아오기
         String tokenValue = jwtUtil.getTokenFromRequest(req);
 
         if (StringUtils.hasText(tokenValue)) {
-            // JWT 토큰 substring
-            tokenValue = jwtUtil.substringToken(tokenValue);
-//            log.info(tokenValue);
 
             if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("Token Error");
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                res.setContentType("application/json");
+                String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("INVALID_TOKEN", 400));
+
+                res.getOutputStream().print(result);
                 return;
             }
 

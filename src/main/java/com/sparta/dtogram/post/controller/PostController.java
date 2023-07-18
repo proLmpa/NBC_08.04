@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
@@ -57,7 +56,7 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponseDto> updatePost(@RequestParam Long id, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser());
 
         return ResponseEntity.ok().body(result);
