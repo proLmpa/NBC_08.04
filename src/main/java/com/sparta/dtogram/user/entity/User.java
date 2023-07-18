@@ -40,23 +40,42 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
+
+    private Long kakaoId;
+
+
   
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<PostLike> PostLikes = new ArrayList<>();
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<PostLike> PostLikeList = new ArrayList<>();
+//
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+//    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<ReplyLike> ReplyLikes = new ArrayList<>();
+  
 
-    public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
-        this.username = requestDto.getUsername();
-        this.nickname = requestDto.getNickname();
+    public User(String username, String nickname, String password, String email, UserRoleEnum role) {
+        this.username = username;
+        this.nickname = nickname;
         this.password = password;
-        this.email = requestDto.getEmail();
+        this.email = email;
         this.role = role;
+    }
+
+    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId =kakaoId;
     }
 
     public void updateProfile(ProfileRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.introduction = requestDto.getIntroduction();
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
     }
 }

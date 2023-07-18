@@ -31,6 +31,9 @@
     <input type="password" name="password" id="password" class="login-input-box">
 
     <button id="login-id-submit" onclick="onLogin()">로그인</button>
+    <button id="login-kakao-btn" onclick="location.href='https://kauth.kakao.com/oauth/authorize?client_id=e32da5f39fa665c8c879b0898f6d2a50&redirect_uri=http://localhost:8080/api/user/kakao/callback&response_type=code'">
+      카카오로 로그인하기
+    </button>
   </div>
   <div id="login-failed" style="display:none" class="alert alert-danger" role="alert">로그인에 실패하였습니다.</div>
 </div>
