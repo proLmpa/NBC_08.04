@@ -1,7 +1,7 @@
 package com.sparta.dtogram.post.service;
 
 import com.sparta.dtogram.post.dto.PostListResponseDto;
-import com.sparta.dtogram.like.repository.PostLikeRepository;
+//import com.sparta.dtogram.like.repository.PostLikeRepository;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.entity.Post;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final PostLikeRepository postLikeRepository;
+//    private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
 
     // 게시글 생성
