@@ -7,5 +7,5 @@ import lombok.Setter;
 @Setter
 public class UpdatePostRequestDto {
     private String title;
-    private String contents;
+    private String content;
 }
