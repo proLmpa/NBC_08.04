@@ -1,5 +1,6 @@
 package com.sparta.dtogram.post.entity;
 
+import com.sparta.dtogram.common.entity.Timestamped;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -26,14 +27,9 @@ public class Post extends Timestamped {
 
     @Column(nullable = false, length = 500)
     private String content;
-  
-    @Column(nullable = false)
-    private String username;
 
     @Column(nullable = false)
     private String nickname;
-    //@Column
-    //private Long likeCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
@@ -48,13 +44,13 @@ public class Post extends Timestamped {
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.username = user.getUsername();
+        this.nickname = user.getNickname();
         this.user = user;
         //this.likeCount = 0L;
     }
 
     public void update(PostRequestDto requestDto) {
-        this.title =requestDto.getTitle();
+        this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
 
