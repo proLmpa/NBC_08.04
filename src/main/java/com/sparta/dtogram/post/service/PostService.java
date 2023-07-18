@@ -7,18 +7,25 @@ import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
+import com.sparta.dtogram.postTag.entity.PostTag;
+import com.sparta.dtogram.postTag.repository.PostTagRepository;
+import com.sparta.dtogram.tag.entity.Tag;
+import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
 //    private final PostLikeRepository postLikeRepository;
     private final UserRepository userRepository;
 
@@ -79,6 +86,32 @@ public class PostService {
         return postRepository.findById(id).orElseThrow(() -> // null 체크
                 new IllegalArgumentException("선택한 글는 존재하지 않습니다.")
         );
+    }
+
+    public void addTag(Long postId, Long tagId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 글은 존재하지 않습니다.")
+        );
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
+        );
+
+        if (!post.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("회원님의 글이 아닙니다.");
+        }
+
+        Optional<PostTag> overlapTag = postTagRepository.findByPostAndTag(post, tag);
+
+        if (overlapTag.isPresent()){
+            throw new IllegalArgumentException("중복된 태그입니다.");
+        }
+        postTagRepository.save(new PostTag(post, tag));
+    }
+
+    public PostListResponseDto getPostsByTag(Long tagId) {
+        List<PostResponseDto> postList = postTagRepository.findByTagId(tagId).stream().map(PostResponseDto::new).toList();
+
+        return new PostListResponseDto(postList);
     }
 
 //    private User findUser(Long id) {
