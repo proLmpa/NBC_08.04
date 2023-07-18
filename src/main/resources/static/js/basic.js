@@ -1,17 +1,11 @@
 const host = 'http://' + window.location.host;
 
 function login() {
-    $.ajax({
-        type: 'GET',
-        url: `/api/user/login`
-    })
+    window.location.href = host + '/api/user/login-page'
 }
 
 function signup() {
-    $.ajax({
-        type: 'GET',
-        url: `/api/user/signup`
-    })
+    window.location.href = host + '/api/user/signup'
 }
 
 function logout() {

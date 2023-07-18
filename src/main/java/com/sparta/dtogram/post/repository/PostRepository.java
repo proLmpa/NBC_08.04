@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByModifiedAtDesc();
-    List<Post> findAllByContentsContainingOrderByModifiedAtDesc(String keyword);
+    List<Post> findAllByContentContainingOrderByModifiedAtDesc(String keyword);
 }

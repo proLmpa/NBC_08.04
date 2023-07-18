@@ -32,6 +32,11 @@ public class UserService {
             throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
         }
 
+        Optional<User> checkNickname = userRepository.findByNickname(nickname);
+        if(checkNickname.isPresent()) {
+            throw new IllegalArgumentException("중복된 nickname입니다.");
+        }
+
         // email 중복확인
         String email = requestDto.getEmail();
         Optional<User> checkEmail = userRepository.findByEmail(email);
