@@ -57,7 +57,7 @@ public class PostService {
     @Transactional
     public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
         Post post = findPost(id);
-        if (post.getUsername().equals(user.getUsername())) {
+        if (post.getNickname().equals(user.getNickname())) {
             post.update(requestDto);
         } else {
             throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
@@ -68,7 +68,7 @@ public class PostService {
 
     public void deletePost(Long id, User user) {
         Post post = findPost(id);
-        if (post.getUsername().equals(user.getUsername())) {
+        if (post.getNickname().equals(user.getNickname())) {
             postRepository.delete(post);
         } else {
             throw new RuntimeException("작성자만 삭제/수정할 수 있습니다.");
@@ -77,7 +77,7 @@ public class PostService {
 
     private Post findPost(Long id) {
         return postRepository.findById(id).orElseThrow(() -> // null 체크
-                new IllegalArgumentException("선택한 글는 존재하지 않습니다.")
+                new IllegalArgumentException("선택한 글은 존재하지 않습니다.")
         );
     }
 
