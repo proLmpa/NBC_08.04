@@ -3,6 +3,7 @@ package com.sparta.dtogram.follow.service;
 import com.sparta.dtogram.follow.entity.Follow;
 import com.sparta.dtogram.follow.repository.FollowRepository;
 import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,37 +15,39 @@ import java.util.List;
 public class FollowService {
 
     private final FollowRepository followRepository;
+    private final UserRepository userRepository;
 
 
-    public String doFollow(User followingUser, User followerUser) {
+    public String doFollow(User followingUser, Long followerUserId) {
 
+        User followerUser = getUserById(followerUserId);
+        Boolean existFollow = followRepository.existsByFollowingUserAndFollowerUser(followingUser, followerUser);
 
-        //이미 팔로우가 되어있는지 검사.
-        Follow existFollow = followRepository.findByFollowerUser_IdAndFollowingUser_Id(followingUser.getId(), followerUser.getId())
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 정보가 없습니다."));
-
-        if (existFollow == null) { // 위에서 Optional로 받아서 Null을 거르는 건데 이게 맞나.?
-
+        if (!existFollow) {
             Follow newFollow = new Follow(followingUser, followerUser);
             followRepository.save(newFollow);
 
+            return "{ \"statusCode\":200,\n" +
+                    "\"statusMessage\":\"" + followerUser.getUsername() + "님을 팔로우하였습니다.}";
+        } else {
+            return "{ \"statusCode\":200,\n" +
+                    "\"statusMessage\":\"이미 " + followerUser.getUsername() + "님을 팔로우 중입니다.}";
         }
-
-        return "팔로우 완료.";
     }
 
 
-    public String unFollow(User followingUser, User followerUser) {
+    public String unFollow(User followingUser, Long followerUserId) {
 
-        //이미 팔로우가 되어있는지 검사.
-        Follow existFollow = followRepository.findByFollowerUser_IdAndFollowingUser_Id(followingUser.getId(), followerUser.getId())
+        User followerUser = getUserById(followerUserId);
+        Follow existFollow = followRepository.findByFollowingUserAndFollowerUser(followingUser, followerUser)
                 .orElseThrow(() -> new IllegalArgumentException("팔로우 정보가 없습니다."));
 
-        if (existFollow != null) { // 위에서 Optional로 받아서 Null을 거르는 건데 이게 맞나.?
+        if (existFollow != null) { // todo optional에서 걸렀기 때문에 null이 아니란 걸 믿고 if문을 제거할 수 있을까?
             followRepository.delete(existFollow);
         }
 
-        return "언팔로우 완료.";
+        return "{ \"statusCode\":200,\n" +
+                "\"statusMessage\":\"" + followerUser.getUsername() + "을 언팔로우하였습니다.}";
     }
 
 
@@ -66,6 +69,12 @@ public class FollowService {
             followingList.add(follow.getFollowerUser());
         }
         return followingList;
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new IllegalArgumentException("유저 정보가 없습니다.")
+        );
     }
 }
 

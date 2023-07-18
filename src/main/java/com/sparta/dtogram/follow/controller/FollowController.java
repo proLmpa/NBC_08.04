@@ -20,14 +20,14 @@ public class FollowController {
     private final FollowService followService;
 
 
-    @GetMapping("/follow")
-    public String follow(@RequestParam User followingUser, @AuthenticationPrincipal UserDetailsImpl followerUserDetails) {
-        return followService.doFollow(followingUser, followerUserDetails.getUser());
+    @PostMapping("/follow")
+    public String follow(@AuthenticationPrincipal UserDetailsImpl followingUserDetails, @RequestParam Long followerId) {
+        return followService.doFollow(followingUserDetails.getUser(),followerId);
     }
 
-    @GetMapping("/unfollow")
-    public String unFollow(@RequestParam User followingUser, @AuthenticationPrincipal UserDetailsImpl followerUserDetails) {
-        return followService.unFollow(followingUser, followerUserDetails.getUser());
+    @PostMapping("/unfollow")
+    public String unFollow(@AuthenticationPrincipal UserDetailsImpl followingUserDetails, @RequestParam Long followerId) {
+        return followService.unFollow(followingUserDetails.getUser(),followerId);
     }
 
 
