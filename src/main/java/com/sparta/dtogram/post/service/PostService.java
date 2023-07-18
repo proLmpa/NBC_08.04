@@ -1,7 +1,7 @@
 package com.sparta.dtogram.post.service;
 
 import com.sparta.dtogram.post.dto.PostListResponseDto;
-import com.sparta.dtogram.like.repository.PostLikeRepository;
+//import com.sparta.dtogram.like.repository.PostLikeRepository;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
