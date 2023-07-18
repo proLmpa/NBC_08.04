@@ -1,6 +1,6 @@
-package com.sparta.dtogram.post.entity;
+package com.sparta.dtogram.reply.entity;
 
-import com.sparta.dtogram.post.entity.Post;
+import com.sparta.dtogram.common.entity.Timestamped;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,23 +10,23 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "post_like")
 @NoArgsConstructor
-public class PostLike {
+@Table(name = "reply_like")
+public class ReplyLike extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
-    private Post post;
+    @JoinColumn(name = "comment_id")
+    private Reply reply;
 
-    public PostLike(User user, Post post) {
+    public ReplyLike(User user, Reply reply) {
         this.user = user;
-        this.post = post;
+        this.reply = reply;
     }
 }

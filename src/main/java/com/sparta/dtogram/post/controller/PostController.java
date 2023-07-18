@@ -8,6 +8,7 @@ import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.service.PostService;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,16 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping("/post")
-    public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        PostResponseDto result = postService.createPost(requestDto, userDetails.getUser());
-        return ResponseEntity.status(201).body(result);    }
+    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PostRequestDto requestDto) {
+        log.info("게시글 생성 시도");
+        try {
+            PostResponseDto result = postService.createPost(requestDto, userDetails.getUser());
+            return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        } catch (Exception e) {
+            log.error("게시글 생성에 실패했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     // 게시글 단건 조회
     @GetMapping("/post/{id}")
@@ -81,7 +89,7 @@ public class PostController {
     @DeleteMapping("/post/{id}/like")
     public ResponseEntity<MsgResponseDto> deletePostLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         try {
-            postService.disLikePost(id, userDetails.getUser());
+            postService.dislikePost(id, userDetails.getUser());
         } catch(IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }

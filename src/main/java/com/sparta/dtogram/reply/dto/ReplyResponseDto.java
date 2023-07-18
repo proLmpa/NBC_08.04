@@ -13,7 +13,7 @@ public class ReplyResponseDto {
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-//    private int likeCounts;
+    private int countReplyLike;
 
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();
@@ -22,6 +22,6 @@ public class ReplyResponseDto {
         this.content = reply.getContent();
         this.createdAt = reply.getCreatedAt();
         this.modifiedAt = reply.getModifiedAt();
-//        this.likeCounts = reply.getReplyLikeList().size();
+        this.countReplyLike = reply.getReplyLikeList().size();
     }
 }

@@ -5,12 +5,16 @@ import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.entity.Reply;
+import com.sparta.dtogram.reply.entity.ReplyLike;
+import com.sparta.dtogram.reply.repository.ReplyLikeRepository;
 import com.sparta.dtogram.reply.repository.ReplyRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 
 @Service
@@ -19,7 +23,7 @@ public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
     private final UserRepository userRepository;
-//    private final ReplyLikeRepository replyLikeRepository;
+    private final ReplyLikeRepository replyLikeRepository;
 
 
     public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long postId) {
@@ -52,47 +56,37 @@ public class ReplyService {
         }
     }
 
+    @Transactional
+    public void likeReply(Long id, User user) {
+        Reply reply = findReply(id);
+        Optional<ReplyLike> replyLike = replyLikeRepository.findByUserAndReply(user, reply);
+        if (replyLike.isPresent()) {
+            replyLikeRepository.delete(replyLike.get());
+        } else {
+            throw new IllegalArgumentException("댓글 좋아요 중복선택");
+        }
+    }
+
+    @Transactional
+    public void dislikeReply(Long id, User user) {
+        Reply reply = findReply(id);
+        Optional<ReplyLike> replyLike = replyLikeRepository.findByUserAndReply(user, reply);
+        if (replyLike.isPresent()) {
+            replyLikeRepository.delete(replyLike.get());
+        } else {
+            throw new IllegalArgumentException("존재하지 않는 좋아요");
+        }
+    }
 
     private Reply findReply(Long id) {
         return replyRepository.findById(id).orElseThrow(() -> // null 체크
-                new IllegalArgumentException("선택한 글은 존재하지 않습니다.")
+                new IllegalArgumentException("존재하지 않는 게시글")
         );
     }
 
-    private User findUser(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 유저입니다.")
-        );
-    }
-
-//    public void like(Long ReplyId, Long userId) {
-//        Reply Reply = findReply(ReplyId);
-//        User user = findUser(userId);
-//        Optional<ReplyLike> isLike = ReplyLikeRepository.findByUserAndReply(user, Reply);
-//
-//        isLike.ifPresentOrElse(
-//                like -> {
-//                    ReplyLikeRepository.delete(like);
-//                    Reply.subLikeCount(like);
-//                    Reply.updateLikeCount();
-//                },
-//                () -> {
-//                    ReplyLike ReplyLike = new ReplyLike(user, Reply);
-//
-//                    ReplyLike.mappingReply(Reply);
-//                    ReplyLike.mappingUser(user);
-//                    Reply.updateLikeCount();
-//
-//                    ReplyLikeRepository.save(ReplyLike);
-//                }
+//    private User findUser(Long id) {
+//        return userRepository.findById(id).orElseThrow(() ->
+//                new IllegalArgumentException("존재하지 않는 유저")
 //        );
-//    }
-//
-//    public boolean isLiked(Long ReplyId, Long userId) {
-//        Reply Reply = findReply(ReplyId);
-//        User user = userRepository.findById(userId).orElse(new User());
-//        Optional<ReplyLike> isLike = ReplyLikeRepository.findByUserAndReply(user, Reply);
-//        boolean isLiked = ReplyLike.isLikedReply(isLike);
-//        return isLiked;
 //    }
 }

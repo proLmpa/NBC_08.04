@@ -10,10 +10,12 @@ import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
+import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -97,7 +99,7 @@ public class PostService {
     }
 
     @Transactional
-    public void disLikePost(Long id, User user) {
+    public void dislikePost(Long id, User user) {
         Post post = findPost(id);
         Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
 
