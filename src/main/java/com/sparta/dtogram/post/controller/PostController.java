@@ -27,7 +27,8 @@ public class PostController {
     @PostMapping("/post")
     public ResponseEntity<PostResponseDto> createPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto result = postService.createPost(requestDto, userDetails.getUser());
-        return ResponseEntity.status(201).body(result);    }
+        return ResponseEntity.status(201).body(result);
+    }
 
     // 게시글 단건 조회
     @GetMapping("/post")
@@ -35,7 +36,7 @@ public class PostController {
         PostResponseDto result = postService.getPostById(id);
         return ResponseEntity.ok().body(result);
     }
-    
+
     // 게시글 다건 조회
     @GetMapping("/post/all")
     public ResponseEntity<PostListResponseDto> getPosts() {
@@ -47,7 +48,7 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post")
-    public ResponseEntity<PostResponseDto> updatePost(@RequestParam Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostResponseDto> updatePost(@RequestParam Long id, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser());
 
         return ResponseEntity.ok().body(result);
