@@ -1,6 +1,7 @@
 package com.sparta.dtogram.common.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.user.dto.LoginRequestDto;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
@@ -22,7 +23,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil) {
         this.jwtUtil = jwtUtil;
-        setFilterProcessesUrl("/api/user/log-in");
+        setFilterProcessesUrl("/api/user/login");
     }
 
     @Override
@@ -51,13 +52,23 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
         String token = jwtUtil.createToken(username, role);
-        jwtUtil.addJwtToCookie(token, response);
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
+
         response.setStatus(200);
+        response.setContentType("application/json");
+        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("SUCCESS_LOGIN", 200));
+
+        response.getOutputStream().print(result);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
         log.info("로그인 실패");
-        response.setStatus(401);
+
+        response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        response.setContentType("application/json");
+        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("FAILED_LOGIN", 400));
+
+        response.getOutputStream().print(result);
     }
 }

@@ -8,7 +8,9 @@ import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@RestController
+@Controller
 @RequestMapping("/api")
 public class UserController {
 
@@ -26,21 +28,32 @@ public class UserController {
         this.userService = userService;
     }
 
+    @GetMapping("/user/login-page")
+    public String loginPage() {
+        return "login";
+    }
+
+    @GetMapping("/user/signup")
+    public String signupPage() {
+        return "signup";
+    }
+
     @PostMapping("/user/signup")
-    public String signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
+    @ResponseBody
+    public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         if(fieldErrors.size() > 0) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
-            return "회원가입 실패";
+            return ResponseEntity.badRequest().body("회원 가입 실패");
         }
 
 
         userService.signup(requestDto);
 
-        return "회원가입 성공";
+        return ResponseEntity.ok().body("회원 가입 성공");
     }
 
     @GetMapping("/user-info")
