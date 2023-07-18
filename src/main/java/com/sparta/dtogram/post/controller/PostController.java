@@ -5,6 +5,7 @@ import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.post.dto.PostListResponseDto;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
+import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.service.PostService;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,8 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post")
-    public ResponseEntity<PostResponseDto> deletePost(@RequestParam Long id) {
-        PostResponseDto result = postService.getPostById(id);
+    public ResponseEntity<PostResponseDto> updatePost(@RequestParam Long id, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser());
 
         return ResponseEntity.ok().body(result);
     }

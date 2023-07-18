@@ -1,6 +1,7 @@
 package com.sparta.dtogram.post.entity;
 
 import com.sparta.dtogram.post.dto.PostRequestDto;
+import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -53,7 +54,7 @@ public class Post extends Timestamped {
         //this.likeCount = 0L;
     }
 
-    public void update(PostRequestDto requestDto) {
+    public void update(UpdatePostRequestDto requestDto) {
         this.title =requestDto.getTitle();
         this.content = requestDto.getContent();
     }
