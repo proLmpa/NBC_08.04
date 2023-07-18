@@ -1,5 +1,6 @@
-package com.sparta.dtogram.like.entity;
+package com.sparta.dtogram.post.entity;
 
+import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "postLike") // 매핑할 테이블의 이름을 지정
+@Table(name = "postLike")
 @NoArgsConstructor
 public class PostLike {
     @Id
@@ -20,5 +21,12 @@ public class PostLike {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
 
+    public PostLike(User user, Post post) {
+        this.user = user;
+        this.post = post;
+    }
 }
