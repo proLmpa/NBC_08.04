@@ -34,6 +34,8 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
+    private Long kakaoId;
+
 
   
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -52,10 +54,24 @@ public class User {
         this.role = role;
     }
 
+    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId =kakaoId;
+    }
+
 //    public void mappingPostLike(PostLike PostLike) { // 유저가 해당 좋아요를 눌렀는지 확인
 //        this.PostLikeList.add(PostLike);
 //    }
 //    public void mappingReplyLike(ReplyLike ReplyLike) { // 유저가 해당 좋아요를 눌렀는지 확인
 //        this.ReplyLikeList.add(ReplyLike);
 //    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
+
 }

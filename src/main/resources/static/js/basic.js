@@ -21,5 +21,10 @@ function getToken() {
         return '';
     }
 
+    // 소셜 로그인 사용한 경우 Bearer 추가
+    if(auth.indexOf('Bearer') === -1 && auth !== ''){
+        auth = 'Bearer ' + auth;
+    }
+
     return auth;
 }
