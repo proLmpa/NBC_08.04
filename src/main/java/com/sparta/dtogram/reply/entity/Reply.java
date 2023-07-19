@@ -34,18 +34,14 @@ public class Reply extends Timestamped {
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
 
-    @Column
-    private Long likeCount;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
-    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
+    private List<ReplyLike> replyLikes = new ArrayList<>();
 
 
     public Reply(ReplyRequestDto requestDto, User user, Post post) {
         this.content = requestDto.getContent();
         this.user = user;
         this.post = post;
-        this.likeCount = 0L;
     }
 
     public void update(ReplyRequestDto requestDto) {

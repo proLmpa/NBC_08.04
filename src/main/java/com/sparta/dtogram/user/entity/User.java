@@ -45,21 +45,17 @@ public class User {
 
     private String naverId;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostLike> PostLikes = new ArrayList<>();
 
-  
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private List<PostLike> PostLikeList = new ArrayList<>();
-//
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> ReplyLikes = new ArrayList<>();
 
-  
-
-    public User(String username, String nickname, String password, String email, UserRoleEnum role) {
-        this.username = username;
-        this.nickname = nickname;
+    public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
+        this.username = requestDto.getUsername();
+        this.nickname = requestDto.getNickname();
         this.password = password;
-        this.email = email;
+        this.email = requestDto.getEmail();
         this.role = role;
     }
 
