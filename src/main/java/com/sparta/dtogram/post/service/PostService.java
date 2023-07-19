@@ -152,49 +152,4 @@ public class PostService {
 
         return new PostsResponseDto(postResponseDtos);
     }
-
-//    private User findUser(Long id) {
-//        return userRepository.findById(id).orElseThrow(() ->
-//                new IllegalArgumentException("존재하지 않는 유저입니다.")
-//        );
-//    }
-
-
-//    @Transactional
-//    public String like(Long postId, Long userId) {
-//        final String[] msg = {""};
-//
-//        Post post = findPost(postId);
-//        User user = findUser(userId);
-//
-//        Optional<PostLike> isLike = postLikeRepository.findByUserAndPost(user, post);
-//
-//        isLike.ifPresentOrElse(
-//                like -> {
-//                    postLikeRepository.delete(like);
-//                    post.subLikeCount(like);
-//                    post.updateLikeCount();
-//                    msg[0] = "좋아요 취소";
-//                },
-//                () -> {
-//                    PostLike postLike = new PostLike(user, post);
-//
-//                    postLike.mappingPost(post);
-//                    postLike.mappingUser(user);
-//                    post.updateLikeCount();
-//
-//                    postLikeRepository.save(postLike);
-//                    msg[0] = "좋아요";
-//                }
-//        );
-//        return msg[0];
-//    }
-//
-//    public boolean isLiked(Long postId, Long userId) {
-//        Post post = findPost(postId);
-//        User user = userRepository.findById(userId).orElse(new User());
-//        Optional<PostLike> isLike = postLikeRepository.findByUserAndPost(user, post);
-//        boolean isLiked = PostLike.isLikedPost(isLike);
-//        return isLiked;
-//    }
 }
