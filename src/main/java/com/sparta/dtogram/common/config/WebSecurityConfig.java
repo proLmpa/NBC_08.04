@@ -59,6 +59,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/").permitAll() // 메인 페이지 요청 허가
                         .requestMatchers("/api/user/**").permitAll() // '/api/user'로 시작하는 모든 요청 접근 허가
                         .requestMatchers(HttpMethod.GET, "/api/post", "/api/post/**").permitAll() // '/api/post' 요청과 '/api/post/**"로 시작하는 POST 요청 모두 접근 허가
+                        .requestMatchers(HttpMethod.GET, "/api/profile/**").permitAll()
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
