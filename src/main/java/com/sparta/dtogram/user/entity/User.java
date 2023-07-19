@@ -43,6 +43,8 @@ public class User {
 
     private Long kakaoId;
 
+    private String naverId;
+
 
   
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
@@ -61,6 +63,7 @@ public class User {
         this.role = role;
     }
 
+    //todo 추후 다른 소셜 로그인과 섞일 염려가 있음
     public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
         this.username = "kakao"+username;
         this.nickname = username;
@@ -70,13 +73,13 @@ public class User {
         this.kakaoId =kakaoId;
     }
 
-    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
-        this.username = "kakao"+username;
-        this.nickname = username;
+    public User(String username, String nickname, String password, String email, UserRoleEnum role, String naverId) {
+        this.username = username;
+        this.nickname = nickname;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.kakaoId =kakaoId;
+        this.naverId =naverId;
     }
 
     public void updateProfile(ProfileRequestDto requestDto) {
@@ -86,6 +89,11 @@ public class User {
 
     public User kakaoIdUpdate(Long kakaoId) {
         this.kakaoId = kakaoId;
+        return this;
+    }
+
+    public User naverIdUpdate(String naverId) {
+        this.naverId = naverId;
         return this;
     }
 }
