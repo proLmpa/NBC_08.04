@@ -1,3 +1,8 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -28,4 +33,96 @@
 
 .header-logout {
     order: 5;
+}
+
+#post-update-box {
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+ }
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+}
+
+.postDto-box {
+    width: 30%;
+    margin-left: 33%;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.postDto-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.postDto-nickname {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.postDto-createdAt,
+.postDto-modifiedAt {
+    font-size: 12px;
+    color: #888888;
+    margin-right: 10px;
+}
+
+.postDto-divider {
+    width: 95%;
+    height: 1px;
+    margin: 10px auto;
+    background-color: #ccc;
+}
+
+.postDto-body {
+    margin-bottom: 10px;
+}
+
+.postDto-title {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.postDto-content {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.postDto-tags {
+    font-size: 12px;
+    color: #888888;
+    margin-bottom: 5px;
+}
+
+.postDto-footer {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.postDto-countPostLike {
+    font-size: 12px;
+    color: #888888;
+    margin-right: 10px;
+}
+
+.postDto-reply-btn {
+    font-size: 12px;
+    color: #888888;
+    cursor: pointer;
 }
