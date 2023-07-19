@@ -2,6 +2,7 @@ package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.reply.entity.ReplyLike;
+import com.sparta.dtogram.user.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,6 +28,9 @@ public class User {
     @Column(nullable = false)
     private String nickname;
 
+    @Column
+    private String introduction;
+
     @Column(nullable = false)
     private String password;
 
@@ -49,5 +53,10 @@ public class User {
         this.password = password;
         this.email = requestDto.getEmail();
         this.role = role;
+    }
+
+    public void updateProfile(ProfileRequestDto requestDto) {
+        this.nickname = requestDto.getNickname();
+        this.introduction = requestDto.getIntroduction();
     }
 }

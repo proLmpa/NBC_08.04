@@ -1,0 +1,50 @@
+package com.sparta.dtogram.user.controller;
+
+import com.sparta.dtogram.common.dto.MsgResponseDto;
+import com.sparta.dtogram.common.security.UserDetailsImpl;
+import com.sparta.dtogram.user.dto.PasswordRequestDto;
+import com.sparta.dtogram.user.dto.ProfileRequestDto;
+import com.sparta.dtogram.user.dto.ProfileResponseDto;
+import com.sparta.dtogram.user.service.ProfileService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.RejectedExecutionException;
+
+@Slf4j
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api")
+public class ProfileController {
+
+    private final ProfileService profileService;
+
+    @GetMapping("/profile/{id}")
+    public ProfileResponseDto getProfile(@PathVariable Long id) {
+        return profileService.getProfile(id);
+    }
+
+    @PutMapping("/profile")
+    public ResponseEntity<MsgResponseDto> editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ProfileRequestDto requestDto) {
+        try {
+            profileService.editProfile(userDetails.getUser(), requestDto);
+            return ResponseEntity.ok().body(new MsgResponseDto("프로필 수정 성공", HttpStatus.OK.value()));
+        } catch (RejectedExecutionException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    @PutMapping("/profile/password")
+    public ResponseEntity<MsgResponseDto> editPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PasswordRequestDto requestDto) {
+        try {
+            profileService.editPassword(userDetails.getUser(), requestDto);
+            return ResponseEntity.ok().body(new MsgResponseDto("비밀번호 수정 성공", HttpStatus.OK.value()));
+        } catch (RejectedExecutionException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+}
