@@ -130,7 +130,7 @@ public class PostService {
                 new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
         );
 
-        if (!post.getUsername().equals(user.getUsername())) {
+        if (!post.getUser().getUsername().equals(user.getUsername())) {
             throw new IllegalArgumentException("회원님의 글이 아닙니다.");
         }
 
