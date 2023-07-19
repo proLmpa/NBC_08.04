@@ -9,6 +9,7 @@ import com.sparta.dtogram.socialLogin.dto.NaverUserInfoDto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +35,7 @@ public class NaverLoginService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
-    public String naverLogin(String code) throws JsonProcessingException { //String code는 카카오로부터 받은 인가 코드
+    public String naverLogin(String code, HttpServletResponse response) throws JsonProcessingException { //String code는 카카오로부터 받은 인가 코드
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
@@ -44,6 +45,7 @@ public class NaverLoginService {
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(naverUser.getUsername(), naverUser.getRole());
 
+        jwtUtil.addJwtToCookie(createToken, response);
         return createToken;
     }
 
@@ -64,7 +66,7 @@ public class NaverLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "e32da5f39fa665c8c879b0898f6d2a50");
+        body.add("client_id", "3nIrxcCqU2kNxq096d2K");
         body.add("client_secret", "Uod6Wykufe");
         body.add("code", code);
         body.add("state", "test");
