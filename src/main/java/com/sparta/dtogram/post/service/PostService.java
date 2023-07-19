@@ -58,15 +58,6 @@ public class PostService {
         return new PostsResponseDto(posts);
     }
 
-    // 게시글 다건 조회 (키워드별)
-//    @Transactional(readOnly = true)
-//    public List<PostResponseDto> getPostsByKeyword(String keyword) {
-//        if (keyword == null) {
-//            throw new RuntimeException("키워드를 입력해주세요");
-//        }
-//        return PostRepository.findAllByContentContainingOrderByModifiedAtDesc(keyword).stream().map(PostResponseDto::new).toList();
-//    }
-
     @Transactional
     public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
         Post post = findPost(id);

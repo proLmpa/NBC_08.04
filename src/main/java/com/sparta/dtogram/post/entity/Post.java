@@ -3,13 +3,12 @@ package com.sparta.dtogram.post.entity;
 import com.sparta.dtogram.common.entity.Timestamped;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
+import com.sparta.dtogram.reply.entity.Reply;
+import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.sparta.dtogram.user.entity.User;
-import com.sparta.dtogram.reply.entity.Reply;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;

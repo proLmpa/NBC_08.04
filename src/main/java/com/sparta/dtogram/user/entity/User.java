@@ -50,11 +50,4 @@ public class User {
         this.email = requestDto.getEmail();
         this.role = role;
     }
-
-//    public void mappingPostLike(PostLike PostLike) { // 유저가 해당 좋아요를 눌렀는지 확인
-//        this.PostLikeList.add(PostLike);
-//    }
-//    public void mappingReplyLike(ReplyLike ReplyLike) { // 유저가 해당 좋아요를 눌렀는지 확인
-//        this.ReplyLikeList.add(ReplyLike);
-//    }
 }
