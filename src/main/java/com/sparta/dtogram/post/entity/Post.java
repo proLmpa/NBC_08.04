@@ -3,13 +3,12 @@ package com.sparta.dtogram.post.entity;
 import com.sparta.dtogram.common.entity.Timestamped;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
+import com.sparta.dtogram.reply.entity.Reply;
+import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.sparta.dtogram.user.entity.User;
-import com.sparta.dtogram.reply.entity.Reply;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,16 +29,6 @@ public class Post extends Timestamped {
     @Column(nullable = false, length = 500)
     private String content;
 
-    @Column
-    private String nickname;
-
-    @Column
-    private String username;
-
-    @ColumnDefault("0")
-    @Column(name = "likes")
-    private Integer countPostLike = 0;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -56,10 +45,7 @@ public class Post extends Timestamped {
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
-        this.nickname = user.getNickname();
-        this.username = user.getUsername();
         this.user = user;
-        this.countPostLike = this.postLikes.size();
     }
 
     public void updatePost(UpdatePostRequestDto requestDto) {
@@ -67,8 +53,11 @@ public class Post extends Timestamped {
         this.content = requestDto.getContent();
     }
 
-//    public void updatePostLike(PostLike postLike) {
-//        this.postLikes.add(postLike);
-//        this.postLikes.remove(postLike);
-//    }
+    public void registerPostLike(PostLike postLike) {
+        this.postLikes.add(postLike);
+    }
+
+    public void cancelPostLike(PostLike postLike) { // 좋아요 목록에서 삭제
+        this.postLikes.remove(postLike);
+    }
 }

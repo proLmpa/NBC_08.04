@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class ReplyResponseDto {
     private Long id;
-    private Long postId;
     private String nickname;
-    private String username;
     private String content;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
@@ -18,9 +16,7 @@ public class ReplyResponseDto {
 
     public ReplyResponseDto(Reply reply) {
         this.id = reply.getId();
-        this.postId = reply.getPost().getId();
         this.nickname = reply.getUser().getNickname();
-        this.username = reply.getUser().getUsername();
         this.content = reply.getContent();
         this.createdAt = reply.getCreatedAt();
         this.modifiedAt = reply.getModifiedAt();

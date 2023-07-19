@@ -7,7 +7,6 @@ import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.service.PostService;
-import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -53,8 +52,6 @@ public class PostController {
         return ResponseEntity.ok().body(result);
     }
 
-    // 키워드별 게시글 다건 조회
-
     // 게시글 수정
     @PutMapping("/post/{id}")
     public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
@@ -71,7 +68,7 @@ public class PostController {
             postService.deletePost(id, userDetails.getUser());
             return ResponseEntity.ok().body(new MsgResponseDto("게시글 삭제 성공", HttpStatus.OK.value()));
         } catch (RejectedExecutionException e) {
-            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 삭제 가능", HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 삭제 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
         }
     }
 

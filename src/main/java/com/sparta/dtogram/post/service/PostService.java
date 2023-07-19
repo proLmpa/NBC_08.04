@@ -66,19 +66,10 @@ public class PostService {
         return new PostsResponseDto(posts);
     }
 
-    // 게시글 다건 조회 (키워드별)
-//    @Transactional(readOnly = true)
-//    public List<PostResponseDto> getPostsByKeyword(String keyword) {
-//        if (keyword == null) {
-//            throw new RuntimeException("키워드를 입력해주세요");
-//        }
-//        return PostRepository.findAllByContentContainingOrderByModifiedAtDesc(keyword).stream().map(PostResponseDto::new).toList();
-//    }
-
     @Transactional
     public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
         Post post = findPost(id);
-        if (post.getNickname().equals(user.getNickname())) {
+        if (post.getUser().getNickname().equals(user.getNickname())) {
             post.updatePost(requestDto);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
@@ -89,7 +80,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long id, User user) {
         Post post = findPost(id);
-        if (post.getNickname().equals(user.getNickname())) {
+        if (post.getUser().getNickname().equals(user.getNickname())) {
             postRepository.delete(post);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");
@@ -107,7 +98,7 @@ public class PostService {
         } else {
             log.info("게시글 좋아요 누르기 성공");
             PostLike postLike = new PostLike(user, post);
-            post.setCountPostLike(new PostResponseDto(post).getCountPostLike() + 1);
+            post.registerPostLike(postLike);
             postLikeRepository.save(postLike);
         }
     }
@@ -118,7 +109,7 @@ public class PostService {
         Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
 
         if(postLike.isPresent()) {
-            post.setCountPostLike(new PostResponseDto(post).getCountPostLike() - 1);
+            post.cancelPostLike(postLike.get());
             postLikeRepository.delete(postLike.get());
         } else {
             throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");

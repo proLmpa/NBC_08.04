@@ -8,7 +8,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +26,6 @@ public class Reply extends Timestamped {
     @Column(nullable = false)
     private String content;
 
-    @Column
-    private String nickname;
-
-    @Column
-    private String username;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -40,10 +33,6 @@ public class Reply extends Timestamped {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
     private Post post;
-
-    @ColumnDefault("0")
-    @Column(name = "likes")
-    private Integer countReplyLike;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
     private List<ReplyLike> replyLikes = new ArrayList<>();
@@ -53,10 +42,17 @@ public class Reply extends Timestamped {
         this.content = requestDto.getContent();
         this.user = user;
         this.post = post;
-        this.countReplyLike = this.replyLikes.size();
     }
 
     public void update(ReplyRequestDto requestDto) {
         this.content = requestDto.getContent();
+    }
+
+    public void registerReplyLike(ReplyLike replyLike) {
+        this.replyLikes.add(replyLike);
+    }
+
+    public void cancelReplyLike(ReplyLike replyLike){
+        this.replyLikes.remove(replyLike);
     }
 }

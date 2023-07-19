@@ -2,6 +2,7 @@ package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.reply.entity.ReplyLike;
+import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -42,20 +43,11 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ReplyLike> ReplyLikes = new ArrayList<>();
 
-  
-
-    public User(String username, String nickname, String password, String email, UserRoleEnum role) {
-        this.username = username;
-        this.nickname = nickname;
+    public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
+        this.username = requestDto.getUsername();
+        this.nickname = requestDto.getNickname();
         this.password = password;
-        this.email = email;
+        this.email = requestDto.getEmail();
         this.role = role;
     }
-
-//    public void mappingPostLike(PostLike PostLike) { // 유저가 해당 좋아요를 눌렀는지 확인
-//        this.PostLikeList.add(PostLike);
-//    }
-//    public void mappingReplyLike(ReplyLike ReplyLike) { // 유저가 해당 좋아요를 눌렀는지 확인
-//        this.ReplyLikeList.add(ReplyLike);
-//    }
 }

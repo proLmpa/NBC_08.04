@@ -1,6 +1,5 @@
 package com.sparta.dtogram.reply.controller;
 
-import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
@@ -58,7 +57,7 @@ public class ReplyController {
 
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("댓글 좋아요 성공", HttpStatus.ACCEPTED.value()));    }
 
-    @GetMapping("/reply/{id}/like")
+    @DeleteMapping("/reply/{id}/like")
     public ResponseEntity<MsgResponseDto> deleteReplyLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         try {
             replyService.deleteReplyLike(id, userDetails.getUser());

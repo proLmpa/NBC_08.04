@@ -1,0 +1,31 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    color: chartreuse;
+    padding: 10px;
+}
+
+.header-logo {
+    order: 1;
+}
+
+.header-search {
+    order: 2;
+    margin-right: 10px;
+}
+
+.header-login {
+    order: 3;
+    margin-right: 10px;
+}
+
+.header-signup {
+    order: 4;
+    margin-right: 10px;
+}
+
+.header-logout {
+    order: 5;
+}

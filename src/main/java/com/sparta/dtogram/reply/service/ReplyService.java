@@ -1,6 +1,5 @@
 package com.sparta.dtogram.reply.service;
 
-import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
@@ -26,10 +25,9 @@ import java.util.Optional;
 public class ReplyService {
     private final ReplyRepository replyRepository;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final ReplyLikeRepository replyLikeRepository;
 
-
+    @Transactional
     public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long postId) {
             Post Post = postRepository.findById(postId).orElseThrow(() ->
                     new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 댓글 달기 시도 감지")
@@ -51,6 +49,7 @@ public class ReplyService {
         return new ReplyResponseDto(reply);
     }
 
+    @Transactional
     public void deleteReply(Long id, User user) {
         Reply Reply = findReply(id);
         if (Reply.getUser().getUsername().equals(user.getUsername())) {
@@ -71,7 +70,7 @@ public class ReplyService {
         } else {
             log.info("댓글 좋아요 누르기 성공");
             ReplyLike replyLike = new ReplyLike(user, reply);
-            reply.setCountReplyLike(new ReplyResponseDto(reply).getCountReplyLike() + 1);
+            reply.registerReplyLike(replyLike);
             replyLikeRepository.save(replyLike);
         }
     }
@@ -82,7 +81,7 @@ public class ReplyService {
         Optional<ReplyLike> replyLike = replyLikeRepository.findByUserAndReply(user, reply);
 
         if (replyLike.isPresent()) {
-            reply.setCountReplyLike(new ReplyResponseDto(reply).getCountReplyLike() - 1);
+            reply.cancelReplyLike(replyLike.get());
             replyLikeRepository.delete(replyLike.get());
         } else {
             throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
@@ -91,7 +90,7 @@ public class ReplyService {
 
     private Reply findReply(Long id) {
         return replyRepository.findById(id).orElseThrow(() -> // null 체크
-                new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
+                new IllegalArgumentException("Exception ! 존재하지 않는 댓글 찾기 시도 감지")
         );
     }
 }

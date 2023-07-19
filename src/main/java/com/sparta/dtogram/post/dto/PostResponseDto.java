@@ -19,21 +19,21 @@ public class PostResponseDto {
     private String nickname;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
-    private List<ReplyResponseDto> Replies;
+    private List<ReplyResponseDto> replies;
     private Integer countPostLike;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
-        this.nickname = post.getNickname();
+        this.nickname = post.getUser().getNickname();
         this.title = post.getTitle();
         this.content = post.getContent();
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
-        this.Replies = new ArrayList<>();
+        this.countPostLike = post.getPostLikes().size();
+        this.replies = new ArrayList<>();
         for (Reply reply : post.getReplies()) {
             ReplyResponseDto replyResponseDto = new ReplyResponseDto(reply);
-            this.Replies.add(replyResponseDto);
+            this.replies.add(replyResponseDto);
         }
-        this.countPostLike = post.getPostLikes().size();
     }
 }

@@ -1,6 +1,5 @@
 package com.sparta.dtogram.post.entity;
 
-import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
