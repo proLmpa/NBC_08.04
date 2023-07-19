@@ -1,4 +1,4 @@
-package com.sparta.dtogram.postTag.entity;
+package com.sparta.dtogram.post.entity;
 
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.tag.entity.Tag;

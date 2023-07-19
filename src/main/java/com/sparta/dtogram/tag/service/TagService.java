@@ -8,6 +8,7 @@ import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,6 +20,7 @@ public class TagService {
         return new TagResponseDto(tag);
     }
 
+    @Transactional
     public TagResponseDto updateTag(UpdateTagRequestDto requestDto, User user) {
         Tag tag = tagRepository.findByTag(requestDto.getTag()).orElseThrow(() ->
                 new NullPointerException("해당하는 태그가 없습니다.")
@@ -31,6 +33,7 @@ public class TagService {
         }
     }
 
+    @Transactional
     public void deleteTag(TagRequestDto requestDto, User user) {
         Tag tag = tagRepository.findByTag(requestDto.getTag()).orElseThrow(() ->
                 new NullPointerException("해당하는 태그가 없습니다.")

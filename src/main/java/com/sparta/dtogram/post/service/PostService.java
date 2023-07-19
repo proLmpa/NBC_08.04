@@ -8,8 +8,8 @@ import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
-import com.sparta.dtogram.postTag.entity.PostTag;
-import com.sparta.dtogram.postTag.repository.PostTagRepository;
+import com.sparta.dtogram.post.entity.PostTag;
+import com.sparta.dtogram.post.repository.PostTagRepository;
 import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;
@@ -18,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
@@ -149,10 +151,15 @@ public class PostService {
         postTagRepository.save(new PostTag(post, tag));
     }
 
+    @Transactional(readOnly = true)
     public PostsResponseDto getPostsByTag(Long tagId) {
-        List<PostResponseDto> postList = postTagRepository.findByTagId(tagId).stream().map(PostResponseDto::new).toList();
+        List<Post> posts = postRepository.findAllByPostTags_TagId(tagId);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
 
-        return new PostsResponseDto(postList);
+        return new PostsResponseDto(postResponseDtos);
     }
 
 //    private User findUser(Long id) {
