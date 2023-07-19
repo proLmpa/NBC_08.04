@@ -3,6 +3,8 @@ package com.sparta.dtogram.post.dto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.entity.Reply;
+import com.sparta.dtogram.tag.dto.TagResponseDto;
+import com.sparta.dtogram.tag.entity.Tag;
 import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDateTime;
@@ -21,6 +23,7 @@ public class PostResponseDto {
     private LocalDateTime modifiedAt;
     private List<ReplyResponseDto> replies;
     private Integer countPostLike;
+    private List<TagResponseDto> tags;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -35,5 +38,6 @@ public class PostResponseDto {
             ReplyResponseDto replyResponseDto = new ReplyResponseDto(reply);
             this.replies.add(replyResponseDto);
         }
+        this.tags = post.getPostTags().stream().map(postTag -> new TagResponseDto(postTag.getTag())).toList();
     }
 }
