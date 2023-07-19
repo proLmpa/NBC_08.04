@@ -8,6 +8,7 @@ import com.sparta.dtogram.socialLogin.dto.KakaoUserInfoDto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -33,7 +34,7 @@ public class KakaoLoginService {
     private final RestTemplate restTemplate;
     private final JwtUtil jwtUtil;
 
-    public String kakaoLogin(String code) throws JsonProcessingException { //String code는 카카오로부터 받은 인가 코드
+    public String kakaoLogin(String code, HttpServletResponse response) throws JsonProcessingException { //String code는 카카오로부터 받은 인가 코드
         // 1. "인가 코드"로 "액세스 토큰" 요청
         String accessToken = getToken(code);
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
@@ -43,6 +44,7 @@ public class KakaoLoginService {
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaouser.getUsername(), kakaouser.getRole());
 
+        jwtUtil.addJwtToCookie(createToken, response);
         return createToken;
     }
 
