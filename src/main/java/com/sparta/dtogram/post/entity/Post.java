@@ -52,12 +52,4 @@ public class Post extends Timestamped {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
-
-    public void registerPostLike(PostLike postLike) {
-        this.postLikes.add(postLike);
-    }
-
-    public void cancelPostLike(PostLike postLike) { // 좋아요 목록에서 삭제
-        this.postLikes.remove(postLike);
-    }
 }
