@@ -37,7 +37,7 @@ public class Reply extends Timestamped {
     @Column
     private Long likeCount;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Reply", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reply", cascade = CascadeType.REMOVE)
     private List<ReplyLike> ReplyLikeList = new ArrayList<>();
 
 

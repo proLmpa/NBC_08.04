@@ -53,7 +53,7 @@ public class Post extends Timestamped {
         //this.likeCount = 0L;
     }
 
-    public void update(PostRequestDto requestDto) {
+    public void update(UpdatePostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }

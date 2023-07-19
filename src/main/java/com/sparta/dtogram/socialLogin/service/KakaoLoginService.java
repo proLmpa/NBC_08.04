@@ -38,7 +38,7 @@ public class KakaoLoginService {
         String accessToken = getToken(code);
         // 2. 토큰으로 카카오 API 호출 : "액세스 토큰"으로 "카카오 사용자 정보" 가져오기
         KakaoUserInfoDto kakaoUserInfo = getKakaoUserInfo(accessToken);
-        // 3. 필요시 회원가입
+        // 3. 필요시 회원가입 아니라면 바로 user가져오기.
         User kakaouser = registerKakaoUserIfNeeded(kakaoUserInfo);
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaouser.getUsername(), kakaouser.getRole());
