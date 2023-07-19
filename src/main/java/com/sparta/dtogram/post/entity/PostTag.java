@@ -1,4 +1,4 @@
-package com.sparta.dtogram.postTag.entity;
+package com.sparta.dtogram.post.entity;
 
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.tag.entity.Tag;
@@ -24,4 +24,9 @@ public class PostTag {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tag_id", nullable = false)
     private Tag tag;
+
+    public PostTag(Post post, Tag tag) {
+        this.post = post;
+        this.tag = tag;
+    }
 }

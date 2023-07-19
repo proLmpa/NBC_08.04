@@ -1,6 +1,7 @@
 package com.sparta.dtogram.tag.entity;
 
 import com.sparta.dtogram.tag.dto.TagRequestDto;
+import com.sparta.dtogram.tag.dto.UpdateTagRequestDto;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -18,9 +19,18 @@ public class Tag {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String name;
+    private String tag;
 
-    public Tag(TagRequestDto requestDto) {
-        this.name = requestDto.getName();
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Tag(TagRequestDto requestDto, User user) {
+        this.tag = requestDto.getTag();
+        this.user = user;
+    }
+
+    public void update(UpdateTagRequestDto requestDto) {
+        this.tag = requestDto.getNewTag();
     }
 }

@@ -93,4 +93,18 @@ public class PostController {
         }
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("게시글 좋아요 취소 성공", HttpStatus.ACCEPTED.value()));
     }
+
+    // 태그 추가
+    @PostMapping("/post/{postId}/tag/{tagId}")
+    public ResponseEntity<MsgResponseDto> addTag(@PathVariable Long postId, @PathVariable Long tagId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.addTag(postId, tagId, userDetails.getUser());
+        return ResponseEntity.ok().body(new MsgResponseDto("해시태그 추가 성공", HttpStatus.OK.value()));
+    }
+
+    // 태그에 맞는 글만 조회
+    @GetMapping("/post/tag/{tagId}")
+    public ResponseEntity<PostsResponseDto> getPostsByTag(@PathVariable Long tagId) {
+        PostsResponseDto result = postService.getPostsByTag(tagId);
+        return ResponseEntity.ok().body(result);
+    }
 }
