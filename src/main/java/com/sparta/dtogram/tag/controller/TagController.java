@@ -2,7 +2,6 @@ package com.sparta.dtogram.tag.controller;
 
 import com.sparta.dtogram.tag.dto.TagRequestDto;
 import com.sparta.dtogram.tag.dto.TagResponseDto;
-import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.tag.service.TagService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

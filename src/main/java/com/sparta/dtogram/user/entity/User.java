@@ -1,5 +1,8 @@
 package com.sparta.dtogram.user.entity;
 
+import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.reply.entity.ReplyLike;
+import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,7 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "users")
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,17 +37,17 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
   
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private List<PostLike> PostLikeList = new ArrayList<>();
-//
-//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-//    private List<ReplyLike> ReplyLikeList = new ArrayList<>();
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostLike> PostLikes = new ArrayList<>();
 
-    public User(String username, String nickname, String password, String email, UserRoleEnum role) {
-        this.username = username;
-        this.nickname = nickname;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> ReplyLikes = new ArrayList<>();
+
+    public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
+        this.username = requestDto.getUsername();
+        this.nickname = requestDto.getNickname();
         this.password = password;
-        this.email = email;
+        this.email = requestDto.getEmail();
         this.role = role;
     }
 
