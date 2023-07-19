@@ -8,12 +8,18 @@ import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
+import com.sparta.dtogram.post.entity.PostTag;
+import com.sparta.dtogram.post.repository.PostTagRepository;
+import com.sparta.dtogram.tag.entity.Tag;
+import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
@@ -24,6 +30,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
     private final PostLikeRepository postLikeRepository;
 
     // 게시글 생성
@@ -122,4 +130,80 @@ public class PostService {
                 new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
         );
     }
+
+    public void addTag(Long postId, Long tagId, User user) {
+        Post post = postRepository.findById(postId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 글은 존재하지 않습니다.")
+        );
+        Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
+                new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
+        );
+
+        if (!post.getUsername().equals(user.getUsername())) {
+            throw new IllegalArgumentException("회원님의 글이 아닙니다.");
+        }
+
+        Optional<PostTag> overlapTag = postTagRepository.findByPostAndTag(post, tag);
+
+        if (overlapTag.isPresent()){
+            throw new IllegalArgumentException("중복된 태그입니다.");
+        }
+        postTagRepository.save(new PostTag(post, tag));
+    }
+
+    @Transactional(readOnly = true)
+    public PostsResponseDto getPostsByTag(Long tagId) {
+        List<Post> posts = postRepository.findAllByPostTags_TagId(tagId);
+        List<PostResponseDto> postResponseDtos = new ArrayList<>();
+        for (Post post : posts) {
+            postResponseDtos.add(new PostResponseDto(post));
+        }
+
+        return new PostsResponseDto(postResponseDtos);
+    }
+
+//    private User findUser(Long id) {
+//        return userRepository.findById(id).orElseThrow(() ->
+//                new IllegalArgumentException("존재하지 않는 유저입니다.")
+//        );
+//    }
+
+
+//    @Transactional
+//    public String like(Long postId, Long userId) {
+//        final String[] msg = {""};
+//
+//        Post post = findPost(postId);
+//        User user = findUser(userId);
+//
+//        Optional<PostLike> isLike = postLikeRepository.findByUserAndPost(user, post);
+//
+//        isLike.ifPresentOrElse(
+//                like -> {
+//                    postLikeRepository.delete(like);
+//                    post.subLikeCount(like);
+//                    post.updateLikeCount();
+//                    msg[0] = "좋아요 취소";
+//                },
+//                () -> {
+//                    PostLike postLike = new PostLike(user, post);
+//
+//                    postLike.mappingPost(post);
+//                    postLike.mappingUser(user);
+//                    post.updateLikeCount();
+//
+//                    postLikeRepository.save(postLike);
+//                    msg[0] = "좋아요";
+//                }
+//        );
+//        return msg[0];
+//    }
+//
+//    public boolean isLiked(Long postId, Long userId) {
+//        Post post = findPost(postId);
+//        User user = userRepository.findById(userId).orElse(new User());
+//        Optional<PostLike> isLike = postLikeRepository.findByUserAndPost(user, post);
+//        boolean isLiked = PostLike.isLikedPost(isLike);
+//        return isLiked;
+//    }
 }

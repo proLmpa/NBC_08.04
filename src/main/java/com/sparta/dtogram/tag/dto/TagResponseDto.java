@@ -8,10 +8,10 @@ import lombok.Setter;
 @Setter
 public class TagResponseDto {
     private Long id;
-    private String name;
+    private String tag;
 
     public TagResponseDto(Tag tag){
         this.id = tag.getId();
-        this.name = tag.getName();
+        this.tag = tag.getTag();
     }
 }
