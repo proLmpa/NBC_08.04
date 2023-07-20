@@ -135,3 +135,57 @@ body {
     color: #888888;
     cursor: pointer;
 }
+
+.profileDto-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.profileDto-photo {
+    width: 300px;
+    height: 300px;
+    background-color: black;
+    position: relative;
+    margin: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.profileDto-photo-image {
+    width: 98%;
+    height: 98%;
+    border-radius: 50%;
+    border: #03C75A 3px solid;
+    object-fit: cover;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.profileDto-intro {
+    width: 33%;
+    height: 48%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#profileForm {
+    width: 100%;
+}
+
+#profileForm input {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+#info-edit-btns,
+#profile-edit-btns,
+#password-edit-btns {
+    display: flex;
+    justify-content: left;
+    margin-right: 2px;
+}
