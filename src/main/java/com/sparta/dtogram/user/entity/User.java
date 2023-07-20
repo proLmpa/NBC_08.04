@@ -95,4 +95,8 @@ public class User {
         this.naverId = naverId;
         return this;
     }
+
+    public void updateRole(UserRoleEnum role) {
+        this.role = role;
+    }
 }

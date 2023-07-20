@@ -25,6 +25,13 @@ public class AdminService {
         userRepository.delete(findUser(targetId));
     }
 
+    public void editRoleByAdmin(User userAdmin, Long targetId, UserRoleEnum role){
+        checkAdminRole(userAdmin);
+        findUser(targetId)
+                .updateRole(role);
+
+    }
+
 
 
     private void checkAdminRole(User userAdmin) {
