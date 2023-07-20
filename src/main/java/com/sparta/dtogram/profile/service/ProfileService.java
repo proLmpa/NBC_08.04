@@ -1,8 +1,8 @@
-package com.sparta.dtogram.user.service;
+package com.sparta.dtogram.profile.service;
 
-import com.sparta.dtogram.user.dto.PasswordRequestDto;
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
-import com.sparta.dtogram.user.dto.ProfileResponseDto;
+import com.sparta.dtogram.profile.dto.PasswordRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.PasswordHistoryRepository;
