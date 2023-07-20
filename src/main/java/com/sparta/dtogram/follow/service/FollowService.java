@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class FollowService {
     public void doFollow(User followingUser, Long followerUserId) {
 
         User followerUser = getUserById(followerUserId);
-        if(followerUser==followingUser){
+        if(Objects.equals(followerUser.getId(), followingUser.getId())){
             throw new IllegalArgumentException("자기 자신을 팔로우하는 요청입니다.");
         }
 
