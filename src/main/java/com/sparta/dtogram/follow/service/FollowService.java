@@ -18,20 +18,19 @@ public class FollowService {
     private final UserRepository userRepository;
 
 
-    public String doFollow(User followingUser, Long followerUserId) {
+    public void doFollow(User followingUser, Long followerUserId) {
 
         User followerUser = getUserById(followerUserId);
-        Boolean existFollow = followRepository.existsByFollowingUserAndFollowerUser(followingUser, followerUser);
+        if(followerUser==followingUser){
+            throw new IllegalArgumentException("자기 자신을 팔로우하는 요청입니다.");
+        }
 
+        Boolean existFollow = followRepository.existsByFollowingUserAndFollowerUser(followingUser, followerUser);
         if (!existFollow) {
             Follow newFollow = new Follow(followingUser, followerUser);
             followRepository.save(newFollow);
-
-            return "{ \"statusCode\":200,\n" +
-                    "\"statusMessage\":\"" + followerUser.getUsername() + "님을 팔로우하였습니다.}";
         } else {
-            return "{ \"statusCode\":200,\n" +
-                    "\"statusMessage\":\"이미 " + followerUser.getUsername() + "님을 팔로우 중입니다.}";
+            throw new IllegalArgumentException("이미 " + followerUser.getUsername() + "님을 팔로우 중입니다.}");
         }
     }
 
