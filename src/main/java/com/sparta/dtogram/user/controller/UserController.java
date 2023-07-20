@@ -50,7 +50,6 @@ public class UserController {
             return ResponseEntity.badRequest().body("회원 가입 실패");
         }
 
-
         userService.signup(requestDto);
 
         return ResponseEntity.ok().body("회원 가입 성공");
