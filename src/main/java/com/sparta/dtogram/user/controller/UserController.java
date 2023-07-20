@@ -4,6 +4,7 @@ package com.sparta.dtogram.user.controller;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
+import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.service.UserService;
 import jakarta.validation.Valid;
@@ -54,4 +55,22 @@ public class UserController {
 
         return ResponseEntity.ok().body("회원 가입 성공");
     }
+
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id){
+        return ResponseEntity.ok().body(userService.getUser(id));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<User>> getAllUsers(){
+        return ResponseEntity.ok().body(userService.getAllUsers());
+    }
+
+    @GetMapping("/user/{nickname}") //오버로딩
+    public ResponseEntity<List<User>> getAllUsers(@PathVariable String nickname){
+        return ResponseEntity.ok().body(userService.getAllUsers(nickname));
+    }
+
+
 }

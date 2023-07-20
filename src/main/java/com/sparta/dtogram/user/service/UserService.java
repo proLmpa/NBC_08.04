@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -62,5 +63,19 @@ public class UserService {
 
         // 사용했던 비밀번호 목록에 저장
         passwordHistoryRepository.save(new PasswordHistory(requestDto.getPassword(), user));
+    }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(()->
+                new NullPointerException("유저 정보를 찾을 수 없습니다.")
+                );
+    }
+
+    public List<User> getAllUsers(){
+        return userRepository.findAll();
+    }
+
+    public List<User> getAllUsers(String nickname){
+        return userRepository.findByNicknameContainsOrderByNicknameAsc(nickname); //todo 페이징 작업 추가
     }
 }
