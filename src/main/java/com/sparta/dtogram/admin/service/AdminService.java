@@ -6,6 +6,7 @@ import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -13,11 +14,19 @@ public class AdminService {
 
     private final UserRepository userRepository;
 
-
+    @Transactional
     public void editProfileByAdmin(User userAdmin, Long targetId, ProfileRequestDto requestDto) {
         checkAdminRole(userAdmin);
         findUser(targetId)
                 .updateProfile(requestDto); //todo 기존 profile업데이트 기능을 계속 써도 될지?
+    }
+
+    @Transactional
+    public void editRoleByAdmin(User userAdmin, Long targetId, UserRoleEnum role) {
+        checkAdminRole(userAdmin);
+        findUser(targetId)
+                .updateRole(role);
+
     }
 
     public void deleteUserByAdmin(User userAdmin, Long targetId) {
@@ -25,12 +34,7 @@ public class AdminService {
         userRepository.delete(findUser(targetId));
     }
 
-    public void editRoleByAdmin(User userAdmin, Long targetId, UserRoleEnum role){
-        checkAdminRole(userAdmin);
-        findUser(targetId)
-                .updateRole(role);
 
-    }
 
 
 
@@ -40,7 +44,7 @@ public class AdminService {
         }
     }
 
-    private User findUser(Long targetId){
+    private User findUser(Long targetId) {
         User targetUser = userRepository.findById(targetId).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저의 정보를 찾을 수 없습니다.")
         );
