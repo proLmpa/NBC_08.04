@@ -20,7 +20,7 @@ $(document).ready(function () {
             const resList = response['posts']
             for(let i = 0; i < resList.length; i++) {
                 let postDto = resList[i]
-                let tempHtml = addHtml(postDto)
+                let tempHtml = formPost(postDto)
                 $('#container').append(tempHtml)
 
                 let postPosition = '.postDto-tag-' + postDto['id']
@@ -36,7 +36,7 @@ $(document).ready(function () {
     })
 })
 
-function addHtml(postDto) {
+function formPost(postDto) {
     return `<div class="postDto-box postDto-${postDto.id}">
             <div class="postDto-header">
                 <div class="postDto-nickname">${postDto.nickname}</div>
@@ -81,7 +81,6 @@ function mypage() {
         url: `/api/user/info`,
         success: function (response) {
             console.log(response)
-            let username = response['username']
             let isAdmin = response['isAdmin']
 
             if(isAdmin) {
@@ -217,10 +216,12 @@ function setToken() {
 
     if(auth !== ''){
         check = true
-    } else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
-        auth = 'Bearer ' + auth;
-        check = true
-    } else {
+    }
+    // else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
+    //     auth = 'Bearer ' + auth;
+    //     check = true
+    // }
+    else {
         alert('로그인한 유저만 수정 가능합니다!')
         window.location.href = host + '/api/user/login-page'
         return false

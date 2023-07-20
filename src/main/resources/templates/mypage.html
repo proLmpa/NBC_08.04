@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link rel="stylesheet" type="text/css" href="/css/index.css">
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    <script src="/js/mypage.js"></script>
+    <!--  js를 jquery와 함께 호출 시 스크립트 실행 순서에 의해 jQuery를 먼저 선언해야 한다. -->
+    <!--  출처: https://joonpyo-hong.tistory.com/entry/JS-jQuery-is-not-defined-is-not-defined-%EC%98%A4%EB%A5%98  -->
+
+    <title>DTOGRAM PROFILE</title>
+</head>
+<body>
+<div class="header">
+    <div class="header-logo">
+        <a href="/">DTOGRAM</a>
+    </div>
+
+    <div class="header-nickname">
+    </div>
+
+    <span class="header-logout">
+        <a href="javascript:logout()">Logout</a>
+    </span>
+</div>
+
+<div class="body"> </div>
+
+<div class="footer">
+    <div id="follow-container" class="follow-container">
+        <div class="follow-title">팔로우</div>
+        <div class="follow-list"></div>
+    </div>
+
+    <div id="follower-container" class="follower-container">
+        <div class="follower-title">팔로워</div>
+        <div class="follower-list"></div>
+    </div>
+
+    <div id="like-container" class="like-container">
+        <div class="like-title">좋아요</div>
+        <div class="like-list"></div>
+    </div>
+</div>
+</body>
+</html>

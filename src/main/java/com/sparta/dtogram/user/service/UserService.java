@@ -66,6 +66,6 @@ public class UserService {
     }
 
     public UserInfoDto getUserInfo(User user) {
-        return new UserInfoDto(user.getUsername(), user.getRole().equals(UserRoleEnum.ADMIN));
+        return new UserInfoDto(user.getId(), user.getRole().equals(UserRoleEnum.ADMIN));
     }
 }
