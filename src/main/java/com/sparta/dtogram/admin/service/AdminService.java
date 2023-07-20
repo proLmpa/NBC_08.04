@@ -22,10 +22,13 @@ public class AdminService {
     }
 
     @Transactional
-    public void editRoleByAdmin(User userAdmin, Long targetId, UserRoleEnum role) {
+    public void editRoleByAdmin(User userAdmin, Long targetId, String role) {
         checkAdminRole(userAdmin);
+
+        UserRoleEnum newRole = UserRoleEnum.valueOf(role);
+
         findUser(targetId)
-                .updateRole(role);
+                .updateRole(newRole);
 
     }
 

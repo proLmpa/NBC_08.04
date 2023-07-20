@@ -30,6 +30,20 @@ public class AdminController {
         }
     }
 
+    @PutMapping("/admin/user/{id}/{role}")
+    public ResponseEntity<ApiResponseDto> editUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                   @PathVariable Long id,
+                                                   @PathVariable String role){
+        try {
+            adminService.editRoleByAdmin(userDetails.getUser(), id, role);
+            return ResponseEntity.ok().body(new ApiResponseDto("유저 정보 수정 성공", HttpStatus.OK.value()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+
+
     @DeleteMapping("/admin/user/{id}")
     public ResponseEntity<ApiResponseDto> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                    @PathVariable Long id){
