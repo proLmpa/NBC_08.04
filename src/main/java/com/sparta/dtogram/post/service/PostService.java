@@ -89,7 +89,7 @@ public class PostService {
     }
 
     @Transactional
-    public void likePost(Long id, User user) {
+    public int likePost(Long id, User user) {
         log.info("게시글 좋아요");
         User foundUser = findUser(user);
         Post post = findPost(id);
@@ -103,9 +103,12 @@ public class PostService {
         } else {
             log.info("게시글 좋아요 해제");
 
-            postLike.cancelLike(postLike);
+            postLike.cancelLike();
             postLikeRepository.delete(postLike);
         }
+
+        List<PostLike> postLikes = postLikeRepository.findAllByPost_id(post.getId());
+        return postLikes.size();
     }
 
     public void addTag(Long postId, Long tagId, User user) {

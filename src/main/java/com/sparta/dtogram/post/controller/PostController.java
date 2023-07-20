@@ -76,11 +76,11 @@ public class PostController {
     @PostMapping("/post/{id}/like")
     public ResponseEntity<MsgResponseDto> createPostLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         try {
-            postService.likePost(id, userDetails.getUser());
+            int likes = postService.likePost(id, userDetails.getUser());
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("좋아요 "+likes, HttpStatus.ACCEPTED.value()));
         } catch(DuplicateRequestException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("게시글 좋아요 성공", HttpStatus.ACCEPTED.value()));
     }
 
     // 태그 추가
