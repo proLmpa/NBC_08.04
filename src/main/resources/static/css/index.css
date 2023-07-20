@@ -12,27 +12,33 @@ body {
     padding: 10px;
 }
 
+.header a {
+    text-decoration-line: none;
+    text-decoration: white;
+    color: chartreuse;
+}
+
 .header-logo {
-    order: 1;
+    font-size: 24px;
 }
 
-.header-search {
-    order: 2;
-    margin-right: 10px;
+.header-search,
+.header-auth {
+    display: flex;
+    align-items: center;
 }
 
-.header-login {
-    order: 3;
-    margin-right: 10px;
+.header-auth > div {
+    display: flex;
 }
 
-.header-signup {
-    order: 4;
-    margin-right: 10px;
+.header-auth a {
+    margin-left: 8px;
 }
 
+.header-signup,
 .header-logout {
-    order: 5;
+    margin-right: 10px;
 }
 
 .post-register-box {
@@ -45,16 +51,16 @@ body {
      transform: translate(-50%, -50%);
  }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-}
+/*.post-container {*/
+/*    max-width: 600px;*/
+/*    margin: 0 auto;*/
+/*    padding: 20px;*/
+/*    background-color: #ffffff;*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*}*/
 
 .postDto-box {
     width: 30%;

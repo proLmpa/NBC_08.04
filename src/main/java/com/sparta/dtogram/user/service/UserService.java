@@ -1,6 +1,7 @@
 package com.sparta.dtogram.user.service;
 
 import com.sparta.dtogram.user.dto.SignupRequestDto;
+import com.sparta.dtogram.user.dto.UserInfoDto;
 import com.sparta.dtogram.user.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
@@ -62,5 +63,9 @@ public class UserService {
 
         // 사용했던 비밀번호 목록에 저장
         passwordHistoryRepository.save(new PasswordHistory(requestDto.getPassword(), user));
+    }
+
+    public UserInfoDto getUserInfo(User user) {
+        return new UserInfoDto(user.getUsername(), user.getRole().equals(UserRoleEnum.ADMIN));
     }
 }

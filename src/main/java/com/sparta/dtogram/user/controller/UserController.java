@@ -4,7 +4,6 @@ package com.sparta.dtogram.user.controller;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
-import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -51,7 +50,12 @@ public class UserController {
         }
 
         userService.signup(requestDto);
-
         return ResponseEntity.ok().body("회원 가입 성공");
+    }
+
+    @GetMapping("/user/info")
+    @ResponseBody
+    public ResponseEntity<UserInfoDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.getUserInfo(userDetails.getUser()));
     }
 }
