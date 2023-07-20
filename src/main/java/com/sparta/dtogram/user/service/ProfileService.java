@@ -3,7 +3,9 @@ package com.sparta.dtogram.user.service;
 import com.sparta.dtogram.user.dto.PasswordRequestDto;
 import com.sparta.dtogram.user.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.dto.ProfileResponseDto;
+import com.sparta.dtogram.user.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.repository.PasswordHistoryRepository;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProfileService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordHistoryRepository passwordHistoryRepository;
 
     public ProfileResponseDto getProfile(Long id) {
         User user = userRepository.findById(id).orElseThrow(() ->
@@ -39,7 +42,18 @@ public class ProfileService {
         );
         if (passwordEncoder.matches(requestDto.getPassword(), changed.getPassword())) {
             if (requestDto.getNewPassword1().equals(requestDto.getNewPassword2())) {
-                changed.setPassword(passwordEncoder.encode(requestDto.getNewPassword2()));
+                boolean isUsedPassword = passwordHistoryRepository.existsByPassword(requestDto.getNewPassword2());
+                if (!isUsedPassword) {
+                    changed.setPassword(passwordEncoder.encode(requestDto.getNewPassword2()));
+                    // 새로운 비밀번호 사용 비밀번호 목록에 저장
+                    passwordHistoryRepository.save(new PasswordHistory(requestDto.getNewPassword2(), user));
+                    if (changed.getPasswordHistories().size() > 3) {
+                        PasswordHistory oldestPassword = passwordHistoryRepository.findAllByOrderByCreatedAtAsc().get(0);
+                        passwordHistoryRepository.delete(oldestPassword);
+                    }
+                } else {
+                    throw new IllegalArgumentException("최근 사용한 비밀번호입니다.");
+                }
             } else {
                 throw new IllegalArgumentException("같은 비밀번호를 입력해주세요");
             }
