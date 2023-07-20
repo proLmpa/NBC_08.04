@@ -1,7 +1,9 @@
 package com.sparta.dtogram.reply.service;
 
+import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
+import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.entity.Reply;
@@ -36,6 +38,17 @@ public class ReplyService {
 
             return new ReplyResponseDto(reply);
     }
+
+    @Transactional(readOnly = true)
+    public ReplyResponseDto getReplyById(Long id) {
+        Reply reply = findReply(id);
+
+        return new ReplyResponseDto(reply);
+    }
+
+//    public RepliesResponseDto getReplies() {
+//        return replyRepository.findAll();
+//    }
 
     @Transactional
     public ReplyResponseDto updateReply(Long id, ReplyRequestDto requestDto, User user) {
@@ -93,4 +106,6 @@ public class ReplyService {
                 new IllegalArgumentException("Exception ! 존재하지 않는 댓글 찾기 시도 감지")
         );
     }
+
+
 }

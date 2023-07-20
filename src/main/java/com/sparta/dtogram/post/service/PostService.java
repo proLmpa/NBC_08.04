@@ -10,6 +10,7 @@ import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.post.entity.PostTag;
 import com.sparta.dtogram.post.repository.PostTagRepository;
+import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;

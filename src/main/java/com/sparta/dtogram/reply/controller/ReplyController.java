@@ -2,6 +2,8 @@ package com.sparta.dtogram.reply.controller;
 
 import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
+import com.sparta.dtogram.post.dto.PostResponseDto;
+import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.service.ReplyService;
@@ -34,6 +36,18 @@ public class ReplyController {
             throw new RuntimeException("댓글 달기 실패", e);
         }
     }
+
+    @GetMapping("/reply/{id}")
+    public ResponseEntity<ReplyResponseDto> getReplyById(@PathVariable Long id) {
+        ReplyResponseDto result = replyService.getReplyById(id);
+        return ResponseEntity.ok().body(result);
+    }
+
+//    @GetMapping("/reply")
+//    public ResponseEntity<RepliesResponseDto> getReplies() {
+//        RepliesResponseDto result = replyService.getReplies();
+//        return ResponseEntity.ok().body(result);
+//    }
 
     @PutMapping("/reply/{id}")
     @ResponseBody

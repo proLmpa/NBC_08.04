@@ -35,6 +35,9 @@ body {
     order: 5;
 }
 
+.post-register-box {
+}
+
 #post-update-box {
      position: fixed;
      top: 50%;
