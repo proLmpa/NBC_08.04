@@ -1,6 +1,7 @@
 package com.sparta.dtogram.user.controller;
 
 
+import com.sparta.dtogram.user.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.service.UserService;
@@ -54,17 +55,17 @@ public class UserController {
 
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id){
-        return ResponseEntity.ok().body(userService.getUser(id));
+    public ResponseEntity<ProfileResponseDto> getUser(@PathVariable Long id){
+        return ResponseEntity.ok().body(new ProfileResponseDto(userService.getUser(id)));
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<List<User>> getAllUsers(){
+    @GetMapping("/users")
+    public ResponseEntity<List<ProfileResponseDto>> getAllUsers(){
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
-    @GetMapping("/user/{nickname}") //오버로딩
-    public ResponseEntity<List<User>> getAllUsers(@PathVariable String nickname){
+    @GetMapping("/users/{nickname}") //오버로딩
+    public ResponseEntity<List<ProfileResponseDto>> getAllUsers(@PathVariable String nickname){
         return ResponseEntity.ok().body(userService.getAllUsers(nickname));
     }
 

@@ -1,5 +1,6 @@
 package com.sparta.dtogram.user.service;
 
+import com.sparta.dtogram.user.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
@@ -71,11 +72,13 @@ public class UserService {
                 );
     }
 
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
+    public List<ProfileResponseDto> getAllUsers(){
+        return userRepository.findAll()
+                .stream().map(ProfileResponseDto::new).toList();
     }
 
-    public List<User> getAllUsers(String nickname){
-        return userRepository.findByNicknameContainsOrderByNicknameAsc(nickname); //todo 페이징 작업 추가
+    public List<ProfileResponseDto> getAllUsers(String nickname){
+        return userRepository.findByNicknameContainsOrderByNicknameAsc(nickname)
+                .stream().map(ProfileResponseDto::new).toList(); //todo 페이징 작업 추가?
     }
 }
