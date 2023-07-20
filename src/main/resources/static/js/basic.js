@@ -9,14 +9,13 @@ $(document).ready(function () {
             console.log(response)
             $('#container').empty()
 
-            const resList = response['postsList']
+            const resList = response['posts']
             for(let i = 0; i < resList.length; i++) {
                 let postDto = resList[i]
                 let tempHtml = addHtml(postDto)
                 $('#container').append(tempHtml)
 
                 let postId = postDto['id']; // postId 정의
-
 
                 let postPosition = '.postDto-' + postId + '-tags';
                 for (let j = 0; j < postDto['tags'].length; j++) {
@@ -65,28 +64,31 @@ function addHtml(postDto) {
                 </div>
                 <br><br>
                 <div class="replyDto-box-${postDto.id}"">
-                    <input type="text" id="replyDto-input" placeholder="ReplyContent">
+                    <input type="text" class="replyDto-updateInput" id="replyDto-input" placeholder="ReplyContent">
+                    <br>
                     <button class="replyDto-btn" onclick="writeReply(${postDto.id})">댓글 달기 </button><br>
                 </div>
-                <div class="replyDto-${postDto.id}"></div>
+                <div class="replyDto-${postDto.id}">
+                    <!--댓글 자동삽입되는 영역-->
+                </div>
             </div><br>`
 }
 
 function addReplyHtml(replyDto) {
     return `<br><hr>
-    <div class="replyDto-box replyDto-${replyDto.id}">
-        <div class="replyDto-nickname">${replyDto.nickname}</div>
-        <div class="replyDto-createdAt">createdAt: ${replyDto.createdAt}</div>
-        <div class="replyDto-modifiedAt">modifiedAt: ${replyDto.modifiedAt}</div>
-        <div class="replyDto-content">${replyDto.content}</div>
-        <div class="replyDto-replyLike-${replyDto.id}" onclick="likeReply(${replyDto.id})"> 좋아요 ${replyDto['countReplyLike']}</div>
+    <div class="replyDto-box-${replyDto.id}">
+        <div class="postDto-nickname" id="replyDto-nickname">${replyDto.nickname}</div>
+        <div class="postDto-createdAt" id="replyDto-createdAt">createdAt: ${replyDto.createdAt}</div>
+        <div class="postDto-modifiedAt" id="replyDto-modifiedAt">modifiedAt: ${replyDto.modifiedAt}</div>
         <br>
-        <input type="text" id="replyDto-updateInput-${replyDto.id}" placeholder="ReplyUpdateContent">
+        <div class="postDto-content" id="reply-content">${replyDto.content}</div>     
+        <div class="replyDto-replyLike" id="replylike-${replyDto.id}" onclick="likeReply(${replyDto.id})" data-liked="${replyDto.liked}"> 좋아요 ${replyDto['countReplyLike']}</div>
         <br>
-        <div class="replyDto-btn">
-            <button onclick="updateReply(${replyDto.id})">댓글 수정</button>
-            <button onclick="deleteReply(${replyDto.id})">댓글 삭제</button>
-            <button onclick="likeReply(${replyDto.id})">댓글 좋아요</button>
+        <input type="text" class="replyDto-updateInput" id="replyDto-updateInput-${replyDto.id}" placeholder="ReplyUpdateContent">
+        <br>
+        <div class="replyDto-box-btn">
+            <button type="button" class="replyDto-btn" onclick="updateReply(${replyDto.id})">댓글 수정</button>
+            <button type="button" class="replyDto-btn" onclick="deleteReply(${replyDto.id})">댓글 삭제</button>
         </div>
     </div>`;
 }
@@ -246,7 +248,7 @@ function writeReply(postId) {
                 replyDto.empty();
                 location.reload(); //develop 예정
 
-                $('.postDto-' + postId + ' .reply-content').val('');
+                $('.postDto-' + postId + '#reply-content').val('');
             })
             .fail(function () {
                 alert('댓글 등록에 실패했습니다.');
@@ -281,7 +283,7 @@ function updateReply(replyId) {
         })
             .done(function (res) {
                 alert('댓글을 수정했습니다!');
-                $('.replyDto-' + replyId + ' .replyDto-content').text(res.content);
+                $('.replyDto-box-' + replyId + ' #reply-content').text(res.content);
             })
             .fail(function () {
                 alert('댓글 수정에 실패했습니다.');
@@ -322,40 +324,26 @@ function deleteReply(replyId) {
     }
 }
 
-function likeReply(replyId) {
-    const auth = getToken();
+function likeReply(replyId) { //이거 수정해야 함 !
+    if(!setToken()) return
 
-    if (auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth);
-        });
-    } else {
-        alert('로그인한 유저만 좋아요를 누를 수 있습니다!');
-        window.location.href = host + '/api/user/login-page';
-        return;
-    }
+    let likePosition = '.postDto-postLike-' + postId
 
-    let check = confirm('이대로 댓글에 좋아요를 누르시겠습니까?');
-
-    if (check === true) {
-        $.ajax({
-            type: 'POST',
-            url: `/api/reply/${replyId}/like`,
-            contentType: 'application/json',
+    $.ajax({
+        type: "POST",
+        url: `/api/post/${postId}/like`,
+        contentType: "application/json"
+    })
+        .done(function(res) {
+            $(likePosition).empty()
+            $(likePosition).append(res['message'])
+            // window.location.href = host
         })
-            .done(function (res) {
-                alert('댓글에 좋아요를 눌렀습니다!');
-                location.reload();
-            })
-            .fail(function (xhr, status, error) {
-                if (xhr.status === 400) {
-                    alert('이미 좋아요를 누른 댓글입니다.');
-                } else {
-                    alert('댓글에 좋아요를 누르는데 실패했습니다.');
-                }
-            });
-    }
+        .fail(function() {
+            alert('좋아요 등록 중 오류가 발생했습니다.')
+        })
 }
+
 
 
 

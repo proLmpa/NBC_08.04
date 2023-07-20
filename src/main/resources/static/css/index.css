@@ -35,8 +35,6 @@ body {
     order: 5;
 }
 
-.post-register-box {
-}
 
 #post-update-box {
      position: fixed;
@@ -57,8 +55,8 @@ body {
 }
 
 .postDto-box {
-    width: 30%;
-    margin-left: 33%;
+    width: 50%;
+    margin-left: 25%;
     margin-bottom: 20px;
     padding: 10px;
     background-color: #ffffff;
@@ -75,6 +73,7 @@ body {
 .postDto-nickname {
     font-weight: bold;
     margin-right: 10px;
+    width: auto;
 }
 
 .postDto-createdAt,
@@ -128,4 +127,42 @@ body {
     font-size: 12px;
     color: #888888;
     cursor: pointer;
+}
+
+.replyDto-btn {
+    padding: 8px 16px;
+    font-size: 12px;
+    background-color: gainsboro;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.replyDto-btn:hover {
+    color: #fff;
+    background-color: dimgrey;
+}
+
+.replyDto-updateInput {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.replyDto-updateInput:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+
+.replyDto-replyLike {
+    font-size: 12px;
+    color: #888888;
+    margin-right: 10px;
 }
