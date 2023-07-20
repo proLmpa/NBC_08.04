@@ -186,14 +186,17 @@ function setToken() {
     let auth = Cookies.get('Authorization')
     if(auth === undefined) auth = ''
 
-    if(auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-        return true
+    if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
+        auth = 'Bearer ' + auth;
     } else {
         alert('로그인한 유저만 수정 가능합니다!')
         window.location.href = host + '/api/user/login-page'
         return false
     }
+  
+    $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', auth)
+    })
+  
+    return true
 }

@@ -40,7 +40,11 @@ public class User {
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
-  
+
+    private Long kakaoId;
+
+    private String naverId;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<PostLike> PostLikes = new ArrayList<>();
 
@@ -55,8 +59,37 @@ public class User {
         this.role = role;
     }
 
+    //todo 추후 다른 소셜 로그인과 섞일 염려가 있음
+    public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
+        this.username = "kakao"+username;
+        this.nickname = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.kakaoId =kakaoId;
+    }
+
+    public User(String username, String nickname, String password, String email, UserRoleEnum role, String naverId) {
+        this.username = username;
+        this.nickname = nickname;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+        this.naverId =naverId;
+    }
+
     public void updateProfile(ProfileRequestDto requestDto) {
         this.nickname = requestDto.getNickname();
         this.introduction = requestDto.getIntroduction();
+    }
+
+    public User kakaoIdUpdate(Long kakaoId) {
+        this.kakaoId = kakaoId;
+        return this;
+    }
+
+    public User naverIdUpdate(String naverId) {
+        this.naverId = naverId;
+        return this;
     }
 }
