@@ -72,26 +72,15 @@ public class PostController {
         }
     }
 
-    // 게시글별 유저별 좋아요 누르기
+    // 게시글에 좋아요 등록/해제하기
     @PostMapping("/post/{id}/like")
     public ResponseEntity<MsgResponseDto> createPostLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
         try {
-            postService.createPostLike(id, userDetails.getUser());
+            int likes = postService.likePost(id, userDetails.getUser());
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("좋아요 "+likes, HttpStatus.ACCEPTED.value()));
         } catch(DuplicateRequestException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("게시글 좋아요 성공", HttpStatus.ACCEPTED.value()));
-    }
-
-    // 게시글별 유저별 좋아요 취소
-    @DeleteMapping("/post/{id}/like")
-    public ResponseEntity<MsgResponseDto> deletePostLike(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
-        try {
-            postService.deletePostLike(id, userDetails.getUser());
-        } catch(IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
-        }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new MsgResponseDto("게시글 좋아요 취소 성공", HttpStatus.ACCEPTED.value()));
     }
 
     // 태그 추가
