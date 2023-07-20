@@ -10,7 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 @Entity
 @Getter
@@ -46,6 +48,9 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ReplyLike> ReplyLikes = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PasswordHistory> passwordHistories = new ArrayList<>();
 
     public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
         this.username = requestDto.getUsername();
