@@ -15,7 +15,7 @@ $(document).ready(function () {
                 let tempHtml = addHtml(postDto)
                 $('#container').append(tempHtml)
 
-                let postPosition = '.postDto-' + postDto['id'] + '-tags'
+                let postPosition = '.postDto-tag-' + postDto['id']
                 for(let j = 0; j < postDto['tags'].length; j++){
                     let tempTag = postDto['tags'][j]['tag']
                     $(postPosition).append('#' + tempTag + ' ')
@@ -41,11 +41,11 @@ function addHtml(postDto) {
             <div class="postDto-body">
                 <div class="postDto-title">${postDto.title}</div>
                 <div class="postDto-content">${postDto.content}</div><br>
-                <div class="postDto-tags postDto-${postDto.id}-tags">Tags: </div>
+                <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
             </div>            
         <div class="postDto-divider"></div>
             <div class="postDto-footer">
-                <div class="postDto-countPostLike">좋아요 ${postDto['countPostLike']}</div>
+                <div class="postDto-postLike postDto-postLike-${postDto.id}" onclick="likePost(${postDto.id})">좋아요 ${postDto['countPostLike']}</div>
                 <div class="postDto-reply-btn" onclick="reply(${postDto.id})">댓글 달기 </div>
             </div>
             </div><br>`
@@ -66,17 +66,7 @@ function logout() {
 }
 
 function writePost() {
-    const auth = getToken()
-
-    if(auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-    } else {
-        alert('로그인한 유저만 작성 가능합니다!')
-        window.location.href = host + '/api/user/login-page'
-        return
-    }
+    if(!setToken()) return
 
     let check = confirm("이대로 게시글을 작성하시겠습니까?")
 
@@ -125,17 +115,7 @@ function hideUpdateBox() {
 }
 
 function updatePost(postId) {
-    const auth = getToken()
-
-    if(auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-    } else {
-        alert('로그인한 유저만 수정 가능합니다!')
-        window.location.href = host + '/api/user/login-page'
-        return
-    }
+    if(!setToken()) return
 
     let check = confirm("이대로 게시글을 수정하시겠습니까?")
 
@@ -161,17 +141,7 @@ function updatePost(postId) {
 }
 
 function deletePost(postId) {
-    const auth = getToken()
-
-    if(auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-    } else {
-        alert('로그인한 유저만 수정 가능합니다!')
-        window.location.href = host + '/api/user/login-page'
-        return
-    }
+    if(!setToken()) return
 
     let check = confirm("정말 게시글을 삭제하시겠습니까?")
 
@@ -192,17 +162,41 @@ function deletePost(postId) {
     }
 }
 
-function getToken() {
-    let auth = Cookies.get('Authorization');
+function likePost(postId) {
+    if(!setToken()) return
 
-    if(auth === undefined) {
-        return '';
-    }
+    let likePosition = '.postDto-postLike-' + postId
 
-    // 소셜 로그인 사용한 경우 Bearer 추가
-    if(auth.indexOf('Bearer') === -1 && auth !== ''){
+    $.ajax({
+        type: "POST",
+        url: `/api/post/${postId}/like`,
+        contentType: "application/json"
+    })
+        .done(function(res) {
+            $(likePosition).empty()
+            $(likePosition).append(res['message'])
+            // window.location.href = host
+        })
+        .fail(function() {
+            alert('좋아요 등록 중 오류가 발생했습니다.')
+        })
+}
+
+function setToken() {
+    let auth = Cookies.get('Authorization')
+    if(auth === undefined) auth = ''
+
+    if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
         auth = 'Bearer ' + auth;
+    } else {
+        alert('로그인한 유저만 수정 가능합니다!')
+        window.location.href = host + '/api/user/login-page'
+        return false
     }
-
-    return auth;
+  
+    $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', auth)
+    })
+  
+    return true
 }
