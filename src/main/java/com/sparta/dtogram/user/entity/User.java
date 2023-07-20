@@ -51,6 +51,9 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ReplyLike> ReplyLikes = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PasswordHistory> passwordHistories = new ArrayList<>();
+
     public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
         this.username = requestDto.getUsername();
         this.nickname = requestDto.getNickname();
