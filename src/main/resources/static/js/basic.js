@@ -9,11 +9,9 @@ $(document).ready(function () {
             console.log(response)
             $('#container').empty()
 
-            const postList = response['posts']
-            console.log('###' + postList)
-
-            for (let i = 0; i < postList.length; i++) {
-                let postDto = postList[i]
+            const resList = response['postsList']
+            for(let i = 0; i < resList.length; i++) {
+                let postDto = resList[i]
                 let tempHtml = addHtml(postDto)
                 $('#container').append(tempHtml)
 
@@ -97,17 +95,7 @@ function addReplyHtml(replyDto) {
 /* 게시글 관련 함수 */
 
 function writePost() {
-    const auth = getToken()
-
-    if(auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-    } else {
-        alert('로그인한 유저만 작성 가능합니다!')
-        window.location.href = host + '/api/user/login-page'
-        return
-    }
+    if(!setToken()) return
 
     let check = confirm("이대로 게시글을 작성하시겠습니까?")
 
@@ -130,7 +118,6 @@ function writePost() {
             })
     }
 }
-
 
 function displayUpdateBox(postId) {
     hideUpdateBox()
@@ -157,17 +144,7 @@ function hideUpdateBox() {
 }
 
 function updatePost(postId) {
-    const auth = getToken()
-
-    if(auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-    } else {
-        alert('로그인한 유저만 수정 가능합니다!')
-        window.location.href = host + '/api/user/login-page'
-        return
-    }
+    if(!setToken()) return
 
     let check = confirm("이대로 게시글을 수정하시겠습니까?")
 
@@ -193,17 +170,7 @@ function updatePost(postId) {
 }
 
 function deletePost(postId) {
-    const auth = getToken()
-
-    if(auth !== undefined && auth !== '') {
-        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-            jqXHR.setRequestHeader('Authorization', auth)
-        })
-    } else {
-        alert('로그인한 유저만 수정 가능합니다!')
-        window.location.href = host + '/api/user/login-page'
-        return
-    }
+    if(!setToken()) return
 
     let check = confirm("정말 게시글을 삭제하시겠습니까?")
 
@@ -222,6 +189,26 @@ function deletePost(postId) {
                 alert('게시글 삭제에 실패했습니다.')
             })
     }
+}
+
+function likePost(postId) {
+    if(!setToken()) return
+
+    let likePosition = '.postDto-postLike-' + postId
+
+    $.ajax({
+        type: "POST",
+        url: `/api/post/${postId}/like`,
+        contentType: "application/json"
+    })
+        .done(function(res) {
+            $(likePosition).empty()
+            $(likePosition).append(res['message'])
+            // window.location.href = host
+        })
+        .fail(function() {
+            alert('좋아요 등록 중 오류가 발생했습니다.')
+        })
 }
 
 
@@ -401,4 +388,26 @@ function getToken() {
     }
 
     return auth;
+}
+
+function setToken() {
+    let check = false
+    let auth = Cookies.get('Authorization')
+    if(auth === undefined) auth = ''
+
+    if(auth !== ''){
+        check = true
+    } else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
+        auth = 'Bearer ' + auth;
+        check = true
+    } else {
+        alert('로그인한 유저만 수정 가능합니다!')
+        window.location.href = host + '/api/user/login-page'
+        return false
+    }
+
+    $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+        jqXHR.setRequestHeader('Authorization', auth)
+    })
+    return check
 }

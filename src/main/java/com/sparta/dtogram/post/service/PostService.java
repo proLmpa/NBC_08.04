@@ -1,20 +1,20 @@
 package com.sparta.dtogram.post.service;
 
-import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.PostsResponseDto;
 import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
+import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.post.entity.PostTag;
 import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
-import com.sparta.dtogram.post.entity.PostTag;
 import com.sparta.dtogram.post.repository.PostTagRepository;
 import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;
-import com.sun.jdi.request.DuplicateRequestException;
+import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostService {
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
@@ -89,38 +90,26 @@ public class PostService {
     }
 
     @Transactional
-    public void createPostLike(Long id, User user) {
-        log.info("게시글 좋아요 누르기 시도");
+    public int likePost(Long id, User user) {
+        log.info("게시글 좋아요");
+        User foundUser = findUser(user);
         Post post = findPost(id);
+        PostLike postLike = postLikeRepository.findByUserAndPost(foundUser, post).orElse(null);
 
-        if(postLikeRepository.findByUserAndPost(user, post).isPresent()) {
-            log.info("게시글 좋아요 누르기 실패");
-            throw new DuplicateRequestException("Exception ! 동일한 사용자의 좋아요 중복선택 시도 감지");
-        } else {
-            log.info("게시글 좋아요 누르기 성공");
-            PostLike postLike = new PostLike(user, post);
-            post.registerPostLike(postLike);
+        if(postLike == null) {
+            log.info("게시글 좋아요 등록");
+
+            postLike = new PostLike(foundUser, post);
             postLikeRepository.save(postLike);
-        }
-    }
-
-    @Transactional
-    public void deletePostLike(Long id, User user) {
-        Post post = findPost(id);
-        Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
-
-        if(postLike.isPresent()) {
-            post.cancelPostLike(postLike.get());
-            postLikeRepository.delete(postLike.get());
         } else {
-            throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
-        }
-    }
+            log.info("게시글 좋아요 해제");
 
-    private Post findPost(Long id) {
-        return postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
-        );
+            postLike.cancelLike();
+            postLikeRepository.delete(postLike);
+        }
+
+        List<PostLike> postLikes = postLikeRepository.findAllByPost_id(post.getId());
+        return postLikes.size();
     }
 
     public void addTag(Long postId, Long tagId, User user) {
@@ -152,5 +141,16 @@ public class PostService {
         }
 
         return new PostsResponseDto(postResponseDtos);
+    }
+
+    private User findUser(User user) {
+        return userRepository.findByUsername(user.getUsername()).orElseThrow(() ->
+                new IllegalArgumentException("Exception ! 존재하지 않는 사용자 찾기 시도 감지"));
+    }
+
+    private Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
+        );
     }
 }
