@@ -52,6 +52,8 @@ public class ProfileController {
             return ResponseEntity.ok().body(new MsgResponseDto("비밀번호 수정 성공", HttpStatus.OK.value()));
         } catch (RejectedExecutionException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
     }
 }
