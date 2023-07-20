@@ -27,5 +27,12 @@ public class PostLike {
     public PostLike(User user, Post post) {
         this.user = user;
         this.post = post;
+        user.getPostLikes().add(this);
+        post.getPostLikes().add(this);
+    }
+
+    public void cancelLike() {
+        user.getPostLikes().remove(this);
+        post.getPostLikes().remove(this);
     }
 }
