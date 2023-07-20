@@ -63,6 +63,7 @@ public class User {
     }
 
     //todo 추후 다른 소셜 로그인과 섞일 염려가 있음
+    //KAKAO User생성
     public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
         this.username = "kakao"+username;
         this.nickname = username;
@@ -72,6 +73,7 @@ public class User {
         this.kakaoId =kakaoId;
     }
 
+    //NAVER User생성
     public User(String username, String nickname, String password, String email, UserRoleEnum role, String naverId) {
         this.username = username;
         this.nickname = nickname;

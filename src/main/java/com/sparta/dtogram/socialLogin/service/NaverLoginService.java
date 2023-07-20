@@ -45,6 +45,7 @@ public class NaverLoginService {
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(naverUser.getUsername(), naverUser.getRole());
 
+        log.info("토큰정보"+createToken);
         jwtUtil.addJwtToCookie(createToken, response);
         return createToken;
     }
