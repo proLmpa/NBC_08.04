@@ -2,7 +2,7 @@ package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.reply.entity.ReplyLike;
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;

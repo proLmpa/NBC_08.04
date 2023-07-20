@@ -1,11 +1,11 @@
-package com.sparta.dtogram.user.controller;
+package com.sparta.dtogram.profile.controller;
 
 import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
-import com.sparta.dtogram.user.dto.PasswordRequestDto;
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
-import com.sparta.dtogram.user.dto.ProfileResponseDto;
-import com.sparta.dtogram.user.service.ProfileService;
+import com.sparta.dtogram.profile.dto.PasswordRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileResponseDto;
+import com.sparta.dtogram.profile.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

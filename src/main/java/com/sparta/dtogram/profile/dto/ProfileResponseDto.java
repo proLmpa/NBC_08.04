@@ -1,4 +1,4 @@
-package com.sparta.dtogram.user.dto;
+package com.sparta.dtogram.profile.dto;
 
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
