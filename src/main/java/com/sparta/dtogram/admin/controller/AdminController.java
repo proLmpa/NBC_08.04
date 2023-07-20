@@ -24,7 +24,18 @@ public class AdminController {
                                                      @RequestBody ProfileRequestDto requestDto){
         try {
             adminService.editProfileByAdmin(userDetails.getUser(), id, requestDto);
-            return ResponseEntity.ok().body(new ApiResponseDto("프로필 수정 성공", HttpStatus.OK.value()));
+            return ResponseEntity.ok().body(new ApiResponseDto("유저 정보 수정 성공", HttpStatus.OK.value()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    @DeleteMapping("/admin/user/{id}")
+    public ResponseEntity<ApiResponseDto> deleteUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                   @PathVariable Long id){
+        try {
+            adminService.deleteUserByAdmin(userDetails.getUser(), id);
+            return ResponseEntity.ok().body(new ApiResponseDto("유저 삭제 완료", HttpStatus.OK.value()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
