@@ -1,7 +1,6 @@
 package com.sparta.dtogram.follow.controller;
 
 import com.sparta.dtogram.common.dto.ApiResponseDto;
-import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.follow.service.FollowService;
 import lombok.RequiredArgsConstructor;
@@ -23,19 +22,12 @@ public class FollowController {
     private final FollowService followService;
 
     @PostMapping("/follow")
-    public ResponseEntity<ApiResponseDto> follow(@AuthenticationPrincipal UserDetailsImpl followingUserDetails, @RequestParam Long followerId) {
+    public ResponseEntity<ApiResponseDto> followUser(@AuthenticationPrincipal UserDetailsImpl followerUserDetails, @RequestParam Long followingId) {
         try {
-            followService.doFollow(followingUserDetails.getUser(), followerId);
-        } catch (IllegalArgumentException e) {
+            String successMessage = followService.followUser(followerUserDetails.getUser().getId(), followingId);
+            return ResponseEntity.ok(new ApiResponseDto(successMessage, HttpStatus.ACCEPTED.value()));
+        } catch (IllegalArgumentException | IllegalAccessException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto("팔로우 완료", HttpStatus.ACCEPTED.value()));
     }
-
-    @PostMapping("/unfollow")
-    public ResponseEntity<ApiResponseDto> unFollow(@AuthenticationPrincipal UserDetailsImpl followingUserDetails, @RequestParam Long followerId) {
-        followService.unFollow(followingUserDetails.getUser(), followerId);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(new ApiResponseDto("언팔로우 완료", HttpStatus.ACCEPTED.value()));
-    }
-
 }
