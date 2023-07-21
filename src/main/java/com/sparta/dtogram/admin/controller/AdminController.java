@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Slf4j
 @RestController
@@ -21,9 +24,10 @@ public class AdminController {
     @PutMapping("/admin/user/{id}")
     public ResponseEntity<ApiResponseDto> editUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                      @PathVariable Long id,
-                                                     @RequestBody ProfileRequestDto requestDto){
+                                                     @RequestPart ProfileRequestDto requestDto,
+                                                   @RequestPart MultipartFile image) throws IOException {
         try {
-            adminService.editProfileByAdmin(userDetails.getUser(), id, requestDto);
+            adminService.editProfileByAdmin(userDetails.getUser(), id, requestDto, image);
             return ResponseEntity.ok().body(new ApiResponseDto("유저 정보 수정 성공", HttpStatus.OK.value()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));

@@ -76,15 +76,14 @@ public class ReplyService {
     public void createReplyLike(Long id, User user) {
         log.info("댓글 좋아요 누르기 시도");
         Reply reply = findReply(id);
+        ReplyLike replyLike = new ReplyLike(user, reply);
 
-        if(replyLikeRepository.findByUserAndReply(user, reply).isPresent()) {
-            log.info("댓글 좋아요 누르기 실패");
-            throw new DuplicateRequestException("Exception ! 동일한 사용자의 좋아요 중복선택 시도 감지");
-        } else {
+        if(!replyLikeRepository.findByUserAndReply(user, reply).isPresent()) {
             log.info("댓글 좋아요 누르기 성공");
-            ReplyLike replyLike = new ReplyLike(user, reply);
             reply.registerReplyLike(replyLike);
             replyLikeRepository.save(replyLike);
+        } else {
+            replyLikeRepository.delete(replyLike);
         }
     }
 
@@ -95,7 +94,6 @@ public class ReplyService {
 
         if (replyLike.isPresent()) {
             reply.cancelReplyLike(replyLike.get());
-            replyLikeRepository.delete(replyLike.get());
         } else {
             throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
         }

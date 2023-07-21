@@ -3,7 +3,6 @@ package com.sparta.dtogram.post.service;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.dto.PostsResponseDto;
-import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.post.entity.PostTag;
@@ -69,7 +68,7 @@ public class PostService {
     }
 
     @Transactional
-    public PostResponseDto updatePost(Long id, UpdatePostRequestDto requestDto, User user) {
+    public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
         Post post = findPost(id);
         if (post.getUser().getNickname().equals(user.getNickname())) {
             post.updatePost(requestDto);

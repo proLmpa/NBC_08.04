@@ -1,12 +1,17 @@
 package com.sparta.dtogram.admin.service;
 
+import com.sparta.dtogram.common.service.S3Uploader;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -14,11 +19,19 @@ public class AdminService {
 
     private final UserRepository userRepository;
 
+    @Autowired
+    private S3Uploader s3Uploader;
+
+
     @Transactional
-    public void editProfileByAdmin(User userAdmin, Long targetId, ProfileRequestDto requestDto) {
+    public void editProfileByAdmin(User userAdmin, Long targetId, ProfileRequestDto requestDto, MultipartFile image) throws IOException {
         checkAdminRole(userAdmin);
-        findUser(targetId)
-                .updateProfile(requestDto); //todo 기존 profile업데이트 기능을 계속 써도 될지?
+        if (!image.isEmpty()) {
+            String storedFileName = s3Uploader.upload(image, "images");
+            findUser(targetId).updateProfile(requestDto, storedFileName);
+        }
+//        findUser(targetId)
+//                .updateProfile(requestDto); //todo 기존 profile업데이트 기능을 계속 써도 될지?
     }
 
     @Transactional
