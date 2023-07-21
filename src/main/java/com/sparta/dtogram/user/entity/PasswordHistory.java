@@ -1,7 +1,6 @@
 package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
-import com.sparta.dtogram.user.repository.PasswordHistoryRepository;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -70,8 +70,9 @@ body {
     order: 4;
 }
 
+.header-signup,
 .header-logout {
-    order: 5;
+    margin-right: 10px;
 }
 
 
@@ -82,16 +83,16 @@ body {
      transform: translate(-50%, -50%);
  }
 
-.container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    display: flex;
-    justify-content: space-between;
-}
+/*.post-container {*/
+/*    max-width: 600px;*/
+/*    margin: 0 auto;*/
+/*    padding: 20px;*/
+/*    background-color: #ffffff;*/
+/*    border-radius: 10px;*/
+/*    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*}*/
 
 .post-register-box {
     width: 50%;
@@ -233,4 +234,3 @@ body {
     display: inline-block;
     margin-left: 5px;
 }
-

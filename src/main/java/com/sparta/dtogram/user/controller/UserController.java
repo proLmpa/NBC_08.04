@@ -1,15 +1,13 @@
 package com.sparta.dtogram.user.controller;
 
 
-import com.sparta.dtogram.common.security.UserDetailsImpl;
+import com.sparta.dtogram.user.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
-import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -39,7 +37,6 @@ public class UserController {
     }
 
     @PostMapping("/user/signup")
-    @ResponseBody
     public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -51,7 +48,26 @@ public class UserController {
         }
 
         userService.signup(requestDto);
-
         return ResponseEntity.ok().body("회원 가입 성공");
+    }
+
+    @GetMapping("/user/info")
+    public ResponseEntity<UserInfoDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.getUserInfo(userDetails.getUser()));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<ProfileResponseDto> getUser(@PathVariable Long id){
+        return ResponseEntity.ok().body(new ProfileResponseDto(userService.getUser(id)));
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<ProfileResponseDto>> getAllUsers(){
+        return ResponseEntity.ok().body(userService.getAllUsers());
+    }
+
+    @GetMapping("/users/{nickname}") //오버로딩
+    public ResponseEntity<List<ProfileResponseDto>> getAllUsers(@PathVariable String nickname){
+        return ResponseEntity.ok().body(userService.getAllUsers(nickname));
     }
 }

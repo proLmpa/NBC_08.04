@@ -1,18 +1,26 @@
 const host = 'http://' + window.location.host;
 
 $(document).ready(function () {
+    let auth = Cookies.get('Authorization')
+    if(auth === undefined) auth = ''
+
+    if(auth !== ''){
+        document.getElementById('auth-exist').style.display = 'block'
+    } else {
+        document.getElementById('no-auth-exist').style.display = 'block'
+    }
+
     $.ajax({
         type: 'GET',
         url: `/api/post`,
         contentType: 'application/json',
         success: function(response) {
             console.log(response)
-            $('#container').empty()
 
             const resList = response['posts']
             for(let i = 0; i < resList.length; i++) {
                 let postDto = resList[i]
-                let tempHtml = addHtml(postDto)
+                let tempHtml = formPost(postDto)
                 $('#container').append(tempHtml)
 
                 let postId = postDto['id']; // postId 정의
@@ -35,11 +43,13 @@ $(document).ready(function () {
                 }//if
             }//for
         },
-        error(error, status, request) {
-            console.log(error.valueOf());
+        error(error) {
+            console.log(error.valueOf())
         }
     });
 });
+
+
 
 /* 게시글 관련 함수 */
 
@@ -58,7 +68,7 @@ function writePost() {
             contentType: "application/json",
             data: JSON.stringify({title: title, content: content}),
         })
-            .done(function(res) {
+            .done(function() {
                 alert('게시글을 등록했습니다!')
                 window.location.href = host
             })
@@ -107,7 +117,7 @@ function updatePost(postId) {
             contentType: "application/json",
             data: JSON.stringify({title: title, content: content}),
         })
-            .done(function(res) {
+            .done(function() {
                 alert('게시글을 수정했습니다!')
                 window.location.href = host
             })
@@ -130,7 +140,7 @@ function deletePost(postId) {
             url: `/api/post/${postId}`,
             contentType: "application/json"
         })
-            .done(function(res) {
+            .done(function() {
                 alert('게시글을 삭제했습니다!')
                 window.location.href = host
             })
@@ -159,6 +169,7 @@ function likePost(postId) {
             alert('좋아요 등록 중 오류가 발생했습니다.')
         })
 }
+
 
 
 /* 댓글 관련 함수 */
@@ -373,10 +384,12 @@ function setToken() {
 
     if(auth !== ''){
         check = true
-    } else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
-        auth = 'Bearer ' + auth;
-        check = true
-    } else {
+    }
+    // else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
+    //     auth = 'Bearer ' + auth;
+    //     check = true
+    // }
+    else {
         alert('로그인한 유저만 수정 가능합니다!')
         window.location.href = host + '/api/user/login-page'
         return false
