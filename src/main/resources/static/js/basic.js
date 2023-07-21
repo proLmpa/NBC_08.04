@@ -20,77 +20,38 @@ $(document).ready(function () {
             const resList = response['posts']
             for(let i = 0; i < resList.length; i++) {
                 let postDto = resList[i]
-                let tempHtml = formPost(postDto)
+                let tempHtml = addHtml(postDto)
                 $('#container').append(tempHtml)
 
-                let postPosition = '.postDto-tag-' + postDto['id']
-                for(let j = 0; j < postDto['tags'].length; j++){
-                    let tempTag = postDto['tags'][j]['tag']
-                    $(postPosition).append('#' + tempTag + ' ')
+                let postId = postDto['id']; // postId 정의
+
+                let postPosition = '.postDto-' + postId + '-tags';
+                for (let j = 0; j < postDto['tags'].length; j++) {
+                    let tempTag = postDto['tags'][j]['tag'];
+                    $(postPosition).append('#' + tempTag + ' ');
                 }
-            }
+
+                // 메인페이지 로드시 DB상 댓글 자동삽입
+                let replyList = postDto['replies'];
+                let replyDto = $('.replyDto-' + postId);
+                if (replyList !== null) {
+                    for (let j = 0; j < replyList.length; j++) {
+                        let reply = replyList[j];
+                        let tempReplyHtml = addReplyHtml(reply);
+                        replyDto.append(tempReplyHtml);
+                    }//for
+                }//if
+            }//for
         },
         error(error) {
             console.log(error.valueOf())
         }
-    })
-})
+    });
+});
 
-function formPost(postDto) {
-    return `<div class="postDto-box postDto-${postDto.id}">
-            <div class="postDto-header">
-                <div class="postDto-nickname">${postDto.nickname}</div>
-                <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
-                <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
-                <div class="postDto-update-btn" onclick="displayUpdateBox(${postDto.id})">수정</div>
-                <div class="postDto-delete-btn" onclick="deletePost(${postDto.id})">삭제</div>
-            </div> 
-        <div class="postDto-divider"></div>
-            <div class="postDto-body">
-                <div class="postDto-title">${postDto.title}</div>
-                <div class="postDto-content">${postDto.content}</div><br>
-                <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
-            </div>            
-        <div class="postDto-divider"></div>
-            <div class="postDto-footer">
-                <div class="postDto-postLike postDto-postLike-${postDto.id}" onclick="likePost(${postDto.id})">좋아요 ${postDto['countPostLike']}</div>
-                <div class="postDto-reply-btn" onclick="reply(${postDto.id})">댓글 달기 </div>
-            </div>
-            </div><br>`
-}
 
-function login() {
-    window.location.href = host + '/api/user/login-page'
-}
 
-function signup() {
-    window.location.href = host + '/api/user/signup'
-}
-
-function logout() {
-    // 토큰 삭제
-    Cookies.remove("Authorization", {path: '/'});
-    window.location.href = host + '/'
-}
-
-function mypage() {
-    if(!setToken()) return
-
-    $.ajax({
-        type: 'GET',
-        url: `/api/user/info`,
-        success: function (response) {
-            console.log(response)
-            let isAdmin = response['isAdmin']
-
-            if(isAdmin) {
-                window.location.href = host + '/api/admin'
-            } else {
-                window.location.href = host + '/api/profile'
-            }
-        }
-    })
-}
+/* 게시글 관련 함수 */
 
 function writePost() {
     if(!setToken()) return
@@ -207,6 +168,213 @@ function likePost(postId) {
         .fail(function() {
             alert('좋아요 등록 중 오류가 발생했습니다.')
         })
+}
+
+
+
+/* 댓글 관련 함수 */
+
+function writeReply(postId) {
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            jqXHR.setRequestHeader('Authorization', auth);
+        });
+    } else {
+        alert('로그인한 유저만 작성 가능합니다!');
+        window.location.href = host + '/api/user/login-page';
+        return;
+    }
+
+    let check = confirm('이대로 댓글을 작성하시겠습니까?');
+
+    if (check === true) {
+        let replyContent = $('#replyDto-input').val();
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/reply/${postId}`,
+            contentType: 'application/json',
+            data: JSON.stringify({ content: replyContent }),
+        })
+            .done(function (res) {
+                alert('댓글을 등록했습니다!');
+                let replyDto = $('.replyDto-' + postId);
+                let replyHtml = addReplyHtml(res);
+
+                replyDto.empty();
+                location.reload(); //develop 예정
+
+                $('.postDto-' + postId + '#reply-content').val('');
+            })
+            .fail(function () {
+                alert('댓글 등록에 실패했습니다.');
+            });
+    }
+}
+
+
+function updateReply(replyId) {
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            jqXHR.setRequestHeader('Authorization', auth);
+        });
+    } else {
+        alert('로그인한 유저만 수정 가능합니다!');
+        window.location.href = host + '/api/user/login-page';
+        return;
+    }
+
+    let check = confirm('댓글을 수정하시겠습니까?');
+
+    if (check === true) {
+        let updatedContent = $('#replyDto-updateInput-' + replyId).val();
+
+        $.ajax({
+            type: 'PUT',
+            url: `/api/reply/${replyId}`,
+            contentType: 'application/json',
+            data: JSON.stringify({ content: updatedContent }),
+        })
+            .done(function (res) {
+                alert('댓글을 수정했습니다!');
+                $('.replyDto-box-' + replyId + ' #reply-content').text(res.content);
+            })
+            .fail(function () {
+                alert('댓글 수정에 실패했습니다.');
+            });
+    }
+}
+
+function deleteReply(replyId) {
+    const auth = getToken();
+
+    if (auth !== undefined && auth !== '') {
+        $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
+            jqXHR.setRequestHeader('Authorization', auth);
+        });
+    } else {
+        alert('로그인한 유저만 삭제 가능합니다!');
+        window.location.href = host + '/api/user/login-page';
+        return;
+    }
+
+    let check = confirm('댓글을 삭제하시겠습니까?');
+
+    if (check === true) {
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/reply/${replyId}`,
+            contentType: 'application/json',
+        })
+            .done(function (res) {
+                alert('댓글을 삭제했습니다!');
+                location.reload();
+                //loadReplies(); -> 일부만 로드되는 함수 만들어봤지만 작동 無
+                //$('.replyDto-' + replyId).remove(); -> 이러면 댓글 여러 개 삭제시 공간이 나버림..
+            })
+            .fail(function () {
+                alert('댓글 삭제에 실패했습니다.');
+            });
+    }
+}
+
+function likeReply(replyId, liked) {
+    if (!setToken()) return;
+
+    const likePosition = `.replyDto-like-unlike-${replyId}`;
+    const likedIcon = '<i class="fas fa-heart like-btn"></i>';
+    const unlikedIcon = '<i class="far fa-heart unlike-btn"></i>';
+
+    if (liked) {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/reply/${replyId}/like`,
+            contentType: "application/json",
+        })
+            .done(function (res) {
+                $(likePosition).empty().append(unlikedIcon);
+                $(`#replylike-${replyId}`).text(` 좋아요 ${res['countReplyLike']}`);
+                // Update 'liked' status for the specific comment/reply
+                updateReplyLikeStatus(replyId, false);
+            })
+            .fail(function () {
+                alert('좋아요 취소 중 오류가 발생했습니다.');
+            });
+    } else {
+        $.ajax({
+            type: "POST",
+            url: `/api/reply/${replyId}/like`,
+            contentType: "application/json",
+        })
+            .done(function (res) {
+                $(likePosition).empty().append(likedIcon);
+                $(`#replylike-${replyId}`).text(` 좋아요 ${res['countReplyLike']}`);
+                // Update 'liked' status for the specific comment/reply
+                updateReplyLikeStatus(replyId, true);
+            })
+            .fail(function () {
+                alert('좋아요 등록 중 오류가 발생했습니다.');
+            });
+    }
+}
+
+
+function updateReplyLikeStatus(replyId, liked) {
+    const replyDto = findReplyById(replyId);
+    if (replyDto) {
+        replyDto.liked = liked;
+    }
+}
+
+
+function findReplyById(replyId) {
+    const resList = response['posts']; // Assuming you have this response variable
+    for (const postDto of resList) {
+        for (const replyDto of postDto.replies) {
+            if (replyDto.id === replyId) {
+                return replyDto;
+            }
+        }
+    }
+    return null;
+}
+
+
+
+
+/* 회원 관련 함수 */
+
+function login() {
+    window.location.href = host + '/api/user/login-page'
+}
+
+function signup() {
+    window.location.href = host + '/api/user/signup'
+}
+
+function logout() {
+    // 토큰 삭제
+    Cookies.remove("Authorization", {path: '/'});
+    window.location.href = host + '/'
+}
+
+function getToken() {
+    let auth = Cookies.get('Authorization');
+
+    if(auth === undefined) {
+        return '';
+    }
+
+    // 소셜 로그인 사용한 경우 Bearer 추가
+    if(auth.indexOf('Bearer') === -1 && auth !== ''){
+        auth = 'Bearer ' + auth;
+    }
+
+    return auth;
 }
 
 function setToken() {

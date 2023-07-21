@@ -3,7 +3,7 @@ package com.sparta.dtogram.admin.controller;
 import com.sparta.dtogram.admin.service.AdminService;
 import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
