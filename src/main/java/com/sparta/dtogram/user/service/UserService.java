@@ -1,5 +1,6 @@
 package com.sparta.dtogram.user.service;
 
+import com.sparta.dtogram.user.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
 import com.sparta.dtogram.user.entity.PasswordHistory;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -67,5 +69,20 @@ public class UserService {
 
     public UserInfoDto getUserInfo(User user) {
         return new UserInfoDto(user.getId(), user.getRole().equals(UserRoleEnum.ADMIN));
+      
+    public User getUser(Long id) {
+        return userRepository.findById(id).orElseThrow(()->
+                new NullPointerException("유저 정보를 찾을 수 없습니다.")
+                );
+    }
+
+    public List<ProfileResponseDto> getAllUsers(){
+        return userRepository.findAll()
+                .stream().map(ProfileResponseDto::new).toList();
+    }
+
+    public List<ProfileResponseDto> getAllUsers(String nickname){
+        return userRepository.findByNicknameContainsOrderByNicknameAsc(nickname)
+                .stream().map(ProfileResponseDto::new).toList(); //todo 페이징 작업 추가?
     }
 }
