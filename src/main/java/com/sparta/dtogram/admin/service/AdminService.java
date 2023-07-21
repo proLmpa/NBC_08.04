@@ -1,6 +1,6 @@
 package com.sparta.dtogram.admin.service;
 
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
@@ -37,10 +37,6 @@ public class AdminService {
         userRepository.delete(findUser(targetId));
     }
 
-
-
-
-
     private void checkAdminRole(User userAdmin) {
         if (userAdmin.getRole() != UserRoleEnum.ADMIN) {
             throw new IllegalArgumentException("Admin 권한이 없습니다.");
@@ -48,9 +44,8 @@ public class AdminService {
     }
 
     private User findUser(Long targetId) {
-        User targetUser = userRepository.findById(targetId).orElseThrow(() ->
+        return userRepository.findById(targetId).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저의 정보를 찾을 수 없습니다.")
         );
-        return targetUser;
     }
 }

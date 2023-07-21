@@ -1,13 +1,14 @@
 package com.sparta.dtogram.user.controller;
 
-
-import com.sparta.dtogram.user.dto.ProfileResponseDto;
+import com.sparta.dtogram.common.security.UserDetailsImpl;
+import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
 import com.sparta.dtogram.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;

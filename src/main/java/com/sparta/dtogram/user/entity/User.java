@@ -1,6 +1,7 @@
 package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.reply.entity.ReplyLike;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
@@ -8,7 +9,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
