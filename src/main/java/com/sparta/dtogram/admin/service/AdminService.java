@@ -1,6 +1,6 @@
 package com.sparta.dtogram.admin.service;
 
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;

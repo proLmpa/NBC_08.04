@@ -20,7 +20,7 @@ $(document).ready(function () {
             const resList = response['posts']
             for(let i = 0; i < resList.length; i++) {
                 let postDto = resList[i]
-                let tempHtml = formPost(postDto)
+                let tempHtml = addHtml(postDto)
                 $('#container').append(tempHtml)
 
                 let postId = postDto['id']; // postId 정의
