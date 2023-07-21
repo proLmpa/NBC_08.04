@@ -23,19 +23,22 @@
         <a href="/" class="header-style">DTOGRAM</a>
     </div>
     <hr>
-    <div class="header-nav">
-        <div class="header-logout">
-            <a href="javascript:logout()" class="header-style">Logout</a>
-        </div>
-        <div class="header-signup">
-            <a href="javascript:signup()" class="header-style">Signup</a>
-        </div>
-        <div class="header-login">
-            <a href="javascript:login()" class="header-style">Login</a>
-        </div>
-        <div class="header-search">
-            <a class="header-style">Search</a>
-        </div>
+
+    <div class="header-auth" id="no-auth-exist" style="display:none">
+        <span class="header-login header-style">
+            <a href="javascript:login()">Login</a>
+        </span>
+        <span class="header-signup header-style">
+            <a href="javascript:signup()">Signup</a>
+        </span>
+    </div>
+    <div class="header-auth" id="auth-exist" style="display:none">
+        <span class="header-mypage header-style">
+            <a href="javascript:mypage()">MyPage</a>
+        </span>
+        <span class="header-logout header-style">
+            <a href="javascript:logout()">Logout</a>
+        </span>
     </div>
 </div>
 
