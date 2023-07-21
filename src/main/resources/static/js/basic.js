@@ -31,68 +31,15 @@ $(document).ready(function () {
                         let reply = replyList[j];
                         let tempReplyHtml = addReplyHtml(reply);
                         replyDto.append(tempReplyHtml);
-                    }
-                }
-            }
+                    }//for
+                }//if
+            }//for
         },
         error(error, status, request) {
             console.log(error.valueOf());
         }
     });
 });
-
-
-//게시글 html 출력
-function addHtml(postDto) {
-    return `<div class="postDto-box postDto-${postDto.id}">
-                <div class="postDto-header">
-                    <div class="postDto-nickname">${postDto.nickname}</div>
-                    <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
-                    <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
-                    <div class="postDto-update-btn" onclick="displayUpdateBox(${postDto.id})">수정</div>
-                    <div class="postDto-delete-btn" onclick="deletePost(${postDto.id})">삭제</div>
-                </div> 
-                <div class="postDto-divider"></div>
-                <div class="postDto-body">
-                    <div class="postDto-title">${postDto.title}</div>
-                    <div class="postDto-content">${postDto.content}</div><br>
-                    <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
-                </div>            
-                <div class="postDto-divider"></div>
-                <div class="postDto-footer">
-                    <div class="postDto-postLike postDto-postLike-${postDto.id}" onclick="likePost(${postDto.id})"> 좋아요 ${postDto['countPostLike']}</div>
-                </div>
-                <br><br>
-                <div class="replyDto-box-${postDto.id}"">
-                    <input type="text" class="replyDto-updateInput" id="replyDto-input" placeholder="ReplyContent">
-                    <br>
-                    <button class="replyDto-btn" onclick="writeReply(${postDto.id})">댓글 달기 </button><br>
-                </div>
-                <div class="replyDto-${postDto.id}">
-                    <!--댓글 자동삽입되는 영역-->
-                </div>
-            </div><br>`
-}
-
-function addReplyHtml(replyDto) {
-    return `<br><hr>
-    <div class="replyDto-box-${replyDto.id}">
-        <div class="postDto-nickname" id="replyDto-nickname">${replyDto.nickname}</div>
-        <div class="postDto-createdAt" id="replyDto-createdAt">createdAt: ${replyDto.createdAt}</div>
-        <div class="postDto-modifiedAt" id="replyDto-modifiedAt">modifiedAt: ${replyDto.modifiedAt}</div>
-        <br>
-        <div class="postDto-content" id="reply-content">${replyDto.content}</div>     
-        <div class="replyDto-replyLike" id="replylike-${replyDto.id}" onclick="likeReply(${replyDto.id})" data-liked="${replyDto.liked}"> 좋아요 ${replyDto['countReplyLike']}</div>
-        <br>
-        <input type="text" class="replyDto-updateInput" id="replyDto-updateInput-${replyDto.id}" placeholder="ReplyUpdateContent">
-        <br>
-        <div class="replyDto-box-btn">
-            <button type="button" class="replyDto-btn" onclick="updateReply(${replyDto.id})">댓글 수정</button>
-            <button type="button" class="replyDto-btn" onclick="deleteReply(${replyDto.id})">댓글 삭제</button>
-        </div>
-    </div>`;
-}
-
 
 /* 게시글 관련 함수 */
 
@@ -324,24 +271,65 @@ function deleteReply(replyId) {
     }
 }
 
-function likeReply(replyId) { //이거 수정해야 함 !
-    if(!setToken()) return
+function likeReply(replyId, liked) {
+    if (!setToken()) return;
 
-    let likePosition = '.postDto-postLike-' + postId
+    const likePosition = `.replyDto-like-unlike-${replyId}`;
+    const likedIcon = '<i class="fas fa-heart like-btn"></i>';
+    const unlikedIcon = '<i class="far fa-heart unlike-btn"></i>';
 
-    $.ajax({
-        type: "POST",
-        url: `/api/post/${postId}/like`,
-        contentType: "application/json"
-    })
-        .done(function(res) {
-            $(likePosition).empty()
-            $(likePosition).append(res['message'])
-            // window.location.href = host
+    if (liked) {
+        $.ajax({
+            type: "DELETE",
+            url: `/api/reply/${replyId}/like`,
+            contentType: "application/json",
         })
-        .fail(function() {
-            alert('좋아요 등록 중 오류가 발생했습니다.')
+            .done(function (res) {
+                $(likePosition).empty().append(unlikedIcon);
+                $(`#replylike-${replyId}`).text(` 좋아요 ${res['countReplyLike']}`);
+                // Update 'liked' status for the specific comment/reply
+                updateReplyLikeStatus(replyId, false);
+            })
+            .fail(function () {
+                alert('좋아요 취소 중 오류가 발생했습니다.');
+            });
+    } else {
+        $.ajax({
+            type: "POST",
+            url: `/api/reply/${replyId}/like`,
+            contentType: "application/json",
         })
+            .done(function (res) {
+                $(likePosition).empty().append(likedIcon);
+                $(`#replylike-${replyId}`).text(` 좋아요 ${res['countReplyLike']}`);
+                // Update 'liked' status for the specific comment/reply
+                updateReplyLikeStatus(replyId, true);
+            })
+            .fail(function () {
+                alert('좋아요 등록 중 오류가 발생했습니다.');
+            });
+    }
+}
+
+
+function updateReplyLikeStatus(replyId, liked) {
+    const replyDto = findReplyById(replyId);
+    if (replyDto) {
+        replyDto.liked = liked;
+    }
+}
+
+
+function findReplyById(replyId) {
+    const resList = response['posts']; // Assuming you have this response variable
+    for (const postDto of resList) {
+        for (const replyDto of postDto.replies) {
+            if (replyDto.id === replyId) {
+                return replyDto;
+            }
+        }
+    }
+    return null;
 }
 
 

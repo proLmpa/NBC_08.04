@@ -5,35 +5,47 @@ body {
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: black;
     padding-top: 20px;
     padding-bottom: 20px;
     margin: 0;
 }
 
-.header-logo,
-.header-search,
-.header-login,
-.header-signup,
-.header-logout {
-    flex: 1;
-    text-align: center;
-    color: white;
-}
-
 .header-style {
     text-decoration: none;
     color: white;
+    display: inline-block;
+}
+
+
+.header-logo {
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 .header-nav {
+    display: flex;
     opacity: 0.8;
-    font-size: 20px;
+    font-size: 15px;
     font-weight: bold;
     color: white;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+    margin-left: 30px;
+    margin-right: 30px;
+    padding-right: 10px;
+}
+
+.header-login,
+.header-signup,
+.header-logout,
+.header-search {
+    margin-left: 10px;
+    margin-bottom: 7px;
 }
 
 .header-login a:hover,
@@ -45,33 +57,23 @@ body {
     color: white;
 }
 
-.header-logo {
-    order: 1;
-    font-weight: bold;
-    font-size: 20px;
-}
-
 .header-search {
     order: 2;
-    margin-right: 10px;
-    color: #6a6259;
+    color: white;
 }
 
 .header-login {
     order: 3;
-    margin-right: 10px;
 }
 
 .header-signup {
     order: 4;
-    margin-right: 10px;
 }
 
 .header-logout {
     order: 5;
 }
 
-.post-register-box
 
 #post-update-box {
      position: fixed;
@@ -98,18 +100,17 @@ body {
     margin-bottom: 30px;
     padding: 10px;
     background-color: #ffffff;
+    border: 1px solid #6a6259;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .postDto-box {
     width: 50%;
     margin-left: 25%;
-    margin-bottom: 20px;
+    margin-bottom: 5%;
     padding: 10px;
+    border: 1px solid #6a6259;
     background-color: #ffffff;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .postDto-header {
@@ -221,9 +222,15 @@ body {
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
+.replyDto-like-unlike {
+    display: inline-block;
+}
 
 .replyDto-replyLike {
     font-size: 12px;
     color: #888888;
     margin-right: 10px;
+    display: inline-block;
+    margin-left: 5px;
 }
+

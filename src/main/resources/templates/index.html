@@ -22,23 +22,23 @@
     <div class="header-logo">
         <a href="/" class="header-style">DTOGRAM</a>
     </div>
-
+    <hr>
     <div class="header-nav">
-        <div class="header-search">
-            <a class="header-search">Search</a>
-        </div>
-        <div class="header-login">
-            <a href="javascript:login()" class="header-style">Login</a>
+        <div class="header-logout">
+            <a href="javascript:logout()" class="header-style">Logout</a>
         </div>
         <div class="header-signup">
             <a href="javascript:signup()" class="header-style">Signup</a>
         </div>
-        <div class="header-logout">
-            <a href="javascript:logout()" class="header-style">Logout</a>
+        <div class="header-login">
+            <a href="javascript:login()" class="header-style">Login</a>
+        </div>
+        <div class="header-search">
+            <a class="header-style">Search</a>
         </div>
     </div>
-    <hr><br>
 </div>
+
 <div class="body">
     <br><div class="post-register-box">
         <div class="post-register-title">
@@ -51,7 +51,7 @@
     </div><br>
 
     <br><div id="post-update-box" style="display:none">
-    </div><bt>
+    </div><br>
 </div>
 
 <div id="container" class="post-container">
@@ -61,6 +61,11 @@
 <script>
     //게시글 html 출력
     function addHtml(postDto) {
+        let likedIcon = '<i class="fas fa-heart like-btn" onclick="likePost(' + postDto.id + ')" data-liked="' + (postDto.liked ? 'true' : 'false') + '"></i>';
+        let unlikedIcon = '<i class="far fa-heart unlike-btn" onclick="likePost(' + postDto.id + ')" data-liked="' + (postDto.liked ? 'true' : 'false') + '"></i>';
+
+        let likeIcon = postDto.liked ? likedIcon : unlikedIcon;
+
         return `<div class="postDto-box postDto-${postDto.id}">
                 <div class="postDto-header">
                     <div class="postDto-nickname">${postDto.nickname}</div>
@@ -79,11 +84,13 @@
 
                 <div class="postDto-divider"></div>
 
+                <!-- 게시글 좋아요 -->
                 <div class="postDto-footer">
-                    <div class="post-like-icon" onclick="likePost(${postDto.id})"><i class="fas fa-heart"></i></div>
-
+                    <div class="post-like-icon">${likeIcon}</div>
                     <div class="postDto-postLike postDto-postLike-${postDto.id}"> 좋아요 ${postDto['countPostLike']}</div>
                 </div>
+                <br>
+
                 <br><br>
                 <div class="replyDto-box-${postDto.id}"">
                     <input type="text" class="replyDto-updateInput" id="replyDto-input" placeholder="ReplyContent">
@@ -97,15 +104,33 @@
     }
 
     function addReplyHtml(replyDto) {
+        let likedIcon = '<i class="fas fa-heart like-btn" onclick="likeReply(' + replyDto.id + ')" data-liked="' + (replyDto.liked ? 'true' : 'false') + '"></i>';
+        let unlikedIcon = '<i class="far fa-heart unlike-btn" onclick="likeReply(' + replyDto.id + ')" data-liked="' + (replyDto.liked ? 'true' : 'false') + '"></i>';
+
         return `<br><hr>
     <div class="replyDto-box-${replyDto.id}">
         <div class="postDto-nickname" id="replyDto-nickname">${replyDto.nickname}</div>
         <div class="postDto-createdAt" id="replyDto-createdAt">createdAt: ${replyDto.createdAt}</div>
         <div class="postDto-modifiedAt" id="replyDto-modifiedAt">modifiedAt: ${replyDto.modifiedAt}</div>
+
+        <br><br>
+
+        <!--댓글 내용 자동삽입-->
         <br>
         <div class="postDto-content" id="reply-content">${replyDto.content}</div>
-        <div class="replyDto-replyLike" id="replylike-${replyDto.id}" onclick="likeReply(${replyDto.id})" data-liked="${replyDto.liked ? 'true' : 'false'}"> 좋아요 ${replyDto['countReplyLike']}</div>
-        <br>
+        <div class="postDto-divider"></div>
+
+        <!--댓글 좋아요-->
+        <div class="replyDto-${replyDto.id}">
+            <div class="replyDto-like-unlike-${replyDto.id}" onclick="likeReply(${replyDto.id}, ${replyDto.liked})">
+                ${replyDto.liked ? likedIcon : unlikedIcon}
+            </div>
+            <div class="replyDto-replyLike" id="replylike-${replyDto.id}">
+                좋아요 ${replyDto.countReplyLike}
+            </div>
+        </div>
+
+        <!--댓글 수정 및 삭제-->
         <input type="text" class="replyDto-updateInput" id="replyDto-updateInput-${replyDto.id}" placeholder="ReplyUpdateContent">
         <br>
         <div class="replyDto-box-btn">
@@ -114,6 +139,8 @@
         </div>
     </div>`;
     }
+
+
 </script>
 </body>
 </html>
