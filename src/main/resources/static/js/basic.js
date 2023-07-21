@@ -40,6 +40,7 @@ function formPost(postDto) {
     return `<div class="postDto-box postDto-${postDto.id}">
             <div class="postDto-header">
                 <div class="postDto-nickname">${postDto.nickname}</div>
+                <button class="postDto-follow-btn postDto-follow-${postDto.id}" onclick="followUser(${postDto['userId']})">팔로우</button>
                 <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
                 <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
                 <div class="postDto-update-btn" onclick="displayUpdateBox(${postDto.id})">수정</div>
@@ -115,6 +116,10 @@ function writePost() {
                 alert('게시글 등록에 실패했습니다.')
             })
     }
+}
+
+function followUser(userId) {
+
 }
 
 function displayUpdateBox(postId) {
@@ -216,12 +221,7 @@ function setToken() {
 
     if(auth !== ''){
         check = true
-    }
-    // else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
-    //     auth = 'Bearer ' + auth;
-    //     check = true
-    // }
-    else {
+    } else {
         alert('로그인한 유저만 수정 가능합니다!')
         window.location.href = host + '/api/user/login-page'
         return false
