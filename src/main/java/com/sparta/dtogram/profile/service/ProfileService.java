@@ -42,8 +42,8 @@ public class ProfileService {
         );
         if (passwordEncoder.matches(requestDto.getPassword(), changed.getPassword())) {
             if (requestDto.getNewPassword1().equals(requestDto.getNewPassword2())) {
-                boolean isUsedPassword = passwordHistoryRepository.existsByPassword(requestDto.getNewPassword2());
-                if (!isUsedPassword) {
+                boolean isUsed = passwordHistoryRepository.findByPassword(requestDto.getNewPassword2()).isPresent();
+                if (!isUsed) {
                     changed.setPassword(passwordEncoder.encode(requestDto.getNewPassword2()));
                     // 새로운 비밀번호 사용 비밀번호 목록에 저장
                     passwordHistoryRepository.save(new PasswordHistory(requestDto.getNewPassword2(), user));
@@ -55,7 +55,7 @@ public class ProfileService {
                     throw new IllegalArgumentException("최근 사용한 비밀번호입니다.");
                 }
             } else {
-                throw new IllegalArgumentException("같은 비밀번호를 입력해주세요");
+                throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
             }
         } else {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");

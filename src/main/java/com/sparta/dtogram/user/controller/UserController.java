@@ -3,7 +3,7 @@ package com.sparta.dtogram.user.controller;
 
 import com.sparta.dtogram.user.dto.ProfileResponseDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
-import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.dto.UserInfoDto;
 import com.sparta.dtogram.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +37,6 @@ public class UserController {
     }
 
     @PostMapping("/user/signup")
-    @ResponseBody
     public ResponseEntity<String> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -49,17 +48,20 @@ public class UserController {
         }
 
         userService.signup(requestDto);
-
         return ResponseEntity.ok().body("회원 가입 성공");
     }
 
+    @GetMapping("/user/info")
+    public ResponseEntity<UserInfoDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok(userService.getUserInfo(userDetails.getUser()));
+    }
 
     @GetMapping("/user/{id}")
     public ResponseEntity<ProfileResponseDto> getUser(@PathVariable Long id){
         return ResponseEntity.ok().body(new ProfileResponseDto(userService.getUser(id)));
     }
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     public ResponseEntity<List<ProfileResponseDto>> getAllUsers(){
         return ResponseEntity.ok().body(userService.getAllUsers());
     }
@@ -68,6 +70,4 @@ public class UserController {
     public ResponseEntity<List<ProfileResponseDto>> getAllUsers(@PathVariable String nickname){
         return ResponseEntity.ok().body(userService.getAllUsers(nickname));
     }
-
-
 }
