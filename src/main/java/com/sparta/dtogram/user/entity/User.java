@@ -38,6 +38,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column
+    private String imageUrl; // 프로필 이미지를 저장하기 위한 변수
+
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
@@ -84,9 +87,10 @@ public class User {
         this.naverId = naverId;
     }
 
-    public void updateProfile(ProfileRequestDto requestDto) {
+    public void updateProfile(ProfileRequestDto requestDto, String imageUrl) {
         this.nickname = requestDto.getNickname()==null ? this.nickname : requestDto.getNickname();
         this.introduction = requestDto.getIntroduction()==null ? this.introduction : requestDto.getIntroduction();
+        this.imageUrl = imageUrl==null ? this.imageUrl : imageUrl;
     }
 
     public User kakaoIdUpdate(Long kakaoId) {
