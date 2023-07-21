@@ -27,6 +27,13 @@ public class Follow {
     public Follow(User following, User follower) {
         this.following = following;
         this.follower = follower;
+        following.getFollowers().add(this);
+        follower.getFollowings().add(this);
+    }
+
+    public void cancelFollow(User following, User follower) {
+        following.getFollowers().remove(this);
+        follower.getFollowings().remove(this);
     }
 }
 

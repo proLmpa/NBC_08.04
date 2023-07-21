@@ -1,5 +1,6 @@
 package com.sparta.dtogram.user.entity;
 
+import com.sparta.dtogram.follow.entity.Follow;
 import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.reply.entity.ReplyLike;
@@ -51,6 +52,12 @@ public class User {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ReplyLike> ReplyLikes = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="following", orphanRemoval = true)
+    private List<Follow> followings = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "follower", orphanRemoval = true)
+    private List<Follow> followers = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<PasswordHistory> passwordHistories = new ArrayList<>();

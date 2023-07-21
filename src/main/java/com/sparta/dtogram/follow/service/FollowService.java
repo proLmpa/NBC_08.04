@@ -30,6 +30,7 @@ public class FollowService {
             followRepository.save(newFollow);
             return "해당 유저를 팔로우했습니다!";
         } else {
+            follow.cancelFollow(following, follower);
             followRepository.delete(follow);
             return "해당 유저를 언팔로우했습니다!";
         }
