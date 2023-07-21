@@ -1,39 +1,73 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f2f5;
+    background-color: white;
+    margin: 0;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: black;
-    color: chartreuse;
-    padding: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin: 0;
 }
 
-.header a {
-    text-decoration-line: none;
-    text-decoration: white;
-    color: chartreuse;
+.header-style {
+    text-decoration: none;
+    color: white;
+    display: inline-block;
 }
+
 
 .header-logo {
-    font-size: 24px;
+    font-weight: bold;
+    font-size: 25px;
+    text-align: center;
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
-.header-search,
-.header-auth {
+.header-nav {
     display: flex;
-    align-items: center;
-}
-
-.header-auth > div {
+    opacity: 0.8;
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
     display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+    margin-left: 30px;
+    margin-right: 30px;
+    padding-right: 10px;
 }
 
-.header-auth a {
-    margin-left: 8px;
+.header-login,
+.header-signup,
+.header-logout,
+.header-search {
+    margin-left: 10px;
+    margin-bottom: 7px;
+}
+
+.header-login a:hover,
+.header-signup a:hover,
+.header-logout a:hover {
+    opacity: 0.8;
+    font-size: 20px;
+    font-weight: bold;
+    color: white;
+}
+
+.header-search {
+    order: 2;
+    color: white;
+}
+
+.header-login {
+    order: 3;
+}
+
+.header-signup {
+    order: 4;
 }
 
 .header-signup,
@@ -41,8 +75,6 @@ body {
     margin-right: 10px;
 }
 
-.post-register-box {
-}
 
 #post-update-box {
      position: fixed;
@@ -62,14 +94,24 @@ body {
 /*    justify-content: space-between;*/
 /*}*/
 
-.postDto-box {
-    width: 30%;
-    margin-left: 33%;
-    margin-bottom: 20px;
+.post-register-box {
+    width: 50%;
+    margin-top: 4%;
+    margin-left: 25%;
+    margin-bottom: 30px;
     padding: 10px;
     background-color: #ffffff;
+    border: 1px solid #6a6259;
     border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.postDto-box {
+    width: 50%;
+    margin-left: 25%;
+    margin-bottom: 5%;
+    padding: 10px;
+    border: 1px solid #6a6259;
+    background-color: #ffffff;
 }
 
 .postDto-header {
@@ -81,6 +123,7 @@ body {
 .postDto-nickname {
     font-weight: bold;
     margin-right: 10px;
+    width: auto;
 }
 
 .postDto-createdAt,
@@ -124,6 +167,13 @@ body {
     margin-top: 10px;
 }
 
+.post-like-icon {
+    font-size: 18px;
+    color: #e74c3c;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
 .postDto-postLike {
     font-size: 12px;
     color: #888888;
@@ -136,56 +186,51 @@ body {
     cursor: pointer;
 }
 
-.profileDto-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+.replyDto-btn,
+#post-register-submit {
+    padding: 8px 16px;
+    font-size: 12px;
+    background-color: gainsboro;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.profileDto-photo {
-    width: 300px;
-    height: 300px;
-    background-color: black;
-    position: relative;
-    margin: 30px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    overflow: hidden;
+.replyDto-btn:hover,
+#post-register-submit:hover {
+    color: #fff;
+    background-color: dimgrey;
 }
 
-.profileDto-photo-image {
-    width: 98%;
-    height: 98%;
-    border-radius: 50%;
-    border: #03C75A 3px solid;
-    object-fit: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
+.replyDto-updateInput,
+.post-register-input,
+.post-register-element {
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.2s ease;
 }
 
-.profileDto-intro {
-    width: 33%;
-    height: 48%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-between;
+.replyDto-updateInput:focus,
+.post-register-input:focus
+.post-register-element:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
-#profileForm {
-    width: 100%;
+.replyDto-like-unlike {
+    display: inline-block;
 }
 
-#profileForm input {
-    width: 100%;
-    margin-bottom: 8px;
-}
-
-#info-edit-btns,
-#profile-edit-btns,
-#password-edit-btns {
-    display: flex;
-    justify-content: left;
-    margin-right: 2px;
+.replyDto-replyLike {
+    font-size: 12px;
+    color: #888888;
+    margin-right: 10px;
+    display: inline-block;
+    margin-left: 5px;
 }

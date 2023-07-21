@@ -7,59 +7,139 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
     <link rel="stylesheet" type="text/css" href="/css/index.css">
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-            integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
     <script src="/js/basic.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <!--  js를 jquery와 함께 호출 시 스크립트 실행 순서에 의해 jQuery를 먼저 선언해야 한다. -->
-    <!--  출처: https://joonpyo-hong.tistory.com/entry/JS-jQuery-is-not-defined-is-not-defined-%EC%98%A4%EB%A5%98  -->
 
     <title>DTOGRAM</title>
 </head>
 <body>
 <div class="header">
     <div class="header-logo">
-        <a href="/">DTOGRAM</a>
+        <a href="/" class="header-style">DTOGRAM</a>
     </div>
-
-    <div class="header-search">
-        Search
-    </div>
-
-    <div class="header-auth" id="no-auth-exist" style="display:none">
-        <span class="header-login">
-            <a href="javascript:login()">Login</a>
-        </span>
-        <span class="header-signup">
-            <a href="javascript:signup()">Signup</a>
-        </span>
-    </div>
-    <div class="header-auth" id="auth-exist" style="display:none">
-        <span class="header-mypage">
-            <a href="javascript:mypage()">MyPage</a>
-        </span>
-        <span class="header-logout">
-            <a href="javascript:logout()">Logout</a>
-        </span>
+    <hr>
+    <div class="header-nav">
+        <div class="header-logout">
+            <a href="javascript:logout()" class="header-style">Logout</a>
+        </div>
+        <div class="header-signup">
+            <a href="javascript:signup()" class="header-style">Signup</a>
+        </div>
+        <div class="header-login">
+            <a href="javascript:login()" class="header-style">Login</a>
+        </div>
+        <div class="header-search">
+            <a class="header-style">Search</a>
+        </div>
     </div>
 </div>
+
 <div class="body">
-    <div class="post-register-box">
-        <div class="post-title">
+    <br><div class="post-register-box">
+        <div class="post-register-title">
             <input type="text" id="title" placeholder="Title" class="post-register-element">
         </div>
-        <div class="post-content">
+        <div class="post-register-content">
             <input type="text" id="content" placeholder="Content" class="post-register-element">
         </div>
         <button id="post-register-submit" onclick="writePost()">작성하기</button>
-    </div>
+    </div><br>
 
-    <div id="post-update-box" style="display:none">
-    </div>
+    <br><div id="post-update-box" style="display:none">
+    </div><br>
 </div>
 <div id="container" class="post-container">
-
+<!--게시글 자동삽입되는 영역-->
 </div>
 
+<script>
+    //게시글 html 출력
+    function addHtml(postDto) {
+        let likedIcon = '<i class="fas fa-heart like-btn" onclick="likePost(' + postDto.id + ')" data-liked="' + (postDto.liked ? 'true' : 'false') + '"></i>';
+        let unlikedIcon = '<i class="far fa-heart unlike-btn" onclick="likePost(' + postDto.id + ')" data-liked="' + (postDto.liked ? 'true' : 'false') + '"></i>';
+
+        let likeIcon = postDto.liked ? likedIcon : unlikedIcon;
+
+        return `<div class="postDto-box postDto-${postDto.id}">
+                <div class="postDto-header">
+                    <div class="postDto-nickname">${postDto.nickname}</div>
+                    <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
+                    <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
+                    <div class="postDto-update-btn" onclick="displayUpdateBox(${postDto.id})">수정</div>
+                    <div class="postDto-delete-btn" onclick="deletePost(${postDto.id})">삭제</div>
+                </div>
+                <div class="postDto-divider"></div>
+
+                <div class="postDto-body">
+                    <div class="postDto-title">${postDto.title}</div>
+                    <div class="postDto-content">${postDto.content}</div><br>
+                    <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
+                </div>
+
+                <div class="postDto-divider"></div>
+
+                <!-- 게시글 좋아요 -->
+                <div class="postDto-footer">
+                    <div class="post-like-icon">${likeIcon}</div>
+                    <div class="postDto-postLike postDto-postLike-${postDto.id}"> 좋아요 ${postDto['countPostLike']}</div>
+                </div>
+                <br>
+
+                <br><br>
+                <div class="replyDto-box-${postDto.id}"">
+                    <input type="text" class="replyDto-updateInput" id="replyDto-input" placeholder="ReplyContent">
+                    <br>
+                    <button class="replyDto-btn" onclick="writeReply(${postDto.id})">댓글 달기 </button><br>
+                </div>
+                <div class="replyDto-${postDto.id}">
+                    <!--댓글 자동삽입되는 영역-->
+                </div>
+            </div><br>`
+    }
+
+    function addReplyHtml(replyDto) {
+        let likedIcon = '<i class="fas fa-heart like-btn" onclick="likeReply(' + replyDto.id + ')" data-liked="' + (replyDto.liked ? 'true' : 'false') + '"></i>';
+        let unlikedIcon = '<i class="far fa-heart unlike-btn" onclick="likeReply(' + replyDto.id + ')" data-liked="' + (replyDto.liked ? 'true' : 'false') + '"></i>';
+
+        return `<br><hr>
+    <div class="replyDto-box-${replyDto.id}">
+        <div class="postDto-nickname" id="replyDto-nickname">${replyDto.nickname}</div>
+        <div class="postDto-createdAt" id="replyDto-createdAt">createdAt: ${replyDto.createdAt}</div>
+        <div class="postDto-modifiedAt" id="replyDto-modifiedAt">modifiedAt: ${replyDto.modifiedAt}</div>
+
+        <br><br>
+
+        <!--댓글 내용 자동삽입-->
+        <br>
+        <div class="postDto-content" id="reply-content">${replyDto.content}</div>
+        <div class="postDto-divider"></div>
+
+        <!--댓글 좋아요-->
+        <div class="replyDto-${replyDto.id}">
+            <div class="replyDto-like-unlike-${replyDto.id}" onclick="likeReply(${replyDto.id}, ${replyDto.liked})">
+                ${replyDto.liked ? likedIcon : unlikedIcon}
+            </div>
+            <div class="replyDto-replyLike" id="replylike-${replyDto.id}">
+                좋아요 ${replyDto.countReplyLike}
+            </div>
+        </div>
+
+        <!--댓글 수정 및 삭제-->
+        <input type="text" class="replyDto-updateInput" id="replyDto-updateInput-${replyDto.id}" placeholder="ReplyUpdateContent">
+        <br>
+        <div class="replyDto-box-btn">
+            <button type="button" class="replyDto-btn" onclick="updateReply(${replyDto.id})">댓글 수정</button>
+            <button type="button" class="replyDto-btn" onclick="deleteReply(${replyDto.id})">댓글 삭제</button>
+        </div>
+    </div>`;
+    }
+
+
+</script>
 </body>
 </html>

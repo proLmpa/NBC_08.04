@@ -5,7 +5,6 @@ import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.post.dto.PostsResponseDto;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
-import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.post.service.PostService;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +53,7 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody UpdatePostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser());
 
         return ResponseEntity.ok().body(result);

@@ -2,7 +2,6 @@ package com.sparta.dtogram.post.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
 import com.sparta.dtogram.post.dto.PostRequestDto;
-import com.sparta.dtogram.post.dto.UpdatePostRequestDto;
 import com.sparta.dtogram.reply.entity.Reply;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
@@ -48,7 +47,7 @@ public class Post extends Timestamped {
         this.user = user;
     }
 
-    public void updatePost(UpdatePostRequestDto requestDto) {
+    public void updatePost(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
     }
