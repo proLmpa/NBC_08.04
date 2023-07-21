@@ -8,6 +8,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +66,12 @@ public class User {
     //todo 추후 다른 소셜 로그인과 섞일 염려가 있음
     //KAKAO User생성
     public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
-        this.username = "kakao"+username;
+        this.username = "kakao" + username;
         this.nickname = username;
         this.password = password;
         this.email = email;
         this.role = role;
-        this.kakaoId =kakaoId;
+        this.kakaoId = kakaoId;
     }
 
     //NAVER User생성
@@ -80,12 +81,12 @@ public class User {
         this.password = password;
         this.email = email;
         this.role = role;
-        this.naverId =naverId;
+        this.naverId = naverId;
     }
 
     public void updateProfile(ProfileRequestDto requestDto) {
-        this.nickname = requestDto.getNickname();
-        this.introduction = requestDto.getIntroduction();
+        this.nickname = requestDto.getNickname()==null ? this.nickname : requestDto.getNickname();
+        this.introduction = requestDto.getIntroduction()==null ? this.introduction : requestDto.getIntroduction();
     }
 
     public User kakaoIdUpdate(Long kakaoId) {
@@ -96,5 +97,9 @@ public class User {
     public User naverIdUpdate(String naverId) {
         this.naverId = naverId;
         return this;
+    }
+
+    public void updateRole(UserRoleEnum role) {
+        this.role = role;
     }
 }
