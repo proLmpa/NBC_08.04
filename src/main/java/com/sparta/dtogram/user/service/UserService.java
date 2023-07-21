@@ -1,8 +1,10 @@
 package com.sparta.dtogram.user.service;
 
 import com.sparta.dtogram.user.dto.SignupRequestDto;
+import com.sparta.dtogram.user.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
+import com.sparta.dtogram.user.repository.PasswordHistoryRepository;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,6 +18,7 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PasswordHistoryRepository passwordHistoryRepository;
 
 
     // ADMIN_TOKEN
@@ -56,5 +59,8 @@ public class UserService {
         // 사용자 등록
         User user = new User(requestDto, password, role);
         userRepository.save(user);
+
+        // 사용했던 비밀번호 목록에 저장
+        passwordHistoryRepository.save(new PasswordHistory(requestDto.getPassword(), user));
     }
 }

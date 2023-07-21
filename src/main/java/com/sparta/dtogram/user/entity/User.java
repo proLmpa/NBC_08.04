@@ -2,7 +2,7 @@ package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.post.entity.PostLike;
 import com.sparta.dtogram.reply.entity.ReplyLike;
-import com.sparta.dtogram.user.dto.ProfileRequestDto;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -51,6 +51,9 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<ReplyLike> ReplyLikes = new ArrayList<>();
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PasswordHistory> passwordHistories = new ArrayList<>();
+
     public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
         this.username = requestDto.getUsername();
         this.nickname = requestDto.getNickname();
@@ -60,6 +63,7 @@ public class User {
     }
 
     //todo 추후 다른 소셜 로그인과 섞일 염려가 있음
+    //KAKAO User생성
     public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
         this.username = "kakao"+username;
         this.nickname = username;
@@ -69,6 +73,7 @@ public class User {
         this.kakaoId =kakaoId;
     }
 
+    //NAVER User생성
     public User(String username, String nickname, String password, String email, UserRoleEnum role, String naverId) {
         this.username = username;
         this.nickname = nickname;

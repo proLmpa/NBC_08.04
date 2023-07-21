@@ -44,6 +44,7 @@ public class KakaoLoginService {
         // 4. JWT 토큰 반환
         String createToken = jwtUtil.createToken(kakaouser.getUsername(), kakaouser.getRole());
 
+        log.info("토큰정보"+createToken);
         jwtUtil.addJwtToCookie(createToken, response);
         return createToken;
     }
@@ -114,8 +115,13 @@ public class KakaoLoginService {
         Long id = jsonNode.get("id").asLong();
         String nickname = jsonNode.get("properties")
                 .get("nickname").asText();
-        String email = jsonNode.get("kakao_account")
-                .get("email").asText();
+        String email;
+        try {
+            email = jsonNode.get("kakao_account")
+                    .get("email").asText();
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException("이메일 정보를 가져올 수 없습니다.");
+        }
 
         log.info("카카오 사용자 정보: " + id + ", " + nickname + ", " + email);
         return new KakaoUserInfoDto(id, nickname, email);
