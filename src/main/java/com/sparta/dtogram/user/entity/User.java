@@ -13,6 +13,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,10 +107,13 @@ public class User {
         this.naverId = naverId;
     }
 
-    public void updateProfile(ProfileRequestDto requestDto, String imageUrl) {
+    public void updateProfile(ProfileRequestDto requestDto) {
         this.nickname = requestDto.getNickname()==null ? this.nickname : requestDto.getNickname();
         this.introduction = requestDto.getIntroduction()==null ? this.introduction : requestDto.getIntroduction();
-        this.imageUrl = imageUrl==null ? this.imageUrl : imageUrl;
+    }
+
+    public void updateProfileImage(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public User kakaoIdUpdate(Long kakaoId) {
