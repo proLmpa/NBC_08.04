@@ -22,6 +22,7 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private Integer countPostLike;
+    private String multiMediaUrl;
     private List<TagResponseDto> tags;
     private List<ReplyResponseDto> replies;
 
@@ -34,6 +35,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.countPostLike = post.getPostLikes().size();
+        this.multiMediaUrl = post.getMultiMediaUrl();
         this.replies = new ArrayList<>();
         this.tags = post.getPostTags().stream().map(postTag -> new TagResponseDto(postTag.getTag())).toList();
         this.replies = post.getReplies().stream().map(ReplyResponseDto::new).toList();
