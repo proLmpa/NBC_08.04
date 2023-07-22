@@ -24,10 +24,9 @@ public class AdminController {
     @PutMapping("/admin/user/{id}")
     public ResponseEntity<ApiResponseDto> editUser(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                      @PathVariable Long id,
-                                                     @RequestPart ProfileRequestDto requestDto,
-                                                   @RequestPart MultipartFile image) throws IOException {
+                                                     @RequestBody ProfileRequestDto requestDto){
         try {
-            adminService.editProfileByAdmin(userDetails.getUser(), id, requestDto, image);
+            adminService.editProfileByAdmin(userDetails.getUser(), id, requestDto);
             return ResponseEntity.ok().body(new ApiResponseDto("유저 정보 수정 성공", HttpStatus.OK.value()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));

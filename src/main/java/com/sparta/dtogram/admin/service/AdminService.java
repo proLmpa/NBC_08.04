@@ -24,14 +24,10 @@ public class AdminService {
 
 
     @Transactional
-    public void editProfileByAdmin(User userAdmin, Long targetId, ProfileRequestDto requestDto, MultipartFile image) throws IOException {
+    public void editProfileByAdmin(User userAdmin, Long targetId, ProfileRequestDto requestDto){
         checkAdminRole(userAdmin);
-        if (!image.isEmpty()) {
-            String storedFileName = s3Uploader.upload(image, "images");
-            findUser(targetId).updateProfile(requestDto, storedFileName);
-        }
-//        findUser(targetId)
-//                .updateProfile(requestDto); //todo 기존 profile업데이트 기능을 계속 써도 될지?
+        findUser(targetId)
+                .updateProfile(requestDto); //todo 기존 profile업데이트 기능을 계속 써도 될지?
     }
 
     @Transactional

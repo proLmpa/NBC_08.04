@@ -7,6 +7,7 @@ import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.profile.repository.PasswordHistoryRepository;
+import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,14 +38,11 @@ public class ProfileService {
     }
 
     @Transactional
-    public void editProfile(User user, ProfileRequestDto requestDto, MultipartFile image) throws IOException {
+    public void editProfile(User user, ProfileRequestDto requestDto){
         User changed = userRepository.findById(user.getId()).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
         );
-        if(!image.isEmpty()) {
-            String storedFileName = s3Uploader.upload(image,"images");
-            changed.updateProfile(requestDto, storedFileName);
-        }
+        changed.updateProfile(requestDto);
     }
 
     @Transactional
@@ -71,5 +70,14 @@ public class ProfileService {
         } else {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+    }
+
+    @Transactional
+    public void editImage(User user, MultipartFile image) throws IOException {
+        User changed = userRepository.findById(user.getId()).orElseThrow(() ->
+                new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+        );
+        String storedFileName = s3Uploader.upload(image, "images");
+        changed.updateProfileImage(storedFileName);
     }
 }
