@@ -1,14 +1,18 @@
 package com.sparta.dtogram.user.entity;
 
+import com.sparta.dtogram.follow.entity.Follow;
+import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.profile.entity.PasswordHistory;
+import com.sparta.dtogram.reply.entity.Reply;
 import com.sparta.dtogram.reply.entity.ReplyLike;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
+import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,10 +54,25 @@ public class User {
     private String naverId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<PostLike> PostLikes = new ArrayList<>();
+    private List<Post> posts = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
-    private List<ReplyLike> ReplyLikes = new ArrayList<>();
+    private List<Reply> replies = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<PostLike> postLikes = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<ReplyLike> replyLikes = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy="following", orphanRemoval = true)
+    private List<Follow> followings = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "follower", orphanRemoval = true)
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Tag> tags = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<PasswordHistory> passwordHistories = new ArrayList<>();

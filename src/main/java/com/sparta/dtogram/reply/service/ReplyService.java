@@ -11,6 +11,7 @@ import com.sparta.dtogram.reply.entity.ReplyLike;
 import com.sparta.dtogram.reply.repository.ReplyLikeRepository;
 import com.sparta.dtogram.reply.repository.ReplyRepository;
 import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -46,14 +48,10 @@ public class ReplyService {
         return new ReplyResponseDto(reply);
     }
 
-//    public RepliesResponseDto getReplies() {
-//        return replyRepository.findAll();
-//    }
-
     @Transactional
     public ReplyResponseDto updateReply(Long id, ReplyRequestDto requestDto, User user) {
         Reply reply = findReply(id);
-        if (reply.getUser().getUsername().equals(user.getUsername())) {
+        if (Objects.equals(reply.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
             reply.update(requestDto);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
@@ -64,9 +62,9 @@ public class ReplyService {
 
     @Transactional
     public void deleteReply(Long id, User user) {
-        Reply Reply = findReply(id);
-        if (Reply.getUser().getUsername().equals(user.getUsername())) {
-            replyRepository.delete(Reply);
+        Reply reply = findReply(id);
+        if (Objects.equals(reply.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+            replyRepository.delete(reply);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");
         }

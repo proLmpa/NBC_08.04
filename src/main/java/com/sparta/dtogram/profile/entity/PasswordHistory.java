@@ -1,6 +1,7 @@
-package com.sparta.dtogram.user.entity;
+package com.sparta.dtogram.profile.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
+import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
