@@ -1,6 +1,6 @@
-package com.sparta.dtogram.user.repository;
+package com.sparta.dtogram.profile.repository;
 
-import com.sparta.dtogram.user.entity.PasswordHistory;
+import com.sparta.dtogram.profile.entity.PasswordHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

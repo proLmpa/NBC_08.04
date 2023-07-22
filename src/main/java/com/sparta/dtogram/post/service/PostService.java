@@ -9,10 +9,10 @@ import com.sparta.dtogram.post.entity.PostTag;
 import com.sparta.dtogram.post.repository.PostLikeRepository;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.post.repository.PostTagRepository;
-import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.tag.repository.TagRepository;
 import com.sparta.dtogram.user.entity.User;
+import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.stream.Collectors;
@@ -70,7 +71,7 @@ public class PostService {
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user) {
         Post post = findPost(id);
-        if (post.getUser().getNickname().equals(user.getNickname())) {
+        if (Objects.equals(post.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
             post.updatePost(requestDto);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
@@ -81,7 +82,7 @@ public class PostService {
     @Transactional
     public void deletePost(Long id, User user) {
         Post post = findPost(id);
-        if (post.getUser().getNickname().equals(user.getNickname())) {
+        if (Objects.equals(post.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
             postRepository.delete(post);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");

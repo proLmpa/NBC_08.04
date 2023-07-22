@@ -46,12 +46,65 @@ $(document).ready(function () {
         error(error) {
             console.log(error.valueOf())
         }
-    });
-});
+    })
+})
 
+function formPost(postDto) {
+    return `<div class="postDto-box postDto-${postDto.id}">
+            <div class="postDto-header">
+                <div class="postDto-nickname">${postDto.nickname}</div>
+                <button class="postDto-follow-btn postDto-follow-${postDto.id}" onclick="followUser(${postDto['userId']})">팔로우</button>
+                <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
+                <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
+                <div class="postDto-update-btn" onclick="displayUpdateBox(${postDto.id})">수정</div>
+                <div class="postDto-delete-btn" onclick="deletePost(${postDto.id})">삭제</div>
+            </div> 
+        <div class="postDto-divider"></div>
+            <div class="postDto-body">
+                <div class="postDto-title">${postDto.title}</div>
+                <div class="postDto-content">${postDto.content}</div><br>
+                <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
+            </div>            
+        <div class="postDto-divider"></div>
+            <div class="postDto-footer">
+                <div class="postDto-postLike postDto-postLike-${postDto.id}" onclick="likePost(${postDto.id})">좋아요 ${postDto['countPostLike']}</div>
+                <div class="postDto-reply-btn" onclick="reply(${postDto.id})">댓글 달기 </div>
+            </div>
+            </div><br>`
+}
 
+function login() {
+    window.location.href = host + '/api/user/login-page'
+}
 
-/* 게시글 관련 함수 */
+function signup() {
+    window.location.href = host + '/api/user/signup'
+}
+
+function logout() {
+    // 토큰 삭제
+    Cookies.remove("Authorization", {path: '/'});
+    window.location.href = host + '/'
+}
+
+function mypage() {
+    if(!setToken()) return
+
+    $.ajax({
+        type: 'GET',
+        url: `/api/user/info`,
+        success: function (response) {
+            console.log(response)
+            let isAdmin = response['isAdmin']
+
+            if(isAdmin) {
+                window.location.href = host + '/api/admin'
+            } else {
+                window.location.href = host + '/api/profile'
+            }
+        }
+    })
+}
 
 function writePost() {
     if(!setToken()) return
@@ -384,12 +437,7 @@ function setToken() {
 
     if(auth !== ''){
         check = true
-    }
-    // else if(auth.indexOf('Bearer') === -1 && auth !== ''){ // 소셜 로그인 사용한 경우 Bearer 추가
-    //     auth = 'Bearer ' + auth;
-    //     check = true
-    // }
-    else {
+    } else {
         alert('로그인한 유저만 수정 가능합니다!')
         window.location.href = host + '/api/user/login-page'
         return false

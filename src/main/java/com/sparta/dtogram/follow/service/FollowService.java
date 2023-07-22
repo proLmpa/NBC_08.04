@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -18,62 +17,50 @@ public class FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-
-    public void doFollow(User followingUser, Long followerUserId) {
-
-        User followerUser = getUserById(followerUserId);
-        if(Objects.equals(followerUser.getId(), followingUser.getId())){
-            throw new IllegalArgumentException("자기 자신을 팔로우하는 요청입니다.");
+    public String followUser(Long followerId, Long followingId) throws IllegalAccessException {
+        if(followingId.equals(followerId)) {
+            throw new IllegalAccessException("자기 자신을 팔로우할 수 없습니다.");
         }
 
-        Boolean existFollow = followRepository.existsByFollowingUserAndFollowerUser(followingUser, followerUser);
-        if (!existFollow) {
-            Follow newFollow = new Follow(followingUser, followerUser);
+        User follower = findUser(followerId);   // 팔로우 주체
+        User following = findUser(followingId); // 팔로우 대상
+        Follow follow = followRepository.findByFollowingAndFollower(following, follower).orElse(null);
+        if(follow == null) {
+            Follow newFollow = new Follow(following, follower);
             followRepository.save(newFollow);
+            return "해당 유저를 팔로우했습니다!";
         } else {
-            throw new IllegalArgumentException("이미 " + followerUser.getUsername() + "님을 팔로우 중입니다.}");
+            follow.cancelFollow(following, follower);
+            followRepository.delete(follow);
+            return "해당 유저를 언팔로우했습니다!";
         }
     }
 
-
-    public String unFollow(User followingUser, Long followerUserId) {
-
-        User followerUser = getUserById(followerUserId);
-        Follow existFollow = followRepository.findByFollowingUserAndFollowerUser(followingUser, followerUser)
-                .orElseThrow(() -> new IllegalArgumentException("팔로우 정보가 없습니다."));
-
-        if (existFollow != null) { // todo optional에서 걸렀기 때문에 null이 아니란 걸 믿고 if문을 제거할 수 있을까?
-            followRepository.delete(existFollow);
-        }
-
-        return "{ \"statusCode\":200,\n" +
-                "\"statusMessage\":\"" + followerUser.getUsername() + "을 언팔로우하였습니다.}";
-    }
-
-
+    // 자신을 팔로우 중인 사용자들만 가져오기
     public List<User> getFollowerList(User user) {
-        List<Follow> followList = followRepository.findByFollowingUser_Id(user.getId());
+        List<Follow> followList = followRepository.findAllByFollowing_Id(user.getId());
 
-        List<User> followerList = new ArrayList<>();
+        List<User> followers = new ArrayList<>();
         for (Follow follow : followList) {
-            followerList.add(follow.getFollowerUser());
+            followers.add(follow.getFollower());
         }
-        return followerList;
+        return followers;
     }
 
+    //  자신이 팔로우 하고 있는 사용자들만 가져오기
     public List<User> getFollowingList(User user) {
-        List<Follow> followList = followRepository.findByFollowerUser_Id(user.getId()); // 내가 팔로워인 모든 관계의 합은 나의 팔로잉 숫자이다.
+        List<Follow> followList = followRepository.findAllByFollower_Id(user.getId()); // 내가 팔로워인 모든 관계의 합은 나의 팔로잉 숫자이다.
 
-        List<User> followingList = new ArrayList<>();
+        List<User> followings = new ArrayList<>();
         for (Follow follow : followList) {
-            followingList.add(follow.getFollowerUser());
+            followings.add(follow.getFollowing());
         }
-        return followingList;
+        return followings;
     }
 
-    private User getUserById(Long userId) {
+    private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("유저 정보가 없습니다.")
+                new IllegalArgumentException("존재하지 않는 유저입니다.")
         );
     }
 }

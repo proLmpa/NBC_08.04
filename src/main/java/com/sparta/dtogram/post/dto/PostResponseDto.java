@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 public class PostResponseDto {
     private Long id;
+    private Long userId;
     private String title;
     private String content;
     private String nickname;
@@ -26,6 +27,7 @@ public class PostResponseDto {
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
+        this.userId = post.getUser().getId();
         this.nickname = post.getUser().getNickname();
         this.title = post.getTitle();
         this.content = post.getContent();
