@@ -6,6 +6,7 @@ import com.sparta.dtogram.profile.dto.PasswordRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.profile.service.ProfileService;
+import com.sparta.dtogram.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,9 +39,9 @@ public class ProfileController {
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<MsgResponseDto> editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart ProfileRequestDto requestDto, @RequestPart MultipartFile image) throws IOException {
+    public ResponseEntity<MsgResponseDto> editProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody ProfileRequestDto requestDto){
         try {
-            profileService.editProfile(userDetails.getUser(), requestDto, image);
+            profileService.editProfile(userDetails.getUser(), requestDto);
             return ResponseEntity.ok().body(new MsgResponseDto("프로필 수정 성공", HttpStatus.OK.value()));
         } catch (RejectedExecutionException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
@@ -52,6 +53,18 @@ public class ProfileController {
         try {
             profileService.editPassword(userDetails.getUser(), requestDto);
             return ResponseEntity.ok().body(new MsgResponseDto("비밀번호 수정 성공", HttpStatus.OK.value()));
+        } catch (RejectedExecutionException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        }
+    }
+
+    @PutMapping("/profile/image")
+    public ResponseEntity<MsgResponseDto> editImage(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart MultipartFile image) throws IOException{
+        try {
+            profileService.editImage(userDetails.getUser(), image);
+            return ResponseEntity.ok().body(new MsgResponseDto("프로필 이미지 수정 성공", HttpStatus.OK.value()));
         } catch (RejectedExecutionException e) {
             return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
         } catch (IllegalArgumentException e) {
