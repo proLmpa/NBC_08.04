@@ -55,7 +55,7 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestPart PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart MultipartFile multipartFile) throws IOException{
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestPart("requestDto") PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException{
         PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser(), multipartFile);
 
         return ResponseEntity.ok().body(result);
