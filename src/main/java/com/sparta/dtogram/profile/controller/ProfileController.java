@@ -7,6 +7,7 @@ import com.sparta.dtogram.profile.dto.PasswordRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.profile.service.ProfileService;
+import com.sparta.dtogram.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
