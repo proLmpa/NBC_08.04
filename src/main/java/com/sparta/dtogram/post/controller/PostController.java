@@ -27,7 +27,7 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping("/post")
-    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart PostRequestDto requestDto, @RequestPart MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart("requestDto") PostRequestDto requestDto, @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException {
         log.info("게시글 생성 시도");
         try {
             PostResponseDto result = postService.createPost(requestDto, userDetails.getUser(), multipartFile);
@@ -55,7 +55,7 @@ public class PostController {
 
     // 게시글 수정
     @PutMapping("/post/{id}")
-    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestPart PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart MultipartFile multipartFile) throws IOException{
+    public ResponseEntity<PostResponseDto> updatePost(@PathVariable Long id, @RequestPart("requestDto") PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException{
         PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser(), multipartFile);
 
         return ResponseEntity.ok().body(result);
