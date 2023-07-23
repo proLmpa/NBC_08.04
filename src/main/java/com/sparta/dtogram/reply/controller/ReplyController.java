@@ -2,8 +2,6 @@ package com.sparta.dtogram.reply.controller;
 
 import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
-import com.sparta.dtogram.post.dto.PostResponseDto;
-import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.service.ReplyService;

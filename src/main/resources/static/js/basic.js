@@ -49,27 +49,53 @@ $(document).ready(function () {
     })
 })
 
-function formPost(postDto) {
+
+//게시글 html 출력
+function addHtml(postDto) {
+    let likedIcon = '<i class="fas fa-heart like-btn" onclick="likePost(' + postDto.id + ')" data-liked="' + (postDto.liked ? 'true' : 'false') + '"></i>';
+    let unlikedIcon = '<i class="far fa-heart unlike-btn" onclick="likePost(' + postDto.id + ')" data-liked="' + (postDto.liked ? 'true' : 'false') + '"></i>';
+
+    let likeIcon = postDto.liked ? likedIcon : unlikedIcon;
+
     return `<div class="postDto-box postDto-${postDto.id}">
-            <div class="postDto-header">
-                <div class="postDto-nickname">${postDto.nickname}</div>
-                <button class="postDto-follow-btn postDto-follow-${postDto.id}" onclick="followUser(${postDto['userId']})">팔로우</button>
-                <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
-                <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
-                <div class="postDto-update-btn" onclick="displayUpdateBox(${postDto.id})">수정</div>
-                <div class="postDto-delete-btn" onclick="deletePost(${postDto.id})">삭제</div>
-            </div> 
-        <div class="postDto-divider"></div>
-            <div class="postDto-body">
-                <div class="postDto-title">${postDto.title}</div>
-                <div class="postDto-content">${postDto.content}</div><br>
-                <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
-            </div>            
-        <div class="postDto-divider"></div>
-            <div class="postDto-footer">
-                <div class="postDto-postLike postDto-postLike-${postDto.id}" onclick="likePost(${postDto.id})">좋아요 ${postDto['countPostLike']}</div>
-                <div class="postDto-reply-btn" onclick="reply(${postDto.id})">댓글 달기 </div>
-            </div>
+                <div class="postDto-header">
+                    <div class="postDto-profileimage">
+                        <img src="${postDto.imageUrl}">
+                    </div>
+                    <div class="postDto-nickname">${postDto['nickname']}</div>
+                    <div class="postDto-createdAt">createdAt: ${postDto['createdAt']}</div>
+                    <div class="postDto-modifiedAt">modifiedAt: ${postDto['modifiedAt']}</div>
+                    <div class="postDto-extra-btn" onclick="displayUpdateBox(${postDto.id})">&nbsp; &nbsp; EDIT</div>
+                    <div class="postDto-extra-btn" onclick="deletePost(${postDto.id})">&nbsp; &nbsp; DELETE</div>
+                </div>
+                <div class="postDto-divider"></div>
+
+                <div class="postDto-body">
+                    <div class="postDto-title">&nbsp; ${postDto.title}</div>
+                    <br>
+                    <img class="postDto-photo" src="${postDto['multiMediaUrl']}"><br><br>
+                    <div class="postDto-content">
+                        &nbsp; ${postDto.content}
+                    </div>
+                </div>
+                <br><br>
+                <div class="postDto-footer">
+                    <div class="post-like-icon">&nbsp; ${likeIcon}</div>
+                    <div class="postDto-postLike postDto-postLike-${postDto.id}">&nbsp; LIKE ${postDto['countPostLike']}</div>
+                                    <div class="postDto-tags postDto-tag-${postDto.id}">&nbsp;Tags: </div>
+                </div>
+                <div class="postDto-divider"></div>
+                <br>
+                
+                <br><br>
+                <div class="replyDto-box-${postDto.id}"">
+                    <input type="text" class="replyDto-input" id="replyDto-input" placeholder="ReplyContent">
+                    <br>
+                    <button class="replyDto-btn" onclick="writeReply(${postDto.id})">REPLY SUBMIT</button><br>
+                </div>
+                <div class="replyDto-${postDto.id}" id="replyDto-box" >
+                    <!--댓글 자동삽입되는 영역-->
+                </div>
             </div><br>`
 }
 
@@ -261,6 +287,41 @@ function likePost(postId) {
 
 
 /* 댓글 관련 함수 */
+
+function addReplyHtml(replyDto) {
+    let likedIcon = '<i class="fas fa-heart like-btn" onclick="likeReply(' + replyDto.id + ')" data-liked="' + (replyDto.liked ? 'true' : 'false') + '"></i>';
+    let unlikedIcon = '<i class="far fa-heart unlike-btn" onclick="likeReply(' + replyDto.id + ')" data-liked="' + (replyDto.liked ? 'true' : 'false') + '"></i>';
+
+    return `<br><hr>
+    <div class="replyDto-box-${replyDto.id}">
+        <div class="postDto-nickname" id="replyDto-nickname">${replyDto.nickname}</div>
+        <div class="postDto-createdAt" id="replyDto-createdAt">createdAt: ${replyDto.createdAt}</div>
+        <div class="postDto-modifiedAt" id="replyDto-modifiedAt">modifiedAt: ${replyDto.modifiedAt}</div>
+
+        <br><br>
+
+        <!--댓글 내용 자동삽입-->
+        <br>
+        <div class="reply-content">&nbsp; &nbsp; ${replyDto.content}</div>
+        <div class="postDto-divider"></div>
+
+        <!--댓글 좋아요-->
+        <div class="replyDto-${replyDto.id}">
+            <div class="replyDto-like-unlike-${replyDto.id}" onclick="likeReply(${replyDto.id}, ${replyDto.liked})">
+                &nbsp; &nbsp; ${replyDto.liked ? likedIcon : unlikedIcon}
+            </div>
+            <div class="replyDto-replyLike" id="replylike-${replyDto.id}">
+                &nbsp; &nbsp; LIKE ${replyDto.countReplyLike}
+            </div>
+        </div>
+
+        <!--댓글 수정 및 삭제-->
+        <input type="text" class="replyDto-updateInput" id="replyDto-updateInput-${replyDto.id}" placeholder="ReplyUpdateContent">
+        <br>
+        <button type="button" class="replyDto-extra-btn" onclick="updateReply(${replyDto.id})">REPLY EDIT</button>
+        <button type="button" class="replyDto-extra-btn" onclick="deleteReply(${replyDto.id})">REPLY DELETE</button>
+    </div>`;
+}
 
 function writeReply(postId) {
     const auth = getToken();
