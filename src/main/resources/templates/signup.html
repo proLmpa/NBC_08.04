@@ -60,7 +60,7 @@
   function onSignup() {
     let username = $('#username').val()
     let password = $('#password').val()
-      let nickname = $('#nickname').val()
+    let nickname = $('#nickname').val()
     let email = $('#email').val()
     let admin = $('#admin-check').is(':checked')
     let adminToken = admin === true ? $('#admin-token').val() : null
@@ -68,7 +68,7 @@
       type: 'POST',
       url: '/api/user/signup',
       contentType: "application/json",
-      data: JSON.stringify({username: username, password: password, nickname: nickname, email: email }),
+      data: JSON.stringify({username: username, password: password, nickname: nickname, email: email, admin: admin, adminToken: adminToken}),
     })
         .done(function() {
             window.location.href = host + '/api/user/login-page'

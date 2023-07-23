@@ -260,15 +260,31 @@ body {
     overflow: hidden;
 }
 
+.profile-photo-wrapper {
+     display: flex;
+     justify-content: space-between;
+ }
+
 .profileDto-photo-image {
     width: 98%;
     height: 98%;
+    object-fit: cover;
     border-radius: 50%;
     border: #03C75A 3px solid;
-    object-fit: cover;
     position: absolute;
     top: 0;
     left: 0;
+}
+
+.image-edit-btns {
+    display: flex;
+    justify-content: left;
+    position: absolute;
+}
+
+.image-edit-btns input,
+.image-edit-btns button {
+    margin-right: 8px;
 }
 
 .profileDto-intro {

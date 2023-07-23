@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -17,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Slf4j
-@Controller
+@RestController
 @RequestMapping("/api")
 public class UserController {
 
@@ -25,16 +24,6 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
-    }
-
-    @GetMapping("/user/login-page")
-    public String loginPage() {
-        return "login";
-    }
-
-    @GetMapping("/user/signup")
-    public String signupPage() {
-        return "signup";
     }
 
     @PostMapping("/user/signup")
