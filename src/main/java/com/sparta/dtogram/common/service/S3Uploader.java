@@ -29,9 +29,13 @@ public class S3Uploader {
 
     // MultipartFile을 전달받아 File로 전환한 후 S3에 업로드
     public String upload(MultipartFile multipartFile, String dirName) throws IOException {
-        File uploadFile = convert(multipartFile)
-                .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
-        return upload(uploadFile, dirName);
+        if (multipartFile.isEmpty()) {
+            return "https://dtogram.s3.ap-northeast-2.amazonaws.com/postFile/%EA%B8%B0%EB%B3%B8%20%EC%9D%B4%EB%AF%B8%EC%A7%80.png";
+        } else {
+            File uploadFile = convert(multipartFile)
+                    .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File 전환 실패"));
+            return upload(uploadFile, dirName);
+        }
     }
 
     private String upload(File uploadFile, String dirName) {
