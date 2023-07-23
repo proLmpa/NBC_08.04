@@ -1,5 +1,6 @@
 package com.sparta.dtogram.profile.controller;
 
+import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
 import com.sparta.dtogram.profile.dto.PasswordRequestDto;
@@ -14,9 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
 import java.util.concurrent.RejectedExecutionException;
 
 @Slf4j
@@ -26,12 +25,6 @@ import java.util.concurrent.RejectedExecutionException;
 public class ProfileController {
 
     private final ProfileService profileService;
-
-    // mypage로 redirect
-    @GetMapping("/profile")
-    public ModelAndView getMyPage() {
-        return new ModelAndView("mypage");
-    }
 
     @GetMapping("/profile/{id}")
     public ProfileResponseDto getProfile(@PathVariable Long id) {
@@ -61,14 +54,18 @@ public class ProfileController {
     }
 
     @PutMapping("/profile/image")
-    public ResponseEntity<MsgResponseDto> editImage(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart MultipartFile image) throws IOException{
+    public ResponseEntity<ApiResponseDto> registerImage(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart("image") MultipartFile image) {
         try {
-            profileService.editImage(userDetails.getUser(), image);
-            return ResponseEntity.ok().body(new MsgResponseDto("프로필 이미지 수정 성공", HttpStatus.OK.value()));
-        } catch (RejectedExecutionException e) {
-            return ResponseEntity.badRequest().body(new MsgResponseDto("작성자만 수정 할 수 있습니다.", HttpStatus.BAD_REQUEST.value()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(new MsgResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
+            profileService.updateImage(userDetails.getUser(), image);
+            return ResponseEntity.ok().body(new ApiResponseDto("프로필 이미지 생성 성공", HttpStatus.OK.value()));
+        }  catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto(e.getMessage(), HttpStatus.BAD_REQUEST.value()));
         }
+    }
+
+    @DeleteMapping("/profile/image")
+    public ResponseEntity<ApiResponseDto> deleteImage(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        profileService.deleteImage(userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("프로필 이미지 삭제 성공", HttpStatus.OK.value()));
     }
 }
