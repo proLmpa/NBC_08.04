@@ -6,7 +6,6 @@ import com.sparta.dtogram.profile.dto.PasswordRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.profile.service.ProfileService;
-import com.sparta.dtogram.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.concurrent.RejectedExecutionException;
@@ -26,12 +24,6 @@ import java.util.concurrent.RejectedExecutionException;
 public class ProfileController {
 
     private final ProfileService profileService;
-
-    // mypage로 redirect
-    @GetMapping("/profile")
-    public ModelAndView getMyPage() {
-        return new ModelAndView("mypage");
-    }
 
     @GetMapping("/profile/{id}")
     public ProfileResponseDto getProfile(@PathVariable Long id) {
