@@ -97,7 +97,8 @@ body {
      transform: translate(-50%, -50%);
  }
 
-.post-register-box {
+.post-register-box,
+.post-update-box {
     width: 50%;
     margin-top: 4%;
     margin-left: 25%;
@@ -156,6 +157,10 @@ body {
 .postDto-content {
     font-size: 14px;
     line-height: 1.5;
+}
+
+.postDto-photo {
+    width: 100%;
 }
 
 .postDto-tags {

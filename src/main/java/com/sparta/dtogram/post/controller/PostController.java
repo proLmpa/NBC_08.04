@@ -27,7 +27,7 @@ public class PostController {
 
     // 게시글 생성
     @PostMapping("/post")
-    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart PostRequestDto requestDto, @RequestPart MultipartFile multipartFile) throws IOException {
+    public ResponseEntity<PostResponseDto> createPost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestPart("requestDto") PostRequestDto requestDto, @RequestPart("multipartFile") MultipartFile multipartFile) throws IOException {
         log.info("게시글 생성 시도");
         try {
             PostResponseDto result = postService.createPost(requestDto, userDetails.getUser(), multipartFile);

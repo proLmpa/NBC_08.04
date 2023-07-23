@@ -43,15 +43,29 @@
 </div>
 
 <div class="body">
-    <br><div class="post-register-box">
-        <div class="post-register-title">
-            <input type="text" id="title" placeholder="Title" class="post-register-element">
-        </div>
-        <div class="post-register-content">
-            <input type="text" id="content" placeholder="Content" class="post-register-element">
-        </div>
-        <button id="post-register-submit" onclick="writePost()">작성하기</button>
-    </div><br>
+    <table id="post-register" class="post-register-box">
+        <tr>
+            <th>제목</th>
+            <td>
+                <input type="text" id="title" placeholder="Title" class="post-register-element">
+            </td>
+        </tr>
+        <tr>
+            <th>내용</th>
+            <td>
+                <input type="text" id="content" placeholder="Content" class="post-register-element">
+            </td>
+        </tr>
+        <tr>
+            <th>파일</th>
+            <td>
+                <input id="file" type="file" name="file">
+            </td>
+        </tr>
+        <tr>
+            <th><button id="post-register-submit" onclick="writePost()">작성하기</button></th>
+        </tr>
+    </table>
 
     <br><div id="post-update-box" style="display:none">
     </div><br>
@@ -80,7 +94,10 @@
 
                 <div class="postDto-body">
                     <div class="postDto-title">${postDto.title}</div>
-                    <div class="postDto-content">${postDto.content}</div><br>
+                    <div class="postDto-content">
+                        ${postDto.content}
+                        <br><img class="postDto-photo" src="${postDto['multiMediaUrl']}">
+                    </div><br>
                     <div class="postDto-tags postDto-tag-${postDto.id}">Tags: </div>
                 </div>
 

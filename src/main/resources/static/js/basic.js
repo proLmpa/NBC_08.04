@@ -106,80 +106,131 @@ function mypage() {
     })
 }
 
+// 게시글 작성 기능(신규)
 function writePost() {
     if(!setToken()) return
 
     let check = confirm("이대로 게시글을 작성하시겠습니까?")
+    if(!check) return
 
-    if(check === true) {
-        let title = $('#title').val()
-        let content = $('#content').val()
+    var file = $('#file')[0].files[0];
+    var formData = new FormData();
+    formData.append('multipartFile', file);
 
-        $.ajax({
-            type: "POST",
-            url: `/api/post`,
-            contentType: "application/json",
-            data: JSON.stringify({title: title, content: content}),
-        })
-            .done(function() {
-                alert('게시글을 등록했습니다!')
-                window.location.href = host
-            })
-            .fail(function() {
-                alert('게시글 등록에 실패했습니다.')
-            })
-    }
+    var data = {
+        title: $('#title').val(),
+        content: $('#content').val()
+    };
+    formData.append("requestDto", new Blob([JSON.stringify(data)], {type: "application/json"}));
+
+    $.ajax({
+        url: "/api/post",
+        method: "post",
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+        enctype: 'multipart/form-data',
+        dataType: "json",
+        success: function(result) {
+            alert("게시글이 작성되었습니다!")
+        },
+        error: function (xhr, status, error) {
+            alert("게시글 작성에 실패했습니다!")
+        }
+    })
 }
 
-function displayUpdateBox(postId) {
-    hideUpdateBox()
-
-    let updateHtml = `
-        <div class="post-title">
-            <input type="text" id="title-update" placeholder="Update Title" class="post-update-element">
-        </div>
-        <div class="post-content">
-            <input type="text" id="content-update" placeholder="Update Content" class="post-update-element">
-        </div>
-        <button id="post-update-submit" onclick="updatePost(${postId})">수정하기</button>    
-        <button id="post-update-cancel" onclick="hideUpdateBox()">취소하기</button>
-    `
-
-    $('#post-update-box').append(updateHtml)
-
-    const updatePostDiv = document.getElementById('post-update-box')
-    updatePostDiv.style.display = 'block'
-}
+// function displayUpdateBox(postId) {
+//     hideUpdateBox()
+//
+//     let updateHtml = `
+//             <table id="post-update" class="post-update-box">
+//             <tr>
+//                 <th>제목</th>
+//                 <td>
+//                     <input type="text" id="title-update" placeholder="Update Title" class="post-update-element">
+//                 </td>
+//             </tr>
+//             <tr>
+//                 <th>내용</th>
+//                 <td>
+//                     <input type="text" id="content-update" placeholder="Update Content" class="post-update-element">
+//                 </td>
+//             </tr>
+//             <tr>
+//                 <th>파일</th>
+//                 <td>
+//                     <input type="file" id="file-update" name="file">
+//                 </td>
+//             </tr>
+//             <tr>
+//                 <th><button id="post-update-submit" onclick="updatePost(${postId})">수정하기</button></th>
+//                 <td><button id="post-update-cancel" onclick="hideUpdateBox()">취소하기</button></td>
+//             </tr>
+//         </table>
+//         `
+//
+//     $('#post-update-box').append(updateHtml)
+//
+//     document.getElementById('post-update-box').style.display = 'block'
+// }
 
 function hideUpdateBox() {
     $("#post-update-box").empty()
 }
 
-function updatePost(postId) {
-    if(!setToken()) return
-
-    let check = confirm("이대로 게시글을 수정하시겠습니까?")
-
-    if(check === true) {
-        let title = $('#title-update').val()
-        let content = $('#content-update').val()
-
-        $.ajax({
-            type: "PUT",
-            url: `/api/post/${postId}`,
-            contentType: "application/json",
-            data: JSON.stringify({title: title, content: content}),
-        })
-            .done(function() {
-                alert('게시글을 수정했습니다!')
-                window.location.href = host
-            })
-            .fail(function() {
-                alert('게시글 수정에 실패했습니다.')
-                window.location.href = host
-            })
-    }
-}
+// function updatePost(postId) {
+//     if(!setToken()) return
+//
+//     let check = confirm("이대로 게시글을 작성하시겠습니까?")
+//     if(!check) return
+//
+//     var file = $('#file')[0].files[0];
+//     var formData = new FormData();
+//     formData.append('multipartFile', file);
+//
+//     var data = {
+//         let title = $('#title-update').val(),
+//         let content = $('#content-update').val()
+//     };
+//     formData.append("requestDto", new Blob([JSON.stringify(data)], {type: "application/json"}));
+//
+//     $.ajax({
+//         url: `/api/post/${postId}`,
+//         method: "put",
+//         data: formData,
+//         contentType: false,
+//         processData: false,
+//         cache: false,
+//         enctype: 'multipart/form-data',
+//         dataType: "json",
+//         success: function(result) {
+//             alert("게시글이 작성되었습니다!")
+//         },
+//         error: function (xhr, status, error) {
+//             alert("게시글 작성에 실패했습니다!")
+//         }
+//     })
+//
+//     // if(check === true) {
+//     //
+//     //     $.ajax({
+//     //         type: "PUT",
+//     //         url: `/api/post/${postId}`,
+//     //         contentType: "application/json",
+//     //         data: JSON.stringify({title: title, content: content}),
+//     //     })
+//     //         .done(function() {
+//     //             alert('게시글을 수정했습니다!')
+//     //             window.location.href = host
+//     //         })
+//     //         .fail(function() {
+//     //             alert('게시글 수정에 실패했습니다.')
+//     //             window.location.href = host
+//     //         })
+//     // }
+// }
 
 function deletePost(postId) {
     if(!setToken()) return
