@@ -1,18 +1,18 @@
 const host = 'http://' + window.location.host;
 
-$(document).ready(function() {
-    if(!setToken()) return
+$(document).ready(function () {
+    if (!setToken()) return
 
     $.ajax({
         type: 'GET',
         url: '/api/user/info',
-        success: function(response) {
+        success: function (response) {
             let userId = response['id']
 
             $.ajax({
-                type:'GET',
+                type: 'GET',
                 url: `/api/profile/${userId}`
-            }).done(function(response) {
+            }).done(function (response) {
                 let tempHtml = formProfile(response)
                 $('.body').append(tempHtml)
             })
@@ -22,8 +22,15 @@ $(document).ready(function() {
 
 function formProfile(profileDto) {
     return `<div class="profileDto-box">
-        <div class="profileDto-photo">
-            <img class="profileDto-photo-image" src="" alt="프로필 사진이 저장될 공간입니다.">        
+        <div class="profileDto-header"> 
+            <div class="profileDto-photo">
+                <img class="profileDto-photo-image" src="${profileDto['imageUrl']}" alt="프로필 사진이 저장될 공간입니다.">
+            </div>
+            <div class="image-edit-btns">
+                <input class="image-search-btn" type="file" name="profile-image" id="image-search-btn">
+                <button class="image-register-btn" onclick="registerProfileImage()">프로필 사진 등록</button>
+                <button class="image-cancel-btn" onclick="cancelProfileImage()">프로필 사진 삭제</button>
+            </div>
         </div>
         <div class="profileDto-intro">
             <div id="profileForm">
@@ -54,24 +61,24 @@ function formProfile(profileDto) {
 }
 
 function editProfile() {
-    if(!setToken()) return
+    if (!setToken()) return
 
     let check = confirm("이대로 프로필을 수정하시겠습니까?")
 
-    if(check === true) {
+    if (check === true) {
         let editNickname = $('#nickname-input').val()
         let editIntroduction = $('#introduction-input').val()
 
         $.ajax({
-            type:'PUT',
+            type: 'PUT',
             url: `/api/profile`,
             contentType: 'application/json',
             data: JSON.stringify({nickname: editNickname, introduction: editIntroduction})
-        }).done(function(response) {
+        }).done(function (response) {
             disableEditProfile(editNickname, editIntroduction)
 
             alert('프로필이 수정되었습니다!')
-        }).fail(function() {
+        }).fail(function () {
             alert('프로필 수정에 실패했습니다.')
         })
     }
@@ -100,25 +107,25 @@ function disableEditProfile(name, intro) {
 }
 
 function editPassword() {
-    if(!setToken()) return
+    if (!setToken()) return
 
     let check = confirm("이대로 비밀번호를 수정하시겠습니까?")
 
-    if(check === true) {
+    if (check === true) {
         let password = $('#password-input').val()
         let newPassword1 = $('#newPassword-input1').val()
         let newPassword2 = $('#newPassword-input2').val()
 
         $.ajax({
-            type:'PUT',
+            type: 'PUT',
             url: `/api/profile/password`,
             contentType: 'application/json',
             data: JSON.stringify({password: password, newPassword1: newPassword1, newPassword2: newPassword2})
-        }).done(function() {
+        }).done(function () {
             disableEditPassword()
 
             alert('비밀번호가 수정되었습니다!')
-        }).fail(function(response) {
+        }).fail(function (response) {
             console.log(response)
             alert('Error : ' + response['responseJSON']['message'])
         })
@@ -148,6 +155,54 @@ function disableEditPassword() {
     document.getElementById('newPasswords-input').style.display = 'none'
 }
 
+function registerProfileImage() {
+    if (!setToken()) return
+
+    let check = confirm("이대로 프로필 사진을 수정하시겠습니까?")
+    if(!check) return
+
+    var file = $('#image-search-btn')[0].files[0];
+    var formData = new FormData();
+    formData.append('image', file);
+
+    $.ajax({
+        url: `/api/profile/image`,
+        method: "put",
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+        enctype: 'multipart/form-data',
+        dataType: "json",
+        success: function(result) {
+            alert("프로필 사진이 수정되었습니다!")
+            window.location.href = host + '/api/profile'
+        },
+        error: function (xhr, status, error) {
+            alert("프로필 사진 수정에 실패했습니다!")
+        }
+    })
+}
+
+function cancelProfileImage() {
+    if (!setToken()) return
+
+    let check = confirm("프로필 사진을 삭제하시겠습니까?")
+    if(!check) return
+
+    $.ajax({
+        type: "DELETE",
+        url: `/api/profile/image`
+    })
+        .done(function() {
+            alert('프로필 사진을 삭제했습니다!')
+            window.location.href = host + '/api/profile'
+        })
+        .fail(function() {
+            alert('프로필 사진 삭제에 실패했습니다.')
+        })
+}
+
 function logout() {
     // 토큰 삭제
     Cookies.remove("Authorization", {path: '/'});
@@ -157,9 +212,9 @@ function logout() {
 function setToken() {
     let check = false
     let auth = Cookies.get('Authorization')
-    if(auth === undefined) auth = ''
+    if (auth === undefined) auth = ''
 
-    if(auth !== ''){
+    if (auth !== '') {
         check = true
     } else {
         alert('로그인한 유저만 수정 가능합니다!')

@@ -1,13 +1,13 @@
 package com.sparta.dtogram.profile.service;
 
+import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.service.S3Uploader;
 import com.sparta.dtogram.profile.dto.PasswordRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileResponseDto;
 import com.sparta.dtogram.profile.entity.PasswordHistory;
-import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.profile.repository.PasswordHistoryRepository;
-import com.sparta.dtogram.user.entity.UserRoleEnum;
+import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -30,26 +29,21 @@ public class ProfileService {
     private S3Uploader s3Uploader;
 
     public ProfileResponseDto getProfile(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
-        );
+        User user = findUser(id);
 
         return new ProfileResponseDto(user);
     }
 
     @Transactional
     public void editProfile(User user, ProfileRequestDto requestDto){
-        User changed = userRepository.findById(user.getId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
-        );
+        User changed = findUser(user.getId());
         changed.updateProfile(requestDto);
     }
 
     @Transactional
     public void editPassword(User user, PasswordRequestDto requestDto) {
-        User changed = userRepository.findById(user.getId()).orElseThrow(() ->
-                new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
-        );
+        User changed = findUser(user.getId());
+
         if (passwordEncoder.matches(requestDto.getPassword(), changed.getPassword())) {
             if (requestDto.getNewPassword1().equals(requestDto.getNewPassword2())) {
                 boolean isUsed = passwordHistoryRepository.findByPassword(requestDto.getNewPassword2()).isPresent();
@@ -73,11 +67,24 @@ public class ProfileService {
     }
 
     @Transactional
-    public void editImage(User user, MultipartFile image) throws IOException {
-        User changed = userRepository.findById(user.getId()).orElseThrow(() ->
+    public void updateImage(User user, MultipartFile image) {
+        try {
+            User foundUser = findUser(user.getId());
+            String storedFileName = s3Uploader.upload(image, "images");
+            foundUser.updateProfileImage(storedFileName);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteImage(User user) {
+        User foundUser = findUser(user.getId());
+        foundUser.updateProfileImage(null);
+    }
+
+    public User findUser(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
         );
-        String storedFileName = s3Uploader.upload(image, "images");
-        changed.updateProfileImage(storedFileName);
     }
 }
