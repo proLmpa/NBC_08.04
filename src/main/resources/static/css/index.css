@@ -89,39 +89,32 @@ body {
     margin-right: 10px;
 }
 
-
-#post-update-box {
-     position: fixed;
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
- }
-
-.post-register-box,
-.post-update-box {
-    width: 50%;
-    margin-top: 4%;
-    margin-left: 25%;
-    margin-bottom: 30px;
-    padding: 10px;
-    background-color: #ffffff;
+/*게시글 등록*/
+.post-register-box {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 10%;
+    padding-top: 2%;
     border: 1px solid #6a6259;
-    border-radius: 5px;
+    border-radius: 10px;
+    background-color: black;
+    color: white;
 }
 
 .postDto-box {
-    width: 50%;
-    margin-left: 25%;
+    width: 80%;
+    margin-left: 10%;
     margin-bottom: 5%;
-    padding: 10px;
     border: 1px solid #6a6259;
-    background-color: #ffffff;
+    background-color: black;
+    color: #fff;
+    border-radius: 10px;
 }
 
 .postDto-header {
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 10px;
 }
 
 .postDto-nickname {
@@ -157,6 +150,7 @@ body {
 .postDto-content {
     font-size: 14px;
     line-height: 1.5;
+    text-align: center;
 }
 
 .postDto-photo {
@@ -188,6 +182,29 @@ body {
     margin-right: 10px;
 }
 
+#post-update-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.post-update-box {
+    width: 50%;
+    margin-top: 4%;
+    margin-left: 25%;
+    margin-bottom: 30px;
+    padding: 10px;
+    background-color: #ffffff;
+    border: 1px solid #6a6259;
+    border-radius: 5px;
+}
+
+.postDto-extra-btn {
+    font-weight: bold;
+    color: chartreuse;
+}
+
 .postDto-reply-btn {
     font-size: 12px;
     color: #888888;
@@ -196,11 +213,15 @@ body {
 
 .replyDto-btn,
 #post-register-submit {
+    width: 100%;
     padding: 8px 16px;
-    font-size: 12px;
-    background-color: gainsboro;
+    font-size: 15px;
+    background-color: black;
+    color: chartreuse;
+    font-weight: bold;
     border: none;
     border-radius: 4px;
+    margin-top: 20px;
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -211,11 +232,23 @@ body {
     background-color: dimgrey;
 }
 
-.replyDto-updateInput,
+.replyDto-content {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.replyDto-input {
+    margin-left: 10%;
+}
+
+.replyDto-input,
 .post-register-input,
 .post-register-element {
+    width: 80%;
     padding: 12px 16px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
+    background-color: black;
+    color: white;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -224,8 +257,8 @@ body {
     transition: border-color 0.2s ease;
 }
 
-.replyDto-updateInput:focus,
-.post-register-input:focus
+.replyDto-input:focus,
+.post-register-input:focus,
 .post-register-element:focus {
     border-color: #007bff;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
@@ -242,6 +275,73 @@ body {
     display: inline-block;
     margin-left: 5px;
 }
+
+.replyDto-updateInput {
+    width: 80%;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: black;
+    background-color: white;
+    margin-left: 8%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.replyDto-updateInput:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
+.replyDto-extra-btn {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 12px;
+    background-color: black;
+    color: chartreuse;
+    font-weight: bold;
+    font-size: 15px;
+    border-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.replyDto-extra-btn:hover {
+    width: 100%;
+    padding: 8px 16px;
+    font-size: 12px;
+    background-color: #d4d4d4;
+    color: black;
+    font-weight: bold;
+    font-size: 15px;
+    border-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.replyDto-updateInput {
+    width: 80%;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    color: black;
+    background-color: white;
+    margin-left: 8%;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: none;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+
+.replyDto-updateInput:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+}
+
 
 .profileDto-box {
     display: flex;

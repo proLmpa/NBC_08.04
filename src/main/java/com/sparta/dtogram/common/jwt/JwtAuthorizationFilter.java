@@ -46,11 +46,23 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
+            Claims info;
+            try {
+                info = jwtUtil.getUserInfoFromToken(tokenValue);
+            } catch (Exception e) {
+                // JWT 검증에 실패한 경우 처리
+                res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                res.setContentType("application/json");
+                String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("INVALID_TOKEN", 400));
+
+                res.getOutputStream().print(result);
+                return;
+            }
 
             try {
                 setAuthentication(info.getSubject());
             } catch (Exception e) {
+                // 인증 처리에 실패한 경우 처리
                 log.error(e.getMessage());
                 return;
             }
