@@ -11,7 +11,8 @@ public class RepliesResponseDto {
     private Long postId;
     private List<ReplyResponseDto> replies;
 
-    public RepliesResponseDto() {
-        this.replies = getReplies();
+    public RepliesResponseDto(Long postId, List<ReplyResponseDto> replies) {
+        this.postId = postId;
+        this.replies = replies;
     }
 }

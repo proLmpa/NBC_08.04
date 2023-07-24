@@ -1,6 +1,5 @@
 package com.sparta.dtogram.profile.service;
 
-import com.sparta.dtogram.common.dto.ApiResponseDto;
 import com.sparta.dtogram.common.service.S3Uploader;
 import com.sparta.dtogram.profile.dto.PasswordRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -78,6 +76,7 @@ public class ProfileService {
         }
     }
 
+    @Transactional
     public void deleteImage(User user) {
         User foundUser = findUser(user.getId());
         foundUser.updateProfileImage(null);

@@ -1,9 +1,7 @@
 package com.sparta.dtogram.reply.service;
 
-import com.sparta.dtogram.post.dto.PostResponseDto;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
-import com.sparta.dtogram.reply.dto.RepliesResponseDto;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.reply.dto.ReplyResponseDto;
 import com.sparta.dtogram.reply.entity.Reply;
@@ -12,8 +10,6 @@ import com.sparta.dtogram.reply.repository.ReplyLikeRepository;
 import com.sparta.dtogram.reply.repository.ReplyRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
-import com.sparta.dtogram.user.repository.UserRepository;
-import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -96,6 +92,7 @@ public class ReplyService {
             throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
         }
     }
+
 
     private Reply findReply(Long id) {
         return replyRepository.findById(id).orElseThrow(() -> // null 체크

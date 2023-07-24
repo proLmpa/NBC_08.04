@@ -107,14 +107,44 @@ body {
     margin-bottom: 5%;
     border: 1px solid #6a6259;
     background-color: black;
-    color: #fff;
+    color: white;
     border-radius: 10px;
 }
 
 .postDto-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 10px;
     margin: 10px;
+}
+
+.postDto-user {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 30%;
+    height: 30%;
+    flex: 0 0 auto;
+}
+
+.postDto-profileimage {
+    margin: 7%;
+    padding: 2%;
+    border-radius: 50%;
+    border: 3px solid chartreuse;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    width: 30%;
+    height: 30%;
+    object-fit: cover;
+}
+
+.postDto-nickname,
+.postDto-createdAt,
+.postDto-modifiedAt,
+.postDto-extra-btn {
+    flex: 1 1 auto;
 }
 
 .postDto-nickname {
@@ -164,12 +194,15 @@ body {
 }
 
 .postDto-footer {
+    color: white;
+    font-weight: bold;
     display: flex;
     align-items: center;
     margin-top: 10px;
 }
 
 .post-like-icon {
+    width: 7%;
     font-size: 18px;
     color: #e74c3c;
     cursor: pointer;
@@ -260,12 +293,19 @@ body {
 .replyDto-input:focus,
 .post-register-input:focus,
 .post-register-element:focus {
-    border-color: #007bff;
+    border-color: chartreuse;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
-.replyDto-like-unlike {
-    display: inline-block;
+#replyDto-like {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 5%;
+}
+
+.replyDto-like-unlike-${replyDto.id} {
+    cursor: pointer;
+    margin-right: 5px; /* Add some space between the icon and text */
 }
 
 .replyDto-replyLike {
@@ -292,7 +332,7 @@ body {
 }
 
 .replyDto-updateInput:focus {
-    border-color: #007bff;
+    border-color: chartreuse;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 
@@ -338,7 +378,7 @@ body {
 }
 
 .replyDto-updateInput:focus {
-    border-color: #007bff;
+    border-color: chartreuse;
     box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
 }
 

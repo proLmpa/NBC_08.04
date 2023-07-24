@@ -76,6 +76,18 @@ public class PostService {
         return new PostsResponseDto(posts);
     }
 
+    @Transactional(readOnly = true)
+    public PostsResponseDto getPostsByUser(Post post) {
+        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+        for(int i = 0; i < posts.size(); i++){
+            boolean isLikePost = postLikeRepository.findByUserAndPost(post.getUser(), post).isPresent();
+            postResponseDtoList.add(new PostResponseDto(post, isLikePost));
+        }
+
+        return new PostsResponseDto(postResponseDtoList);
+    }
+
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user, MultipartFile multipartFile) throws IOException{
         Post post = findPost(id);

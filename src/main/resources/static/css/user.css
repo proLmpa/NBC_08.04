@@ -4,8 +4,8 @@
 
 body {
     margin: 0px;
+    background-color: black;
 }
-
 
 #search-result-box {
     margin-top: 15px;
@@ -93,7 +93,7 @@ input#query {
     background-color: #e9ecef;
     border: none;
 
-    background-image: url('../image/icon-search.png');
+    /*background-image: url('../image/icon-search.png');*/
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 20px 20px;
@@ -207,13 +207,12 @@ button {
 }
 
 .header {
-    height: 255px;
+    height: auto;
     box-sizing: border-box;
     background-color: #15aabf;
     color: white;
     text-align: center;
     padding-top: 80px;
-    /*padding: 50px;*/
     font-size: 45px;
     font-weight: bold;
 }
@@ -354,9 +353,9 @@ button {
 }
 
 #login-form {
-    width: 538px;
-    height: 710px;
-    margin: 70px auto 141px auto;
+    width: 60%;
+    height: auto;
+    margin: 20% auto 20% auto;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -368,27 +367,50 @@ button {
     background-color: #ffffff;
 }
 
+#signup-form {
+    width: 60%;
+    height: 200%;
+    margin: 20% 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    /*gap: 96px;*/
+    padding: 56px 0 0;
+    border-radius: 10px;
+    box-shadow: 0 4px 25px 0 rgba(0, 0, 0, 0.15);
+    background-color: #ffffff;
+}
+
+#login-body {
+    margin-top: 5%;
+    margin-bottom: 20%;
+}
+
+#signup-body {
+    margin-top: 5%;
+    margin-bottom: 20%;
+}
+
 #login-title {
-    width: 303px;
-    height: 32px;
-    /*margin: 56px auto auto auto;*/
+    margin: 10% auto auto auto;
     flex-grow: 0;
     font-family: SpoqaHanSansNeo;
-    font-size: 32px;
+    font-size: 250%;
     font-weight: bold;
     font-stretch: normal;
     font-style: normal;
     line-height: 1;
     letter-spacing: -0.96px;
-    text-align: left;
-    color: #212529;
+    text-align: center;
+    color: black;
 }
 
 #login-kakao-btn {
     border-width: 0;
-    margin: 96px 0 8px;
     width: 393px;
     height: 62px;
+    margin-top: 20%;
     flex-grow: 0;
     display: flex;
     flex-direction: row;
@@ -398,20 +420,20 @@ button {
     /*margin: 0 0 8px;*/
     padding: 11px 12px;
     border-radius: 5px;
-    background-color: #ffd43b;
+    background-color: black;
 
     font-family: SpoqaHanSansNeo;
     font-size: 20px;
     font-weight: bold;
     font-stretch: normal;
     font-style: normal;
-    color: #414141;
+    color: chartreuse;
 }
 
 
 #login-naver-btn {
     border-width: 0;
-    margin: 96px 0 8px;
+    margin-top: 5%;
     width: 393px;
     height: 62px;
     flex-grow: 0;
@@ -424,7 +446,6 @@ button {
     padding: 11px 12px;
     border-radius: 5px;
     background-color: #03C75A;
-
     font-family: SpoqaHanSansNeo;
     font-size: 20px;
     font-weight: bold;
@@ -441,8 +462,7 @@ button {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    /*margin: 8px 0 0;*/
+    margin: 5% 0 0;
     padding: 11px 12px;
     border-radius: 5px;
     border: solid 1px #212529;
@@ -458,12 +478,12 @@ button {
 
 .login-input-box {
     border-width: 0;
-
     width: 370px !important;
     height: 52px;
     margin: 14px 0 0;
     border-radius: 5px;
     background-color: #e9ecef;
+    font-size: 150%;
 }
 
 .login-id-label {
@@ -471,10 +491,9 @@ button {
     /*height: 16px;*/
     width: 382px;
     padding-left: 11px;
-    margin-top: 40px;
-    /*margin: 0 337.9px 14px 11px;*/
+    margin-top: 12%;
     font-family: NotoSansCJKKR;
-    font-size: 16px;
+    font-size: 150%;
     font-weight: normal;
     font-stretch: normal;
     font-style: normal;
@@ -485,7 +504,6 @@ button {
 }
 
 #login-id-submit {
-    border-width: 0;
     width: 393px;
     height: 62px;
     flex-grow: 0;
@@ -494,11 +512,12 @@ button {
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin: 40px 0 0;
     padding: 11px 12px;
+    margin: 18% 0 0;
     border-radius: 5px;
-    background-color: #15aabf;
-
+    border: 1px solid black;
+    background-color: white;
+    color: black;
     font-family: SpoqaHanSansNeo;
     font-size: 20px;
     font-weight: bold;
@@ -507,7 +526,31 @@ button {
     line-height: 1;
     letter-spacing: normal;
     text-align: center;
-    color: #ffffff;
+}
+
+#signup-id-submit {
+    border-width: 0;
+    width: 100%;
+    height: 100%;
+    flex-grow: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 30% 0 0;
+    padding: 11px 12px;
+    border-radius: 5px;
+    background-color: black;
+    font-family: SpoqaHanSansNeo;
+    font-size: 180%;
+    font-weight: bold;
+    font-stretch: normal;
+    font-style: normal;
+    line-height: 1;
+    letter-spacing: normal;
+    text-align: center;
+    color: chartreuse;
 }
 
 #sign-text {
@@ -540,6 +583,10 @@ button {
     letter-spacing: 0.36px;
     text-align: center;
     color: #ffffff;
+}
+
+#admin-check {
+    font-size: 150%;
 }
 
 @media ( max-width: 768px ) {
