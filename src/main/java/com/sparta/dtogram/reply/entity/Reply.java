@@ -48,6 +48,14 @@ public class Reply extends Timestamped {
         this.content = requestDto.getContent();
     }
 
+    public boolean isLikedReply() {
+        for (ReplyLike replyLike : replyLikes) {
+            if (replyLike.getUser().equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
     public void registerReplyLike(ReplyLike replyLike) {
         this.replyLikes.add(replyLike);
     }

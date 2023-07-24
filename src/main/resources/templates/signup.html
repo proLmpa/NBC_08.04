@@ -9,34 +9,36 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/css/user.css">
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"
             integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
     <title>DTOGRAM SIGNUP</title>
 </head>
 <body>
-<div id="login-form">
-  <div id="login-title">Sign up DTOGRAM</div>
+<div id="signup-form">
+    <div id="signup-body">
+      <div id="login-title">Sign up<br>DTOGRAM</div>
+      <br><br>
+      <div>
+        <div class="login-id-label">Username</div>
+        <input type="text" name="username" id="username" placeholder="Username" class="login-input-box">
 
-  <div>
-    <div class="login-id-label">Username</div>
-    <input type="text" name="username" id="username" placeholder="Username" class="login-input-box">
+        <div class="login-id-label">Password</div>
+        <input type="password" name="password" id="password" placeholder="Password" class="login-input-box">
 
-    <div class="login-id-label">Password</div>
-    <input type="password" name="password" id="password" placeholder="Password" class="login-input-box">
+          <div class="login-id-label">Nickname</div>
+          <input type="nickname" name="nickname" id="nickname" placeholder="Nickname" class="login-input-box">
 
-      <div class="login-id-label">Nickname</div>
-      <input type="nickname" name="nickname" id="nickname" placeholder="Nickname" class="login-input-box">
+        <div class="login-id-label">E-mail</div>
+        <input type="text" name="email" id="email" placeholder="E-mail" class="login-input-box">
 
-    <div class="login-id-label">E-mail</div>
-    <input type="text" name="email" id="email" placeholder="E-mail" class="login-input-box">
-
-    <div>
-      <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">관리자
-      <input id="admin-token" type="password" name="adminToken" placeholder="관리자 암호" class="login-input-box" style="display:none">
+        <div>
+          <input id="admin-check" type="checkbox" name="admin" onclick="onclickAdmin()" style="margin-top: 40px;">ADMIN
+          <input id="admin-token" type="password" name="adminToken" placeholder="ADMIN PASSWORD" class="login-input-box" style="display:none">
+        </div>
+        <button id="signup-id-submit" onclick="onSignup()">SIGNUP</button>
+      </div>
     </div>
-    <button id="login-id-submit" onclick="onSignup()">회원 가입</button>
-  </div>
 </div>
 </body>
 

@@ -35,16 +35,27 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @Column
+    private boolean isLikedPost;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Reply> replies = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<PostLike> postLikes = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.REMOVE)
     private List<PostTag> postTags = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user, String multiMediaUrl) {
+        this.title = requestDto.getTitle();
+        this.content = requestDto.getContent();
+        this.user = user;
+        this.multiMediaUrl = multiMediaUrl;
+    }
+
+    public Post(Long postId, PostRequestDto requestDto, User user, String multiMediaUrl) {
+        this.id = postId;
         this.title = requestDto.getTitle();
         this.content = requestDto.getContent();
         this.user = user;

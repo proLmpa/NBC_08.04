@@ -2,9 +2,10 @@ package com.sparta.dtogram.post.controller;
 
 import com.sparta.dtogram.common.dto.MsgResponseDto;
 import com.sparta.dtogram.common.security.UserDetailsImpl;
-import com.sparta.dtogram.post.dto.PostsResponseDto;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
+import com.sparta.dtogram.post.dto.PostsResponseDto;
+import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.service.PostService;
 import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
@@ -45,11 +46,17 @@ public class PostController {
         PostResponseDto result = postService.getPostById(id);
         return ResponseEntity.ok().body(result);
     }
-    
+
     // 게시글 다건 조회
     @GetMapping("/post")
-    public ResponseEntity<PostsResponseDto> getPosts() {
+    public ResponseEntity<PostsResponseDto> getPosts(Post post) {
         PostsResponseDto result = postService.getPosts();
+        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/post/user")
+    public ResponseEntity<PostsResponseDto> getPostsByUser(Post post) {
+        PostsResponseDto result = postService.getPostsByUser(post);
         return ResponseEntity.ok().body(result);
     }
 
