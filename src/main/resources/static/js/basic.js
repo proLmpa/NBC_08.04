@@ -542,5 +542,5 @@ function setToken() {
     $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
         jqXHR.setRequestHeader('Authorization', auth)
     })
-    return check1;
+    return check;
 }

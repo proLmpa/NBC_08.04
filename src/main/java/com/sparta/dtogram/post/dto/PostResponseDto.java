@@ -26,9 +26,7 @@ public class PostResponseDto {
     private String multiMediaUrl;
     private List<TagResponseDto> tags;
     private List<ReplyResponseDto> replies;
-    private boolean isLikedPost;
     private Integer countPostLike;
-    //private List<PostLikeResponseDto> likes;
 
     public PostResponseDto(Post post) {
         this.id = post.getId();
@@ -58,9 +56,7 @@ public class PostResponseDto {
         this.multiMediaUrl = post.getMultiMediaUrl();
         this.replies = new ArrayList<>();
         this.tags = post.getPostTags().stream().map(postTag -> new TagResponseDto(postTag.getTag())).toList();
-        this.replies = post.getReplies().stream().map((Reply reply) -> new ReplyResponseDto(reply)).toList();
+        this.replies = post.getReplies().stream().map(ReplyResponseDto::new).toList();
         this.countPostLike = post.getPostLikes().size();
-        this.isLikedPost = isLikedPost;
-        //this.likes = post.getLikes();
     }
 }

@@ -35,9 +35,6 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column
-    private boolean isLikedPost;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "post", cascade = CascadeType.ALL)
     private List<Reply> replies = new ArrayList<>();
 
