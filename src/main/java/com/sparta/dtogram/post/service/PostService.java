@@ -91,8 +91,13 @@ public class PostService {
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user, MultipartFile multipartFile) throws IOException{
         Post post = findPost(id);
+        String storedFileName = "";
         if (Objects.equals(post.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
-            String storedFileName = s3Uploader.upload(multipartFile, "postFile");
+            if (multipartFile.isEmpty()) {
+                storedFileName = post.getMultiMediaUrl();
+            } else {
+                storedFileName = s3Uploader.upload(multipartFile, "postFile");
+            }
             post.updatePost(requestDto, storedFileName);
         } else {
             throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
