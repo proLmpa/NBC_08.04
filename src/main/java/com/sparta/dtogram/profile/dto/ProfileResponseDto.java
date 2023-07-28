@@ -3,10 +3,8 @@ package com.sparta.dtogram.profile.dto;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class ProfileResponseDto {
     private String username;
     private String nickname;

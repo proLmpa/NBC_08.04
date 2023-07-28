@@ -1,5 +1,7 @@
 package com.sparta.dtogram.follow.service;
 
+import com.sparta.dtogram.common.error.DtogramErrorCode;
+import com.sparta.dtogram.common.exception.DtogramException;
 import com.sparta.dtogram.follow.entity.Follow;
 import com.sparta.dtogram.follow.repository.FollowRepository;
 import com.sparta.dtogram.user.entity.User;
@@ -25,14 +27,26 @@ public class FollowService {
         User follower = findUser(followerId);   // 팔로우 주체
         User following = findUser(followingId); // 팔로우 대상
         Follow follow = followRepository.findByFollowingAndFollower(following, follower).orElse(null);
+
         if(follow == null) {
-            Follow newFollow = new Follow(following, follower);
-            followRepository.save(newFollow);
-            return "해당 유저를 팔로우했습니다!";
+            followRepository.save(new Follow(following, follower));
+            return "해당 사용자를 팔로우했습니다!";
         } else {
+            return "해당 사용자를 이미 팔로우했습니다.";
+        }
+    }
+
+    public String unfollowUser(Long followerId, Long followingId) {
+        User follower = findUser(followerId);   // 팔로우 주체
+        User following = findUser(followingId); // 팔로우 대상
+        Follow follow = followRepository.findByFollowingAndFollower(following, follower).orElse(null);
+
+        if(follow != null) {
             follow.cancelFollow(following, follower);
             followRepository.delete(follow);
-            return "해당 유저를 언팔로우했습니다!";
+            return "해당 사용자를 언팔로우했습니다!";
+        } else {
+            return "해당 사용자를 팔로우하지 않았습니다.";
         }
     }
 
@@ -60,7 +74,7 @@ public class FollowService {
 
     private User findUser(Long userId) {
         return userRepository.findById(userId).orElseThrow(() ->
-                new IllegalArgumentException("존재하지 않는 유저입니다.")
+                new DtogramException(DtogramErrorCode.USER_NOT_FOUND, null)
         );
     }
 }

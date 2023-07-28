@@ -13,6 +13,8 @@ public enum DtogramErrorCode {
     IN_USED_EMAIL(HttpStatus.SC_BAD_REQUEST, "중복된 email입니다."),
     WRONG_ADMIN_TOKEN(HttpStatus.SC_BAD_REQUEST, "관리자 암호가 틀려 등록이 불가능합니다."),
     WRONG_PASSWORD(HttpStatus.SC_BAD_REQUEST, "비밀번호가 틀렸습니다"),
+    NEW_PASSWORD_MISMATCHED(HttpStatus.SC_BAD_REQUEST, "새 비밀번호가 일치하지 않습니다."),
+    PASSWORD_RECENTLY_USED(HttpStatus.SC_BAD_REQUEST, "최근 3번 이내 사용한 이력이 있는 비밀번호 입니다."),
     S3_UPLOAD_FAILURE(HttpStatus.SC_BAD_REQUEST, "사진이 업로드 되지 않았거나 규격에서 벗어났습니다."),
     USER_NOT_FOUND(HttpStatus.SC_BAD_REQUEST, "해당 사용자는 존재하지 않습니다."),
     POST_NOT_FOUND(HttpStatus.SC_BAD_REQUEST, "해당 게시글은 존재하지 않습니다."),

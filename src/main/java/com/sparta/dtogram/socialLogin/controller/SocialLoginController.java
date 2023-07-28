@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sparta.dtogram.common.jwt.JwtUtil;
 import com.sparta.dtogram.socialLogin.service.KakaoLoginService;
 import com.sparta.dtogram.socialLogin.service.NaverLoginService;
-import com.sparta.dtogram.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,7 @@
 package com.sparta.dtogram.profile.service;
 
+import com.sparta.dtogram.common.error.DtogramErrorCode;
+import com.sparta.dtogram.common.exception.DtogramException;
 import com.sparta.dtogram.common.service.S3Uploader;
 import com.sparta.dtogram.profile.dto.PasswordRequestDto;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
@@ -9,7 +11,6 @@ import com.sparta.dtogram.profile.repository.PasswordHistoryRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,45 +24,45 @@ public class ProfileService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final PasswordHistoryRepository passwordHistoryRepository;
+    private final S3Uploader s3Uploader;
 
-    @Autowired
-    private S3Uploader s3Uploader;
-
+    @Transactional(readOnly = true)
     public ProfileResponseDto getProfile(Long id) {
         User user = findUser(id);
-
         return new ProfileResponseDto(user);
     }
 
     @Transactional
-    public void editProfile(User user, ProfileRequestDto requestDto){
-        User changed = findUser(user.getId());
-        changed.updateProfile(requestDto);
+    public ProfileResponseDto editProfile(User user, ProfileRequestDto requestDto){
+        User found = findUser(user.getId());
+        found.updateProfile(requestDto);
+
+        return new ProfileResponseDto(found);
     }
 
     @Transactional
     public void editPassword(User user, PasswordRequestDto requestDto) {
-        User changed = findUser(user.getId());
+        User found = findUser(user.getId());
 
-        if (passwordEncoder.matches(requestDto.getPassword(), changed.getPassword())) {
+        if (passwordEncoder.matches(requestDto.getPassword(), found.getPassword())) {
             if (requestDto.getNewPassword1().equals(requestDto.getNewPassword2())) {
                 boolean isUsed = passwordHistoryRepository.findByPassword(requestDto.getNewPassword2()).isPresent();
                 if (!isUsed) {
-                    changed.setPassword(passwordEncoder.encode(requestDto.getNewPassword2()));
+                    found.setPassword(passwordEncoder.encode(requestDto.getNewPassword2()));
                     // 새로운 비밀번호 사용 비밀번호 목록에 저장
                     passwordHistoryRepository.save(new PasswordHistory(requestDto.getNewPassword2(), user));
-                    if (changed.getPasswordHistories().size() > 3) {
+                    if (found.getPasswordHistories().size() > 3) {
                         PasswordHistory oldestPassword = passwordHistoryRepository.findAllByOrderByCreatedAtAsc().get(0);
                         passwordHistoryRepository.delete(oldestPassword);
                     }
                 } else {
-                    throw new IllegalArgumentException("최근 사용한 비밀번호입니다.");
+                    throw new DtogramException(DtogramErrorCode.PASSWORD_RECENTLY_USED, null);
                 }
             } else {
-                throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
+                throw new DtogramException(DtogramErrorCode.NEW_PASSWORD_MISMATCHED, null);
             }
         } else {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new DtogramException(DtogramErrorCode.WRONG_PASSWORD, null);
         }
     }
 
@@ -72,7 +73,7 @@ public class ProfileService {
             String storedFileName = s3Uploader.upload(image, "images");
             foundUser.updateProfileImage(storedFileName);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new DtogramException(DtogramErrorCode.S3_UPLOAD_FAILURE, null);
         }
     }
 
@@ -84,7 +85,7 @@ public class ProfileService {
 
     public User findUser(Long id) {
         return userRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                new DtogramException(DtogramErrorCode.USER_NOT_FOUND, null)
         );
     }
 }
