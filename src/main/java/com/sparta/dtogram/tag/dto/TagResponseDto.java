@@ -12,6 +12,6 @@ public class TagResponseDto {
 
     public TagResponseDto(Tag tag){
         this.id = tag.getId();
-        this.tag = tag.getTag();
+        this.tag = tag.getTagName();
     }
 }

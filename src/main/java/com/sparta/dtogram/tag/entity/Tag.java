@@ -6,11 +6,9 @@ import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "tag")
 public class Tag {
@@ -19,18 +17,18 @@ public class Tag {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String tag;
+    private String tagName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     public Tag(TagRequestDto requestDto, User user) {
-        this.tag = requestDto.getTag();
+        this.tagName = requestDto.getTag();
         this.user = user;
     }
 
     public void update(UpdateTagRequestDto requestDto) {
-        this.tag = requestDto.getNewTag();
+        this.tagName = requestDto.getNewTag();
     }
 }

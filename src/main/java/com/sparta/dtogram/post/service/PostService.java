@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,12 +60,12 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostsResponseDto getPosts() {
         List<PostResponseDto> posts = postRepository.findAllByOrderByModifiedAtDesc().stream()
-                .map(PostResponseDto::new)
-                .collect(Collectors.toList());
+                .map(PostResponseDto::new).toList();
 
         return new PostsResponseDto(posts);
     }
 
+    // 게시글 수정
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user, MultipartFile multipartFile) throws IOException{
         Post post = findPost(id);
@@ -81,6 +80,7 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
+    // 게시글 삭제
     @Transactional
     public void deletePost(Long id, User user) {
         Post post = findPost(id);
@@ -91,41 +91,58 @@ public class PostService {
         }
     }
 
+    // 게시글 좋아요 등록
     @Transactional
-    public int likePost(Long id, User user) {
+    public void submitLike(Long id, User user) {
         User foundUser = findUser(user);
         Post post = findPost(id);
-        PostLike postLike = postLikeRepository.findByUserAndPost(foundUser, post).orElse(null);
+        PostLike postLike = findPostLike(post, foundUser);
 
         if(postLike == null) {
-            postLike = new PostLike(foundUser, post);
-            postLikeRepository.save(postLike);
+            postLikeRepository.save(new PostLike(foundUser, post));
         } else {
-            postLike.cancelLike();
-            postLikeRepository.delete(postLike);
+            throw new DtogramException(DtogramErrorCode.POST_LIKE_ALREADY_EXISTS, null);
         }
-
-        List<PostLike> postLikes = postLikeRepository.findAllByPost_id(post.getId());
-        return postLikes.size();
     }
 
-    public void addTag(Long postId, Long tagId, User user) {
+    // 게시글 좋아요 해제
+    @Transactional
+    public void cancelLike(Long id, User user) {
+        User foundUser = findUser(user);
+        Post post = findPost(id);
+        PostLike postLike = findPostLike(post, foundUser);
+
+        if(postLike != null) {
+            postLikeRepository.delete(postLike);
+        } else {
+            throw new DtogramException(DtogramErrorCode.POST_LIKE_NOT_FOUND, null);
+        }
+    }
+
+    // 게시글 태그 추가
+    @Transactional
+    public void submitTag(Long postId, Long tagId, User user) {
         Post post = findPost(postId);
         Tag tag = findTag(tagId);
 
         if (matchUser(post, user)) {
-            postTagRepository.findByPostAndTag(post, tag).orElseThrow(
-                    () -> new DtogramException(DtogramErrorCode.TAG_NOT_FOUND, null)
-            );
-
-            postTagRepository.save(new PostTag(post, tag));
+            PostTag searchPostTag = findPostTag(post, tag);
+            if(searchPostTag == null){
+                postTagRepository.save(new PostTag(post, tag));
+            } else {
+                throw new DtogramException(DtogramErrorCode.POST_TAG_ALREADY_EXISTS, null);
+            }
         } else {
             throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
     }
 
+    // 태그 기반 게시물 조회
     @Transactional(readOnly = true)
     public PostsResponseDto getPostsByTag(Long tagId) {
+        // 존재하지 않는 태그에 대해 검색을 실행하는 경우를 방지하기 위해 실행
+        findTag(tagId);
+
         List<Post> posts = postRepository.findAllByPostTags_TagId(tagId);
         List<PostResponseDto> postResponseDtos = new ArrayList<>();
         for (Post post : posts) {
@@ -133,6 +150,23 @@ public class PostService {
         }
 
         return new PostsResponseDto(postResponseDtos);
+    }
+
+    // 게시글 태그 삭제
+    public void cancelTag(Long postId, Long tagId, User user) {
+        Post post = findPost(postId);
+        Tag tag = findTag(tagId);
+
+        if (matchUser(post, user)) {
+            PostTag searchPostTag = findPostTag(post, tag);
+            if(searchPostTag != null){
+                postTagRepository.delete(searchPostTag);
+            } else {
+                throw new DtogramException(DtogramErrorCode.POST_TAG_NOT_FOUND, null);
+            }
+        } else {
+            throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
+        }
     }
 
     private User findUser(User user) {
@@ -151,6 +185,14 @@ public class PostService {
         return tagRepository.findById(id).orElseThrow(() ->
                 new DtogramException(DtogramErrorCode.TAG_NOT_FOUND, null)
         );
+    }
+
+    private PostLike findPostLike(Post post, User user){
+        return postLikeRepository.findByUserAndPost(user, post).orElse(null);
+    }
+
+    private PostTag findPostTag(Post post, Tag tag){
+        return postTagRepository.findByPostAndTag(post, tag).orElse(null);
     }
 
     private boolean matchUser(Post post, User user) {

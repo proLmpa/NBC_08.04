@@ -1,15 +1,12 @@
 package com.sparta.dtogram.post.entity;
 
-import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.tag.entity.Tag;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Getter
-@Setter
 @NoArgsConstructor
 @Table(name = "PostTag")
 public class PostTag {
