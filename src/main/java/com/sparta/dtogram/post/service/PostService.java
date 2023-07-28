@@ -1,5 +1,7 @@
 package com.sparta.dtogram.post.service;
 
+import com.sparta.dtogram.common.error.DtogramErrorCode;
+import com.sparta.dtogram.common.exception.DtogramException;
 import com.sparta.dtogram.common.service.S3Uploader;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.post.dto.PostResponseDto;
@@ -16,8 +18,6 @@ import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,12 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PostService {
@@ -39,22 +36,17 @@ public class PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final PostLikeRepository postLikeRepository;
-
-    @Autowired
-    private S3Uploader s3Uploader;
+    private final S3Uploader s3Uploader;
 
     // 게시글 생성
     public PostResponseDto createPost(PostRequestDto requestDto, User user, MultipartFile multipartFile) throws IOException {
-        log.info("게시글 생성 시도");
-
         try {
-            log.info("게시글 생성 성공");
             String storedFileName = s3Uploader.upload(multipartFile, "postFile");
             Post post = postRepository.save(new Post(requestDto, user, storedFileName));
+
             return new PostResponseDto(post);
         } catch (RejectedExecutionException e) {
-            log.error("게시글 생성 실패", e);
-            throw new RuntimeException("Fail ! 게시글 생성 실패", e);
+            throw new DtogramException(DtogramErrorCode.S3_UPLOAD_FAILURE, null);
         }
     }
 
@@ -62,7 +54,6 @@ public class PostService {
     @Transactional(readOnly = true)
     public PostResponseDto getPostById(Long id) {
         Post post = findPost(id);
-
         return new PostResponseDto(post);
     }
 
@@ -76,60 +67,40 @@ public class PostService {
         return new PostsResponseDto(posts);
     }
 
-    @Transactional(readOnly = true)
-    public PostsResponseDto getPostsByUser(Post post) {
-        List<Post> posts = postRepository.findAllByOrderByModifiedAtDesc();
-        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
-        for(int i = 0; i < posts.size(); i++){
-            boolean isLikePost = postLikeRepository.findByUserAndPost(post.getUser(), post).isPresent();
-            postResponseDtoList.add(new PostResponseDto(post, isLikePost));
-        }
-
-        return new PostsResponseDto(postResponseDtoList);
-    }
-
     @Transactional
     public PostResponseDto updatePost(Long id, PostRequestDto requestDto, User user, MultipartFile multipartFile) throws IOException{
         Post post = findPost(id);
-        String storedFileName = "";
-        if (Objects.equals(post.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
-            if (multipartFile.isEmpty()) {
-                storedFileName = post.getMultiMediaUrl();
-            } else {
-                storedFileName = s3Uploader.upload(multipartFile, "postFile");
-            }
+
+        if (matchUser(post, user)) {
+            String storedFileName = multipartFile.isEmpty() ? post.getMultiMediaUrl() : s3Uploader.upload(multipartFile, "postFile");
             post.updatePost(requestDto, storedFileName);
         } else {
-            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
+            throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
+
         return new PostResponseDto(post);
     }
 
     @Transactional
     public void deletePost(Long id, User user) {
         Post post = findPost(id);
-        if (Objects.equals(post.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (matchUser(post, user)) {
             postRepository.delete(post);
         } else {
-            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");
+            throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
     }
 
     @Transactional
     public int likePost(Long id, User user) {
-        log.info("게시글 좋아요");
         User foundUser = findUser(user);
         Post post = findPost(id);
         PostLike postLike = postLikeRepository.findByUserAndPost(foundUser, post).orElse(null);
 
         if(postLike == null) {
-            log.info("게시글 좋아요 등록");
-
             postLike = new PostLike(foundUser, post);
             postLikeRepository.save(postLike);
         } else {
-            log.info("게시글 좋아요 해제");
-
             postLike.cancelLike();
             postLikeRepository.delete(postLike);
         }
@@ -139,23 +110,18 @@ public class PostService {
     }
 
     public void addTag(Long postId, Long tagId, User user) {
-        Post post = postRepository.findById(postId).orElseThrow(() ->
-                new IllegalArgumentException("선택한 글은 존재하지 않습니다.")
-        );
-        Tag tag = tagRepository.findById(tagId).orElseThrow(() ->
-                new IllegalArgumentException("선택한 태그는 존재하지 않습니다.")
-        );
+        Post post = findPost(postId);
+        Tag tag = findTag(tagId);
 
-        if (!post.getUser().getUsername().equals(user.getUsername())) {
-            throw new IllegalArgumentException("회원님의 글이 아닙니다.");
+        if (matchUser(post, user)) {
+            postTagRepository.findByPostAndTag(post, tag).orElseThrow(
+                    () -> new DtogramException(DtogramErrorCode.TAG_NOT_FOUND, null)
+            );
+
+            postTagRepository.save(new PostTag(post, tag));
+        } else {
+            throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
-
-        Optional<PostTag> overlapTag = postTagRepository.findByPostAndTag(post, tag);
-
-        if (overlapTag.isPresent()){
-            throw new IllegalArgumentException("중복된 태그입니다.");
-        }
-        postTagRepository.save(new PostTag(post, tag));
     }
 
     @Transactional(readOnly = true)
@@ -171,12 +137,23 @@ public class PostService {
 
     private User findUser(User user) {
         return userRepository.findByUsername(user.getUsername()).orElseThrow(() ->
-                new IllegalArgumentException("Exception ! 존재하지 않는 사용자 찾기 시도 감지"));
+                new DtogramException(DtogramErrorCode.USER_NOT_FOUND, null)
+        );
     }
 
     private Post findPost(Long id) {
         return postRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException("Exception ! 존재하지 않는 게시글 찾기 시도 감지")
+                new DtogramException(DtogramErrorCode.POST_NOT_FOUND, null)
         );
+    }
+
+    private Tag findTag(Long id) {
+        return tagRepository.findById(id).orElseThrow(() ->
+                new DtogramException(DtogramErrorCode.TAG_NOT_FOUND, null)
+        );
+    }
+
+    private boolean matchUser(Post post, User user) {
+        return post.getUser().getId().equals(user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN);
     }
 }
