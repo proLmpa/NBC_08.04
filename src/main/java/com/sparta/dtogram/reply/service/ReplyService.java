@@ -1,5 +1,7 @@
 package com.sparta.dtogram.reply.service;
 
+import com.sparta.dtogram.common.error.DtogramErrorCode;
+import com.sparta.dtogram.common.exception.DtogramException;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.repository.PostRepository;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
@@ -11,15 +13,9 @@ import com.sparta.dtogram.reply.repository.ReplyRepository;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
-import java.util.Optional;
-
-
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ReplyService {
@@ -27,78 +23,94 @@ public class ReplyService {
     private final PostRepository postRepository;
     private final ReplyLikeRepository replyLikeRepository;
 
+    // 댓글 생성
     @Transactional
     public ReplyResponseDto createReply(ReplyRequestDto requestDto, User user, Long postId) {
-            Post Post = postRepository.findById(postId).orElseThrow(() ->
-                    new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 댓글 달기 시도 감지")
-            );
-            Reply reply = replyRepository.save(new Reply(requestDto, user, Post));
+            Post post = findPost(postId);
+            Reply reply = replyRepository.save(new Reply(requestDto, user, post));
 
             return new ReplyResponseDto(reply);
     }
 
+    // 단일 댓글 조회
     @Transactional(readOnly = true)
     public ReplyResponseDto getReplyById(Long id) {
         Reply reply = findReply(id);
-
         return new ReplyResponseDto(reply);
     }
 
+    // 댓글 수정
     @Transactional
     public ReplyResponseDto updateReply(Long id, ReplyRequestDto requestDto, User user) {
         Reply reply = findReply(id);
-        if (Objects.equals(reply.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
-            reply.update(requestDto);
+
+        if (matchUser(reply, user)) {
+            reply.updateReply(requestDto);
         } else {
-            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 수정 시도 감지");
+            throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
 
         return new ReplyResponseDto(reply);
     }
 
+    // 댓글 삭제
     @Transactional
     public void deleteReply(Long id, User user) {
         Reply reply = findReply(id);
-        if (Objects.equals(reply.getUser().getId(), user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN)) {
+
+        if (matchUser(reply, user)) {
             replyRepository.delete(reply);
         } else {
-            throw new RuntimeException("Exception ! 작성자가 아닌 게시글 삭제 시도 감지");
+            throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
     }
 
+    // 댓글 좋아요 등록
     @Transactional
-    public void createReplyLike(Long id, User user) {
-        log.info("댓글 좋아요 누르기 시도");
+    public void submitLike(Long id, User user) {
         Reply reply = findReply(id);
-        ReplyLike replyLike = new ReplyLike(user, reply);
+        ReplyLike replyLike = findReplyLike(reply, user);
 
-        if(!replyLikeRepository.findByUserAndReply(user, reply).isPresent()) {
-            log.info("댓글 좋아요 누르기 성공");
+        if(replyLike == null) {
+            replyLike = new ReplyLike(user, reply);
             reply.registerReplyLike(replyLike);
             replyLikeRepository.save(replyLike);
         } else {
-            replyLikeRepository.delete(replyLike);
+            throw new DtogramException(DtogramErrorCode.LIKE_ALREADY_EXISTS, null);
         }
     }
 
+    // 댓글 좋아요 삭제
     @Transactional
-    public void deleteReplyLike(Long id, User user) {
+    public void cancelLike(Long id, User user) {
         Reply reply = findReply(id);
-        Optional<ReplyLike> replyLike = replyLikeRepository.findByUserAndReply(user, reply);
+        ReplyLike replyLike = findReplyLike(reply, user);
 
-        if (replyLike.isPresent()) {
-            reply.cancelReplyLike(replyLike.get());
+        if(replyLike != null) {
+            reply.cancelReplyLike(replyLike);
+            replyLikeRepository.delete(replyLike);
         } else {
-            throw new IllegalArgumentException("Exception ! 존재하지 않는 게시글에 대한 좋아요 누르기 시도 감지");
+            throw new DtogramException(DtogramErrorCode.LIKE_NOT_FOUND, null);
         }
     }
 
-
-    private Reply findReply(Long id) {
-        return replyRepository.findById(id).orElseThrow(() -> // null 체크
-                new IllegalArgumentException("Exception ! 존재하지 않는 댓글 찾기 시도 감지")
+    private Post findPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() ->
+                new DtogramException(DtogramErrorCode.POST_NOT_FOUND, null)
         );
     }
 
+    private Reply findReply(Long id) {
+        return replyRepository.findById(id).orElseThrow(() -> // null 체크
+                new DtogramException(DtogramErrorCode.REPLY_NOT_FOUND, null)
+        );
+    }
 
+    private ReplyLike findReplyLike(Reply reply, User user) {
+        return replyLikeRepository.findByUserAndReply(user, reply).orElse(null);
+    }
+
+    private boolean matchUser(Reply reply, User user) {
+        return reply.getUser().getId().equals(user.getId()) || user.getRole().equals(UserRoleEnum.ADMIN);
+    }
 }

@@ -101,7 +101,7 @@ public class PostService {
         if(postLike == null) {
             postLikeRepository.save(new PostLike(foundUser, post));
         } else {
-            throw new DtogramException(DtogramErrorCode.POST_LIKE_ALREADY_EXISTS, null);
+            throw new DtogramException(DtogramErrorCode.LIKE_ALREADY_EXISTS, null);
         }
     }
 
@@ -115,7 +115,7 @@ public class PostService {
         if(postLike != null) {
             postLikeRepository.delete(postLike);
         } else {
-            throw new DtogramException(DtogramErrorCode.POST_LIKE_NOT_FOUND, null);
+            throw new DtogramException(DtogramErrorCode.LIKE_NOT_FOUND, null);
         }
     }
 

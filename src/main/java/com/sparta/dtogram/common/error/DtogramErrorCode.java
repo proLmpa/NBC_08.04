@@ -21,8 +21,8 @@ public enum DtogramErrorCode {
     TAG_NOT_FOUND(HttpStatus.SC_BAD_REQUEST, "해당 태그는 존재하지 않습니다."),
     POST_TAG_ALREADY_EXISTS(HttpStatus.SC_BAD_REQUEST, "게시글에 이미 해당 태그가 존재합니다."),
     POST_TAG_NOT_FOUND(HttpStatus.SC_BAD_REQUEST, "게시글에 해당 태그는 존재하지 않습니다."),
-    POST_LIKE_ALREADY_EXISTS(HttpStatus.SC_BAD_REQUEST, "해당 게시글에 이미 좋아요 하셨습니다."),
-    POST_LIKE_NOT_FOUND(HttpStatus.SC_BAD_REQUEST, "해당 게시글에 좋아요 하지 않으셨습니다."),
+    LIKE_ALREADY_EXISTS(HttpStatus.SC_BAD_REQUEST, "이미 좋아요 하셨습니다."),
+    LIKE_NOT_FOUND(HttpStatus.SC_BAD_REQUEST, "해당 게시글에 좋아요 하지 않으셨습니다."),
     UNAUTHORIZED_USER(HttpStatus.SC_BAD_REQUEST, "작성자만 수정/삭제할 수 있습니다.");
 
     private final int errorCode;
