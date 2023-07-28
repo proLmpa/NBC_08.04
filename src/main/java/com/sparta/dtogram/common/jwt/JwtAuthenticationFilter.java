@@ -58,7 +58,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setStatus(200);
         response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("SUCCESS_LOGIN", 200));
+        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("정상적으로 로그인되었습니다.", 200));
 
         response.getOutputStream().print(result);
     }
@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("FAILED_LOGIN", 400));
+        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("로그인에 실패했습니다.", 400));
 
         response.getOutputStream().print(result);
     }

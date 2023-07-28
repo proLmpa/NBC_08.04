@@ -1,18 +1,18 @@
 package com.sparta.dtogram.user.service;
 
-import com.sparta.dtogram.profile.dto.ProfileResponseDto;
+import com.sparta.dtogram.common.error.DtogramErrorCode;
+import com.sparta.dtogram.common.exception.DtogramException;
+import com.sparta.dtogram.profile.entity.PasswordHistory;
+import com.sparta.dtogram.profile.repository.PasswordHistoryRepository;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import com.sparta.dtogram.user.dto.UserInfoDto;
-import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
-import com.sparta.dtogram.profile.repository.PasswordHistoryRepository;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,26 +34,26 @@ public class UserService {
         // 회원 중복 확인
         Optional<User> checkUsername = userRepository.findByUsername(username);
         if (checkUsername.isPresent()) {
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다.");
+            throw new DtogramException(DtogramErrorCode.IN_USED_USERNAME, null);
         }
 
         Optional<User> checkNickname = userRepository.findByNickname(nickname);
         if(checkNickname.isPresent()) {
-            throw new IllegalArgumentException("중복된 nickname입니다.");
+            throw new DtogramException(DtogramErrorCode.IN_USED_NICKNAME, null);
         }
 
         // email 중복확인
         String email = requestDto.getEmail();
         Optional<User> checkEmail = userRepository.findByEmail(email);
         if (checkEmail.isPresent()) {
-            throw new IllegalArgumentException("중복된 Email 입니다.");
+            throw new DtogramException(DtogramErrorCode.IN_USED_EMAIL, null);
         }
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isAdmin()) {
             if (!ADMIN_TOKEN.equals(requestDto.getAdminToken())) {
-                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+                throw new DtogramException(DtogramErrorCode.WRONG_ADMIN_TOKEN, null);
             }
             role = UserRoleEnum.ADMIN;
         }
@@ -68,21 +68,5 @@ public class UserService {
 
     public UserInfoDto getUserInfo(User user) {
         return new UserInfoDto(user.getId(), user.getRole().equals(UserRoleEnum.ADMIN));
-    }
-      
-    public User getUser(Long id) {
-        return userRepository.findById(id).orElseThrow(()->
-                new NullPointerException("유저 정보를 찾을 수 없습니다.")
-                );
-    }
-
-    public List<ProfileResponseDto> getAllUsers(){
-        return userRepository.findAll()
-                .stream().map(ProfileResponseDto::new).toList();
-    }
-
-    public List<ProfileResponseDto> getAllUsers(String nickname){
-        return userRepository.findByNicknameContainsOrderByNicknameAsc(nickname)
-                .stream().map(ProfileResponseDto::new).toList(); //todo 페이징 작업 추가?
     }
 }
