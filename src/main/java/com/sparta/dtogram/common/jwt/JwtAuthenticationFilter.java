@@ -50,15 +50,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         log.info("로그인 성공 및 JWT 생성");
         String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
         UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
-        log.info("###"+username);
-        log.info("###"+role);
+        log.info("username: "+username);
+        log.info("role: "+role);
 
         String token = jwtUtil.createToken(username, role);
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, token);
 
         response.setStatus(200);
         response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("정상적으로 로그인되었습니다.", 200));
+        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("LOGIN_SUCCESS", 200));
 
         response.getOutputStream().print(result);
     }
@@ -69,7 +69,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setContentType("application/json");
-        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("로그인에 실패했습니다.", 400));
+        String result = new ObjectMapper().writeValueAsString(new ApiResponseDto("LOGIN_FAILED", 400));
 
         response.getOutputStream().print(result);
     }

@@ -30,9 +30,11 @@ public class UserController {
 
     @PostMapping("/user/signup")
     public ResponseEntity<ApiResponseDto> signup(@RequestBody @Valid SignupRequestDto requestDto, BindingResult bindingResult) {
+        log.info("회원 가입");
+
         // Validation 예외처리
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
-        if(fieldErrors.size() > 0) {
+        if(!fieldErrors.isEmpty()) {
             for (FieldError fieldError : bindingResult.getFieldErrors()) {
                 log.error(fieldError.getField() + " 필드 : " + fieldError.getDefaultMessage());
             }
@@ -44,7 +46,8 @@ public class UserController {
     }
 
     @GetMapping("/user/info")
-    public ResponseEntity<UserInfoDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return ResponseEntity.ok(userService.getUserInfo(userDetails.getUser()));
+    public ResponseEntity<UserInfoDto> getUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl) {
+        log.info("단일 회원 정보 조회");
+        return ResponseEntity.ok(userService.getUserInfo(userDetailsImpl.getUser()));
     }
 }

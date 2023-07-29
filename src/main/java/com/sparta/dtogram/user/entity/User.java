@@ -3,17 +3,16 @@ package com.sparta.dtogram.user.entity;
 import com.sparta.dtogram.follow.entity.Follow;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.reply.entity.Reply;
 import com.sparta.dtogram.reply.entity.ReplyLike;
-import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
