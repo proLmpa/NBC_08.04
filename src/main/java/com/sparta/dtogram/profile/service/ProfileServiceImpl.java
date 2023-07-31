@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -49,18 +50,15 @@ public class ProfileServiceImpl implements ProfileService{
 
         if (passwordEncoder.matches(requestDto.getPassword(), found.getPassword())) {
             if (requestDto.getNewPassword1().equals(requestDto.getNewPassword2())) {
-                boolean isUsed = passwordHistoryRepository.findByPassword(requestDto.getNewPassword2()).isPresent();
-                if (!isUsed) {
-                    found.setPassword(passwordEncoder.encode(requestDto.getNewPassword2()));
-                    // 새로운 비밀번호 사용 비밀번호 목록에 저장
-                    passwordHistoryRepository.save(new PasswordHistory(requestDto.getNewPassword2(), user));
-                    if (found.getPasswordHistories().size() > 3) {
-                        PasswordHistory oldestPassword = passwordHistoryRepository.findAllByOrderByCreatedAtAsc().get(0);
-                        passwordHistoryRepository.delete(oldestPassword);
-                    }
-                } else {
-                    throw new DtogramException(DtogramErrorCode.PASSWORD_RECENTLY_USED, null);
+                List<PasswordHistory> passwordHistories = passwordHistoryRepository.get3RecentPasswords(found.getId());
+                for(PasswordHistory passwordHistory : passwordHistories) {
+                    if(passwordEncoder.matches(requestDto.getNewPassword1(), passwordHistory.getPassword()))
+                        throw new DtogramException(DtogramErrorCode.PASSWORD_RECENTLY_USED, null);
                 }
+
+                String newPassword = passwordEncoder.encode(requestDto.getNewPassword2());
+                found.setPassword(newPassword);
+                passwordHistoryRepository.save(new PasswordHistory(newPassword, user));
             } else {
                 throw new DtogramException(DtogramErrorCode.NEW_PASSWORD_MISMATCHED, null);
             }

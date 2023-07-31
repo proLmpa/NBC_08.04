@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
 
         // 사용했던 비밀번호 목록에 저장
-        passwordHistoryRepository.save(new PasswordHistory(requestDto.getPassword(), user));
+        passwordHistoryRepository.save(new PasswordHistory(password, user));
     }
 
     @Override

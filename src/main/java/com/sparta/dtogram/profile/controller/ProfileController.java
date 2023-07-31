@@ -35,7 +35,7 @@ public class ProfileController {
         return ResponseEntity.ok().body(result);
     }
 
-    @PutMapping("/profile/password")
+    @PatchMapping("/profile/password")
     public ResponseEntity<ApiResponseDto> editPassword(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PasswordRequestDto requestDto) {
         log.info("비밀번호 수정");
         profileService.editPassword(userDetails.getUser(), requestDto);
