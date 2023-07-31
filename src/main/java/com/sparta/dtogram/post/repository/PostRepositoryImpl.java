@@ -1,8 +1,12 @@
 package com.sparta.dtogram.post.repository;
 
+import com.querydsl.core.types.dsl.Wildcard;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.sparta.dtogram.post.entity.Post;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,47 +20,49 @@ public class PostRepositoryImpl implements PostCustomRepository{
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Post> getFollowersPostsByUserId(Long userId) {
-        List<Post> followersPosts = jpaQueryFactory
+    public Page<Post> getFollowersPostsByUserId(Long userId, Pageable pageable) {
+        var followersPosts = jpaQueryFactory
                 .select(post)
                 .from(post)
                 .innerJoin(follow)
                 .on(post.user.id.eq(follow.follower.id))
                 .where(follow.following.id.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        List<Post> posts = jpaQueryFactory
-                .select(post)
+        long totalSize = jpaQueryFactory
+                .select(Wildcard.count)
                 .from(post)
-                .where(post.user.id.eq(userId))
-                .fetch();
+                .innerJoin(follow)
+                .on(post.user.id.eq(follow.follower.id))
+                .where(follow.following.id.eq(userId))
+                .fetch().get(0);
 
-        followersPosts.addAll(posts);
-        followersPosts.sort((p1, p2) -> p2.getModifiedAt().compareTo(p1.getModifiedAt()));
-
-        return followersPosts;
+        return PageableExecutionUtils.getPage(followersPosts, pageable, () -> totalSize);
     }
 
     @Override
-    public List<Post> getFollowingsPostsByUserId(Long userId) {
-        List<Post> followingsPosts = jpaQueryFactory
+    public Page<Post> getFollowingsPostsByUserId(Long userId, Pageable pageable) {
+        var followingsPosts = jpaQueryFactory
                 .select(post)
                 .from(post)
                 .innerJoin(follow)
                 .on(post.user.id.eq(follow.following.id))
                 .where(follow.follower.id.eq(userId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
 
-        List<Post> posts = jpaQueryFactory
-                .select(post)
+        long totalSize = jpaQueryFactory
+                .select(Wildcard.count)
                 .from(post)
-                .where(post.user.id.eq(userId))
-                .fetch();
+                .innerJoin(follow)
+                .on(post.user.id.eq(follow.following.id))
+                .where(follow.follower.id.eq(userId))
+                .fetch().get(0);
 
-        followingsPosts.addAll(posts);
-        followingsPosts.sort((p1, p2) -> p2.getModifiedAt().compareTo(p1.getModifiedAt()));
-
-        return followingsPosts;
+        return PageableExecutionUtils.getPage(followingsPosts, pageable, () -> totalSize);
     }
 
     @Override

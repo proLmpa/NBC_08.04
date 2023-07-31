@@ -27,9 +27,13 @@ public interface PostService {
 
     /*
      * 전체 게시글 조회
+     * @param page 조회할 페이지 수
+     * @param size 페이지 내 객체 개수
+     * @param sortBy 정렬 기준
+     * @param isAsc 오름차순/내림차순 정렬 여부
      * @return 전체 게시글 조회 결과
      */
-    public PostsResponseDto getPosts();
+    public PostsResponseDto getPosts(int page, int size, String sortBy, boolean isAsc);
 
     /*
      * 게시글 수정
@@ -94,16 +98,20 @@ public interface PostService {
 
     /*
      * 자신을 팔로우 중인 사용자의 전체 게시글 목록 생성
+     * @param page 조회할 페이지 수
+     * @param size 페이지 내 객체 개수
      * @param user 사용자 권한 토큰
      * @return 자신을 팔로우 중인 사용자의 전체 게시글 목록
      */
-    PostsResponseDto getFollowersPosts(User user);
+    PostsResponseDto getFollowersPosts(int page, int size, User user);
 
 
     /*
      * 자신이 팔로우 중인 사용자의 전체 게시글 목록 생성
+     * @param page 조회할 페이지 수
+     * @param size 페이지 내 객체 개수
      * @param user 사용자 권한 토큰
      * @return 자신이 팔로우 중인 사용자의 전체 게시글 목록
      */
-    PostsResponseDto getFollowingsPosts(User user);
+    PostsResponseDto getFollowingsPosts(int page, int size, User user);
 }

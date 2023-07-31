@@ -18,6 +18,9 @@ import com.sparta.dtogram.user.entity.User;
 import com.sparta.dtogram.user.entity.UserRoleEnum;
 import com.sparta.dtogram.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,8 +64,12 @@ public class PostServiceImpl implements PostService{
     // 게시글 다건 조회
     @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto getPosts() {
-        List<PostResponseDto> posts = postRepository.findAllByOrderByModifiedAtDesc().stream()
+    public PostsResponseDto getPosts(int page, int size, String sortBy, boolean isAsc) {
+        Sort.Direction direction = isAsc ? Sort.Direction.ASC : Sort.Direction.DESC;
+        Sort sort = Sort.by(direction, sortBy);
+        Pageable pageable = PageRequest.of(page, size, sort);
+
+        List<PostResponseDto> posts = postRepository.findAll(pageable).stream()
                 .map(PostResponseDto::new).toList();
 
         return new PostsResponseDto(posts);
@@ -188,18 +195,26 @@ public class PostServiceImpl implements PostService{
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto getFollowersPosts(User user) {
-        List<PostResponseDto> followersPosts = postRepository.getFollowersPostsByUserId(user.getId()).stream()
-                .map(PostResponseDto::new).toList();
+    public PostsResponseDto getFollowersPosts(int page, int size, User user) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<PostResponseDto> followersPosts = postRepository
+                .getFollowersPostsByUserId(user.getId(), pageable)
+                .stream().map(PostResponseDto::new).toList();
 
         return new PostsResponseDto(followersPosts);
     }
 
+    @Override
     @Transactional(readOnly = true)
-    public PostsResponseDto getFollowingsPosts(User user) {
-        List<PostResponseDto> followersPosts = postRepository.getFollowingsPostsByUserId(user.getId()).stream()
-                .map(PostResponseDto::new).toList();
+    public PostsResponseDto getFollowingsPosts(int page, int size, User user) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        List<PostResponseDto> followersPosts = postRepository
+                .getFollowingsPostsByUserId(user.getId(), pageable)
+                .stream().map(PostResponseDto::new).toList();
 
         return new PostsResponseDto(followersPosts);
     }

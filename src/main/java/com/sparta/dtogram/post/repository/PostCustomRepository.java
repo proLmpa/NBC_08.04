@@ -1,6 +1,8 @@
 package com.sparta.dtogram.post.repository;
 
 import com.sparta.dtogram.post.entity.Post;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -10,14 +12,14 @@ public interface PostCustomRepository {
      * @param userId 자신의 사용자 ID
      * @return 자신을 팔로우 중인 사용자의 게시글 조회 결과
      */
-    List<Post> getFollowersPostsByUserId(Long userId);
+    Page<Post> getFollowersPostsByUserId(Long userId, Pageable pageable);
 
     /*
      * 자신이 팔로우 중인 사용자의 게시글만 모아보기
      * @param userId 자신의 사용자 ID
      * @return 자신이 팔로우 중인 사용자의 게시글 조회 결과
      */
-    List<Post> getFollowingsPostsByUserId(Long userId);
+    Page<Post> getFollowingsPostsByUserId(Long userId, Pageable pageable);
 
     /*
      * 태그 기준 게시글 조회하기

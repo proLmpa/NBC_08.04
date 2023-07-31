@@ -38,9 +38,13 @@ public class PostController {
     }
 
     @GetMapping("/post")
-    public ResponseEntity<PostsResponseDto> getPosts() {
+    public ResponseEntity<PostsResponseDto> getPosts(
+            @RequestParam("page") int page,
+            @RequestParam("size") int size,
+            @RequestParam("sortBy") String sortBy,
+            @RequestParam("isAsc") boolean isAsc) {
         log.info("전체 게시글 조회");
-        PostsResponseDto result = postService.getPosts();
+        PostsResponseDto result = postService.getPosts(page - 1, size, sortBy, isAsc);
         return ResponseEntity.ok().body(result);
     }
 
@@ -101,16 +105,22 @@ public class PostController {
     }
 
     @GetMapping("/post/followers")
-    public ResponseEntity<PostsResponseDto> getFollowersPosts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostsResponseDto> getFollowersPosts(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
         log.info("자신을 팔로우 중인 사용자의 전체 게시글 목록 생성");
-        PostsResponseDto result = postService.getFollowersPosts(userDetails.getUser());
+        PostsResponseDto result = postService.getFollowersPosts(page-1, size, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 
     @GetMapping("/post/followings")
-    public ResponseEntity<PostsResponseDto> getFollowingsPosts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<PostsResponseDto> getFollowingsPosts(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @RequestParam("page") int page,
+            @RequestParam("size") int size) {
         log.info("자신이 팔로우 중인 사용자의 전체 게시글 목록 생성");
-        PostsResponseDto result = postService.getFollowingsPosts(userDetails.getUser());
+        PostsResponseDto result = postService.getFollowingsPosts(page-1, size, userDetails.getUser());
         return ResponseEntity.ok().body(result);
     }
 }
