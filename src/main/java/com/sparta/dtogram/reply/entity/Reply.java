@@ -1,6 +1,7 @@
 package com.sparta.dtogram.reply.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
+import com.sparta.dtogram.like.reply.entity.ReplyLike;
 import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.reply.dto.ReplyRequestDto;
 import com.sparta.dtogram.user.entity.User;

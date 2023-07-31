@@ -1,6 +1,7 @@
-package com.sparta.dtogram.reply.entity;
+package com.sparta.dtogram.like.reply.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
+import com.sparta.dtogram.reply.entity.Reply;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

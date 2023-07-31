@@ -1,5 +1,6 @@
-package com.sparta.dtogram.post.entity;
+package com.sparta.dtogram.like.post.entity;
 
+import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,10 +28,5 @@ public class PostLike {
         this.post = post;
         user.getPostLikes().add(this);
         post.getPostLikes().add(this);
-    }
-
-    public void cancelLike() {
-        user.getPostLikes().remove(this);
-        post.getPostLikes().remove(this);
     }
 }

@@ -1,8 +1,10 @@
 package com.sparta.dtogram.post.entity;
 
 import com.sparta.dtogram.common.entity.Timestamped;
+import com.sparta.dtogram.like.post.entity.PostLike;
 import com.sparta.dtogram.post.dto.PostRequestDto;
 import com.sparta.dtogram.reply.entity.Reply;
+import com.sparta.dtogram.tag.entity.PostTag;
 import com.sparta.dtogram.user.entity.User;
 import jakarta.persistence.*;
 import lombok.Getter;

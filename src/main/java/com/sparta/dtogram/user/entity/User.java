@@ -2,11 +2,11 @@ package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.follow.entity.Follow;
 import com.sparta.dtogram.post.entity.Post;
-import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.like.post.entity.PostLike;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.reply.entity.Reply;
-import com.sparta.dtogram.reply.entity.ReplyLike;
+import com.sparta.dtogram.like.reply.entity.ReplyLike;
 import com.sparta.dtogram.tag.entity.Tag;
 import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
@@ -85,7 +85,6 @@ public class User {
         this.role = role;
     }
 
-    //todo 추후 다른 소셜 로그인과 섞일 염려가 있음
     //KAKAO User생성
     public User(String username, String password, String email, UserRoleEnum role, Long kakaoId) {
         this.username = "kakao" + username;

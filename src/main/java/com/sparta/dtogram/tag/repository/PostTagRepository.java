@@ -1,7 +1,7 @@
-package com.sparta.dtogram.post.repository;
+package com.sparta.dtogram.tag.repository;
 
 import com.sparta.dtogram.post.entity.Post;
-import com.sparta.dtogram.post.entity.PostTag;
+import com.sparta.dtogram.tag.entity.PostTag;
 import com.sparta.dtogram.tag.entity.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -1,7 +1,7 @@
-package com.sparta.dtogram.post.repository;
+package com.sparta.dtogram.like.post.repository;
 
 import com.sparta.dtogram.post.entity.Post;
-import com.sparta.dtogram.post.entity.PostLike;
+import com.sparta.dtogram.like.post.entity.PostLike;
 import com.sparta.dtogram.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

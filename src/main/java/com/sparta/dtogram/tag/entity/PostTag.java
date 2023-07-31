@@ -1,6 +1,6 @@
-package com.sparta.dtogram.post.entity;
+package com.sparta.dtogram.tag.entity;
 
-import com.sparta.dtogram.tag.entity.Tag;
+import com.sparta.dtogram.post.entity.Post;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
