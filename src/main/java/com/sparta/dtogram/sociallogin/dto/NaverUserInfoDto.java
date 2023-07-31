@@ -1,4 +1,4 @@
-package com.sparta.dtogram.socialLogin.dto;
+package com.sparta.dtogram.sociallogin.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,4 +1,4 @@
-package com.sparta.dtogram.socialLogin.service;
+package com.sparta.dtogram.sociallogin.service;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
