@@ -56,6 +56,13 @@ public interface PostService {
     public void submitLike(Long id, User user);
 
     /*
+     * 좋아요 기반 게시글 조회 기능
+     * @param user 사용자 권한 토큰
+     * @return 사용자가 좋아요 등록한 게시글 조회 결과
+     */
+    public PostsResponseDto getPostsByLike(User user);
+
+    /*
      * 게시글 좋아요 해제
      * @param id 좋아요 등록할 게시글의 ID
      * @param user 사용자 권한 토큰
@@ -84,4 +91,19 @@ public interface PostService {
      * @param user 사용자 권한 토큰
      */
     public void cancelTag(Long postId, Long tagId, User user);
+
+    /*
+     * 자신을 팔로우 중인 사용자의 전체 게시글 목록 생성
+     * @param user 사용자 권한 토큰
+     * @return 자신을 팔로우 중인 사용자의 전체 게시글 목록
+     */
+    PostsResponseDto getFollowersPosts(User user);
+
+
+    /*
+     * 자신이 팔로우 중인 사용자의 전체 게시글 목록 생성
+     * @param user 사용자 권한 토큰
+     * @return 자신이 팔로우 중인 사용자의 전체 게시글 목록
+     */
+    PostsResponseDto getFollowingsPosts(User user);
 }

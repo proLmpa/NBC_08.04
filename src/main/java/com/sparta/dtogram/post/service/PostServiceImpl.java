@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -112,6 +111,18 @@ public class PostServiceImpl implements PostService{
         }
     }
 
+    // 좋아요 기반 게시물 조회
+    @Override
+    @Transactional(readOnly = true)
+    public PostsResponseDto getPostsByLike(User user){
+        User foundUser = findUser(user);
+
+        List<PostResponseDto> likedPosts = postRepository.getLikedPostsByUserId(foundUser.getId())
+                .stream().map(PostResponseDto::new).toList();
+
+        return new PostsResponseDto(likedPosts);
+    }
+
     // 게시글 좋아요 해제
     @Override
     @Transactional
@@ -153,13 +164,10 @@ public class PostServiceImpl implements PostService{
         // 존재하지 않는 태그에 대해 검색을 실행하는 경우를 방지하기 위해 실행
         findTag(tagId);
 
-        List<Post> posts = postRepository.findAllByPostTags_TagId(tagId);
-        List<PostResponseDto> postResponseDtos = new ArrayList<>();
-        for (Post post : posts) {
-            postResponseDtos.add(new PostResponseDto(post));
-        }
+        List<PostResponseDto> tagedPosts = postRepository.getPostsByTagId(tagId)
+                .stream().map(PostResponseDto::new).toList();
 
-        return new PostsResponseDto(postResponseDtos);
+        return new PostsResponseDto(tagedPosts);
     }
 
     // 게시글 태그 삭제
@@ -178,6 +186,22 @@ public class PostServiceImpl implements PostService{
         } else {
             throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public PostsResponseDto getFollowersPosts(User user) {
+        List<PostResponseDto> followersPosts = postRepository.getFollowersPostsByUserId(user.getId()).stream()
+                .map(PostResponseDto::new).toList();
+
+        return new PostsResponseDto(followersPosts);
+    }
+
+    @Transactional(readOnly = true)
+    public PostsResponseDto getFollowingsPosts(User user) {
+        List<PostResponseDto> followersPosts = postRepository.getFollowingsPostsByUserId(user.getId()).stream()
+                .map(PostResponseDto::new).toList();
+
+        return new PostsResponseDto(followersPosts);
     }
 
     private User findUser(User user) {

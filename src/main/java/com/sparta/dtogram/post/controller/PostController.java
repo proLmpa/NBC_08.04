@@ -65,6 +65,13 @@ public class PostController {
         return ResponseEntity.ok().body(new ApiResponseDto("게시글 좋아요 등록 성공", HttpStatus.OK.value()));
     }
 
+    @GetMapping("/post/likes")
+    public ResponseEntity<PostsResponseDto> getPostsByLike(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("좋아요 기반 게시글 조회 기능");
+        PostsResponseDto result = postService.getPostsByLike(userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
     @DeleteMapping("/post/{id}/like")
     public ResponseEntity<ApiResponseDto> cancelLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         log.info("게시글 좋아요 삭제하기");
@@ -91,5 +98,19 @@ public class PostController {
         log.info("게시글 태그 삭제");
         postService.cancelTag(postId, tagId, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("게시글 태그 삭제 성공", HttpStatus.OK.value()));
+    }
+
+    @GetMapping("/post/followers")
+    public ResponseEntity<PostsResponseDto> getFollowersPosts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("자신을 팔로우 중인 사용자의 전체 게시글 목록 생성");
+        PostsResponseDto result = postService.getFollowersPosts(userDetails.getUser());
+        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/post/followings")
+    public ResponseEntity<PostsResponseDto> getFollowingsPosts(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        log.info("자신이 팔로우 중인 사용자의 전체 게시글 목록 생성");
+        PostsResponseDto result = postService.getFollowingsPosts(userDetails.getUser());
+        return ResponseEntity.ok().body(result);
     }
 }
