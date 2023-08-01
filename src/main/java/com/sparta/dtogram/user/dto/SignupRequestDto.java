@@ -3,11 +3,13 @@ package com.sparta.dtogram.user.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class SignupRequestDto {
     @NotBlank
     @Pattern(regexp = "[a-z0-9]{4,10}")
@@ -20,6 +22,6 @@ public class SignupRequestDto {
     @Email
     @NotBlank
     private String email;
-    private boolean admin = false;
-    private String adminToken = "";
+    private boolean admin;
+    private String adminToken;
 }
