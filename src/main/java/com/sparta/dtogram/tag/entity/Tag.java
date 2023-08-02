@@ -28,6 +28,11 @@ public class Tag {
         this.user = user;
     }
 
+    public Tag(String tagName, User user){
+        this.tagName = tagName;
+        this.user = user;
+    }
+
     public void update(UpdateTagRequestDto requestDto) {
         this.tagName = requestDto.getNewTag();
     }

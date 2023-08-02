@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // 사용자 등록
-        User user = new User(requestDto, password, role);
+        User user = new User(username ,nickname, password, email, role);
         userRepository.save(user);
 
         // 사용했던 비밀번호 목록에 저장

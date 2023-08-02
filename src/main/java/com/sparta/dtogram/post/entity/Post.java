@@ -51,12 +51,11 @@ public class Post extends Timestamped {
         this.multiMediaUrl = multiMediaUrl;
     }
 
-    public Post(Long postId, PostRequestDto requestDto, User user, String multiMediaUrl) {
-        this.id = postId;
-        this.title = requestDto.getTitle();
-        this.content = requestDto.getContent();
-        this.user = user;
+    public Post(String title, String content, User user, String multiMediaUrl) {
+        this.title = title;
+        this.content = content;
         this.multiMediaUrl = multiMediaUrl;
+        this.user = user;
     }
 
     public void updatePost(PostRequestDto requestDto, String multiMediaUrl) {

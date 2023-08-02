@@ -1,14 +1,13 @@
 package com.sparta.dtogram.user.entity;
 
 import com.sparta.dtogram.follow.entity.Follow;
-import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.like.post.entity.PostLike;
+import com.sparta.dtogram.like.reply.entity.ReplyLike;
+import com.sparta.dtogram.post.entity.Post;
 import com.sparta.dtogram.profile.dto.ProfileRequestDto;
 import com.sparta.dtogram.profile.entity.PasswordHistory;
 import com.sparta.dtogram.reply.entity.Reply;
-import com.sparta.dtogram.like.reply.entity.ReplyLike;
 import com.sparta.dtogram.tag.entity.Tag;
-import com.sparta.dtogram.user.dto.SignupRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -77,11 +76,11 @@ public class User {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<PasswordHistory> passwordHistories = new ArrayList<>();
 
-    public User(SignupRequestDto requestDto, String password, UserRoleEnum role) {
-        this.username = requestDto.getUsername();
-        this.nickname = requestDto.getNickname();
+    public User(String username, String nickname, String password, String email, UserRoleEnum role) {
+        this.username = username;
+        this.nickname = nickname;
         this.password = password;
-        this.email = requestDto.getEmail();
+        this.email = email;
         this.role = role;
     }
 
