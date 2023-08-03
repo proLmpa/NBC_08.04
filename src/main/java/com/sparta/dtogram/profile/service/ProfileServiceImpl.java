@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -70,13 +69,9 @@ public class ProfileServiceImpl implements ProfileService{
     @Override
     @Transactional
     public void updateImage(User user, MultipartFile image) {
-        try {
-            User foundUser = findUser(user.getId());
-            String storedFileName = s3Uploader.upload(image, "images");
-            foundUser.updateProfileImage(storedFileName);
-        } catch (IOException e) {
-            throw new DtogramException(DtogramErrorCode.S3_UPLOAD_FAILURE, null);
-        }
+        User foundUser = findUser(user.getId());
+        String storedFileName = s3Uploader.uploadFile(image, foundUser.getImageUrl()).getBody();
+        foundUser.updateProfileImage(storedFileName);
     }
 
     @Override

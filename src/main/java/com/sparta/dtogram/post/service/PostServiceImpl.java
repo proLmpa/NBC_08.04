@@ -44,7 +44,7 @@ public class PostServiceImpl implements PostService{
     @Transactional
     public PostResponseDto createPost(PostRequestDto requestDto, User user, MultipartFile multipartFile) throws IOException {
         try {
-            String storedFileName = s3Uploader.upload(multipartFile, "postFile");
+            String storedFileName = s3Uploader.uploadFile(multipartFile, "").getBody();
             Post post = postRepository.save(new Post(requestDto, user, storedFileName));
 
             return new PostResponseDto(post);
@@ -82,7 +82,7 @@ public class PostServiceImpl implements PostService{
         Post post = findPost(id);
 
         if (matchUser(post, user)) {
-            String storedFileName = multipartFile.isEmpty() ? post.getMultiMediaUrl() : s3Uploader.upload(multipartFile, "postFile");
+            String storedFileName = s3Uploader.uploadFile(multipartFile, post.getMultiMediaUrl()).getBody();
             post.updatePost(requestDto, storedFileName);
         } else {
             throw new DtogramException(DtogramErrorCode.UNAUTHORIZED_USER, null);
