@@ -22,6 +22,9 @@ repositories {
 }
 
 dependencies {
+    // swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
     // QueryDSL 적용을 위한 의존성 (SpringBoot3.0 부터는 jakarta 사용해야함)
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     testImplementation 'junit:junit:4.13.1'
@@ -49,15 +52,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
-
-// QueryDSL
-//sourceSets {
-//    main {
-//        java {
-//            srcDirs = ["$projectDir/src/main/java", "$projectDir/build/generated"]
-//        }
-//    }
-//}
 
 clean {
     delete file('src/main/java')
